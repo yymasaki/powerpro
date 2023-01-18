@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.PresentationMapper">
+	<resultMap type="com.example.domain.Presentation"
+		id="PresentationMap">
+		<result column="presentation_id" jdbcType="INTEGER"
+			property="presentationId" />
+		<result column="title" jdbcType="VARCHAR" property="title" />
+		<result column="content" jdbcType="LONGVARCHAR"
+			property="content" />
+		<result column="presentation_date" jdbcType="DATE"
+			property="presentationDate" />
+		<result column="stage" jdbcType="INTEGER" property="stage" />
+		<result column="version" jdbcType="INTEGER" property="version" />
+		<collection property="presentationDocumentList"
+			ofType="com.example.domain.PresentationDocument">
+			<id column="presentation_document_id"
+				property="presentationDocumentId" jdbcType="INTEGER" />
+			<result column="document_path" property="documentPath"
+				jdbcType="VARCHAR" />
+			<result column="doc.presentation_id"
+				property="DocumentTablePresentationId" jdbcType="INTEGER" />
+		</collection>
+		<collection property="presenterList"
+			ofType="com.example.domain.User">
+			<id column="presenter_user_id" property="userId"
+				jdbcType="INTEGER" />
+			<result column="presenter_name" property="name"
+				jdbcType="VARCHAR" />
+		</collection>
+		<collection property="presentationCommentList"
+			ofType="com.example.domain.PresentationComment">
+			<id column="presentation_comment_id"
+				property="presentationCommentId" jdbcType="INTEGER" />
+			<result column="presentation_comment"
+				property="presentationComment" jdbcType="VARCHAR" />
+			<result column="presentation_comment_creator_id"
+				property="presentationCommentCreatorId" jdbcType="INTEGER" />
+			<result column="presentation_comment_creator_name"
+				property="presentationCommentCreatorName" jdbcType="VARCHAR" />
+		</collection>
+		<collection property="editRequestCommentList"
+			ofType="com.example.domain.EditRequestComment">
+			<id column="edit_request_comment_id"
+				property="editRequestCommentId" jdbcType="INTEGER" />
+			<result column="edit_request_comment"
+				property="editRequestComment" jdbcType="VARCHAR" />
+			<result column="edit_request_comment_creator_id"
+				property="editRequestCommentCreatorId" jdbcType="INTEGER" />
+			<result column="edit_request_comment_creator_name"
+				property="editRequestCommentCreatorName" jdbcType="VARCHAR" />
+			<result column="edit_request_comment_created_at"
+				property="editRequestCommentCreatedAt" jdbcType="DATE" />
+			<!-- <result column="presentation_id" property="presentationId" jdbcType="INTEGER" 
+				/> -->
+		</collection>
+	</resultMap>
+
+	<resultMap type="com.example.domain.PresentationFavorite"
+		id="PresentationFavoriteMap">
+		<id column="presentation_favorite_id"
+			property="presentationFavoriteId" jdbcType="INTEGER" />
+		<result column="favorite_user_id" property="userId"
+			jdbcType="INTEGER" />
+		<result column="presentation_id" property="presentationId"
+			jdbcType="INTEGER" />
+	</resultMap>
+
+	<resultMap type="com.example.domain.Department"
+		id="PresenterDepartmentMap">
+		<result column="department_name" jdbcType="VARCHAR"
+			property="name" />
+	</resultMap>
+
+	<resultMap type="com.example.domain.User" id="PresenterMap">
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="user_id" jdbcType="VARCHAR" property="userId" />
+		<association property="department"
+			javaType="com.example.domain.Department">
+			<result property="name" column="department_name" />
+		</association>
+	</resultMap>
+
+	<!-- 共通部分 -->
+	<sql id="Select_Presentation">
+		p.presentation_id as presentation_id,
+		title, content, presentation_date, preferred_date, p.stage as stage,
+		p.version as version,
+		presentation_document_id, document_path 
+	</sql>
+	<sql id="Select_Presenter">
+		, u.user_id as presenter_user_id, u.name as presenter_name
+	</sql>
+	<sql id="Select_Presentation_Comments">
+	, presentation_comment_id, presentation_comment, presentation_comment_creator_id, 
+	presentation_comment_creator_name , presentation_comment_stage
+	</sql>
+	<sql id="Select_Presentation_Edit_Request_Comments">
+	, edit_request_comment_id, edit_request_comment, edit_request_comment_created_at,  
+	edit_request_comment_creator_id, edit_request_comment_creator_name 
+	</sql>
+	<sql id="Presentations_Table">
+	FROM presentations as p
+	</sql>
+	<sql id="Presentation_Users_Link_Table">
+		LEFT OUTER JOIN presentation_users_link as link
+		ON link.presentation_id = p.presentation_id
+	</sql>
+	<sql id="Presentation_Documents_Table">
+		LEFT JOIN presentation_documents as doc
+		ON p.presentation_id = doc.presentation_id
+	</sql>
+
+	<!--top画面表示 -->
+	<select id="selectByUserId" resultMap="PresentationMap">
+		SELECT 
+		<include refid="Select_Presentation"></include>
+		<include refid="Select_Presenter"></include>
+		FROM (SELECT 
+			<include refid="Select_Presentation"></include>
+        	, link.user_id as presenter_user_id
+			<include refid="Presentations_Table"></include>
+			<include refid="Presentation_Documents_Table"></include>
+			<include refid="Presentation_Users_Link_Table"></include>       
+			WHERE link.user_id= #{loginUserId} 
+			AND (stage = 0 OR stage = 2 OR stage = 3 OR stage = 4 OR stage = 5 )) as p
+		LEFT JOIN (SELECT P.presentation_id, U.user_id, U.name FROM presentation_users_link as P 
+        LEFT JOIN users as U ON P.user_id = U.user_id) as u
+		ON p.presentation_id = u.presentation_id 
+		ORDER BY p.presentation_id DESC;
+	</select>
+
+
+	<!-- 自身の発表総数のみの取得 -->
+	<select id="countPresentation" resultType="Integer">
+		SELECT count(*)
+		<include refid="Presentations_Table"></include>
+		<include refid="Presentation_Users_Link_Table"></include>
+		WHERE link.user_id = #{loginUserId};
+	</select>
+
+	<!-- 一時保存レコード取得 -->
+	<select id="selectSavedPresentation" resultMap="PresentationMap">
+		SELECT 
+		<include refid="Select_Presentation"></include>
+		<include refid="Select_Presenter"></include>
+		FROM (SELECT 
+			<include refid="Select_Presentation"></include>
+        	, updated_at, link.user_id as presenter_user_id
+			<include refid="Presentations_Table"></include>
+			<include refid="Presentation_Documents_Table"></include>
+			<include refid="Presentation_Users_Link_Table"></include>       
+			WHERE (link.user_id = #{loginUserId} AND stage = 1 ) OR
+			(creator_user_id = #{loginUserId} AND stage =1 )) as p
+		LEFT JOIN (SELECT P.presentation_id, U.user_id, U.name FROM presentation_users_link as P 
+        LEFT JOIN users as U ON P.user_id = U.user_id) as u
+		ON p.presentation_id = u.presentation_id 
+		ORDER BY updated_at DESC;
+	</select>
+
+	<sql id="selectUserSql">
+		SELECT u.name,
+		u.user_id as user_id,
+		d.name as
+		department_name
+		FROM users as u
+		LEFT OUTER JOIN
+		departments as d ON
+		u.department_id = d.department_id
+	</sql>
+
+	<!-- 名前でユーザー検索 -->
+	<select id="selectUserByName" resultMap="PresenterMap">
+		<include refid="selectUserSql"></include>
+		WHERE u.name LIKE CONCAT('%', #{name}, '%')
+	</select>
+
+	<!-- Presnetationを1件insert -->
+	<insert id="insertPresentation">
+		INSERT INTO presentations
+		(title, content,
+		preferred_date, stage, creator_user_id,
+		updater_user_id,
+		version)
+		VALUES
+		(#{title}, #{content}, #{preferredDate},
+		#{stage},
+		#{creatorUserId},
+		#{updaterUserId}, #{version})
+	</insert>
+
+	<!-- presentation_users_linkをinsert -->
+	<insert id="insertPresentationUsersLink">
+		INSERT INTO presentation_users_link
+		(presentation_id, user_id)
+		VALUES
+		<foreach collection="userList" item="user" separator=",">
+			(#{presentationId}, #{user.userId})
+		</foreach>
+	</insert>
+
+	<!-- presentation_users_linkをinsertするためのpresentation_idを取得 -->
+	<select id="selectPresentationId" resultMap="PresentationMap">
+		SELECT
+		presentation_id
+		FROM presentations
+		WHERE creator_user_id =
+		#{loginUserId}
+		ORDER BY updated_at DESC limit 1
+	</select>
+
+	<!-- PresentationDocumentsの新規登録 -->
+	<insert id="insertPresentationDocuments">
+		INSERT INTO presentation_documents
+		(document_path, presentation_id)
+		VALUES
+		<foreach collection="documentList" item="document"
+			separator=",">
+			(#{document.documentPath}, #{presentationId})
+		</foreach>
+	</insert>
+
+	<!-- presentationのアップデート -->
+	<update id="updatePresentation">
+		UPDATE presentations
+		SET title = #{title}, content =
+		#{content}, preferred_date =
+		#{preferredDate},
+		stage = #{stage},
+		updater_user_id = #{updaterUserId},
+		version =
+		#{version}+1
+		WHERE presentation_id = #{presentationId}
+		<!--  AND  version = #{version} -->
+	</update>
+
+	<!-- PresentationDocumentsのアップデート <update id="updatePresentationDocuments"> 
+		UPDATE presentation_documents SET document_path = #{document} WHERE presentation_id 
+		= #{presentationId} </update> -->
+
+	<!-- presentation_users_linkの削除 -->
+	<delete id="deletePresentationUsersLink">
+		DELETE FROM presentation_users_link
+		WHERE
+		presentation_id = #{presentationId}
+	</delete>
+
+	<sql id="deleteDocument">
+		DELETE FROM presentation_documents
+		WHERE
+		presentation_id = #{presentationId}
+	</sql>
+
+	<!-- presentation_documentsの削除 -->
+	<delete id="deletePresentationDocuments">
+		<include refid="deleteDocument"></include>
+	</delete>
+
+	<delete id="deletePresentatinDocumentByName">
+		<include refid="deleteDocument"></include>
+		AND document_path LIKE CONCAT('%', #{fileName}, '%')
+	</delete>
+
+	<!-- 発表詳細ページを表示 -->
+	<select id="showPresentationDetail" resultMap="PresentationMap">
+		SELECT
+		<include refid="Select_Presentation"></include>
+		<include refid="Select_Presenter"></include>
+		<include refid="Select_Presentation_Comments"></include>
+		<include refid="Select_Presentation_Edit_Request_Comments"></include>
+		<include refid="Presentations_Table"></include>
+		<include refid="Presentation_Users_Link_Table"></include>
+		<include refid="Presentation_Documents_Table"></include>
+		LEFT JOIN users as u
+    ON u.user_id = link.user_id
+    LEFT JOIN 
+	(SELECT p.presentation_comment_id, p.comment as presentation_comment, p.creator_user_id as presentation_comment_creator_id
+	, p.stage as presentation_comment_stage, p.presentation_id, u.name as presentation_comment_creator_name 
+	FROM presentation_comments as p LEFT JOIN users as u ON u.user_id = p.creator_user_id WHERE p.stage=0) as pc 
+    ON pc.presentation_id = p.presentation_id 
+    LEFT JOIN 
+	(SELECT e.edit_request_comment_id, e.comment as edit_request_comment, e.created_at as edit_request_comment_created_at,  
+	e.creator_user_id as edit_request_comment_creator_id, e.presentation_id, u.name as edit_request_comment_creator_name
+    FROM edit_request_comments as e LEFT JOIN users as u ON u.user_id = e.creator_user_id) as ec
+    ON ec.presentation_id = p.presentation_id
+    WHERE p.presentation_id = #{presentationId}
+	ORDER BY presentation_comment_id DESC, edit_request_comment_id DESC;
+	</select>
+
+	<!-- 発表詳細画面の発表コメントの投稿 -->
+	<insert id="insertPresentationComment">
+		INSERT INTO presentation_comments(comment, creator_user_id, stage,
+		presentation_id)
+		VALUES(#{presentationComment}, #{presentationCommentCreatorId}, 0,
+		#{presentationCommentPresentationId});
+	</insert>
+
+	<!-- 発表詳細画面の発表コメントを削除 -->
+	<update id="deletePresentationComment">
+		UPDATE presentation_comments SET stage = 9 WHERE presentation_comment_id =
+		#{presentationCommentId};
+	</update>
+
+	<!-- 総いいね数のみの取得 -->
+	<select id="countPresentationFavorite" resultType="Integer">
+		SELECT count(*) FROM presentation_favorites WHERE presentation_id =
+		#{presentationId};
+	</select>
+
+	<!-- 発表詳細画面のいいねListの取得 -->
+	<select id="showPresentationFavorite"
+		resultMap="PresentationFavoriteMap">
+		SELECT presentation_favorite_id, f.user_id as favorite_user_id ,
+		p.presentation_id as presentation_id
+		FROM presentations as p
+		JOIN presentation_favorites as f
+		ON f.presentation_id = p.presentation_id
+		WHERE p.presentation_id = #{presentationId};
+	</select>
+
+	<!-- 発表詳細画面のいいね登録 -->
+	<insert id="insertPresentationFavorite">
+		INSERT INTO presentation_favorites(user_id, presentation_id)
+		VALUES(#{userId}, #{presentationId});
+	</insert>
+
+	<!-- 発表詳細画面のいいね解除 -->
+	<delete id="deletePresentationFavorite">
+		DELETE FROM presentation_favorites WHERE presentation_id = #{presentationId}
+		AND user_id = #{userId};
+	</delete>
+
+</mapper>

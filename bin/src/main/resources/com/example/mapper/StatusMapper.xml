@@ -1,0 +1,536 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.mapper.StatusMapper" >
+  <resultMap id="BaseResultMap" type="com.example.domain.Status" >
+    <id column="status_id" property="statusId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="using_pc" property="usingPc" jdbcType="VARCHAR" />
+    <result column="using_mobile" property="usingMobile" jdbcType="VARCHAR" />
+    <result column="stage" property="stage" jdbcType="CHAR" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updater" property="updater" jdbcType="VARCHAR" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+    <result column="version" property="version" jdbcType="INTEGER" />
+    <result column="user_comment" property="userComment" jdbcType="LONGVARCHAR" />
+    <result column="admin_comment" property="adminComment" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  
+  <!-- HadEngineerSkills,HadBasicSkills,HadPersonalities,EngineerSkills,BasicSkills,Personalitiesの結合に必要なResultMap -->
+  <resultMap id="ConnectSkillResultMap" type="com.example.domain.Status">
+  	<id column="s_status_id" jdbcType="INTEGER" property="statusId" />
+    <result column="s_user_id" jdbcType="INTEGER" property="userId" />
+    <result column="s_using_pc" jdbcType="VARCHAR" property="usingPc" />
+    <result column="s_using_mobile" jdbcType="VARCHAR" property="usingMobile" />
+    <result column="s_stage" jdbcType="CHAR" property="stage" />
+    <result column="s_creator" jdbcType="VARCHAR" property="creator" />
+    <result column="s_created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="s_updater" jdbcType="VARCHAR" property="updater" />
+    <result column="s_updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="s_version" jdbcType="INTEGER" property="version" />
+    <result column="s_user_comment" property="userComment" jdbcType="LONGVARCHAR" />
+    <result column="s_admin_comment" property="adminComment" jdbcType="LONGVARCHAR" />
+    <association property="user" javaType="com.example.domain.User">
+    	<id column="u_user_id" property="userId" jdbcType="INTEGER" />
+    	<result column="u_name" property="name" jdbcType="VARCHAR" />
+     	<result column="u_hired_on" property="hiredOn" jdbcType="DATE" />
+     	<result column="u_department_id" property="departmentId" jdbcType="INTEGER" />
+     	<result column="u_email" property="email" jdbcType="VARCHAR" />
+     	<result column="u_password" property="password" jdbcType="CHAR" />
+     	<result column="u_stage" property="stage" jdbcType="CHAR" />
+     	<result column="u_updated_password_at" property="updatedPasswordAt" jdbcType="DATE" />
+     	<result column="u_creator" property="creator" jdbcType="VARCHAR" />
+     	<result column="u_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+     	<result column="u_updater" property="updater" jdbcType="VARCHAR" />
+     	<result column="u_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+     	<result column="u_version" property="version" jdbcType="INTEGER" />
+    <association property="department" javaType="com.example.domain.Department">
+    	<id column="d_department_id" property="departmentId" jdbcType="INTEGER" />
+   		<result column="d_name" property="name" jdbcType="VARCHAR" />
+    	<result column="d_staff_id" property="staffId" jdbcType="VARCHAR" />
+    	<result column="d_stage" property="stage" jdbcType="CHAR" />
+    	<result column="d_creator" property="creator" jdbcType="VARCHAR" />
+     	<result column="d_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    	<result column="d_updater" property="updater" jdbcType="VARCHAR" />
+    	<result column="d_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+    	<result column="d_version" property="version" jdbcType="INTEGER" />
+    </association>
+    </association>
+    <collection property="hadEngineerSkillList" ofType="com.example.domain.HadEngineerSkill" >
+    	<result column="he_had_engineer_skill_id" jdbcType="INTEGER" property="hadEngineerSkillId" />
+    	<result column="he_status_id" jdbcType="INTEGER" property="statusId" />
+    	<result column="he_engineer_skill_id" jdbcType="INTEGER" property="engineerSkillId" />
+    	<result column="he_score" jdbcType="INTEGER" property="score" />
+    	<association property="engineerSkill" javaType="com.example.domain.EngineerSkill" >
+    		<result column="e_engineer_skill_id" jdbcType="INTEGER" property="engineerSkillId" />
+    		<result column="e_name" jdbcType="VARCHAR" property="name" />
+    		<result column="e_department_id" jdbcType="INTEGER" property="departmentId" />
+    		<result column="e_stage" property="stage" jdbcType="CHAR" />
+		    <result column="e_creator" property="creator" jdbcType="VARCHAR" />
+		    <result column="e_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+		    <result column="e_updater" property="updater" jdbcType="VARCHAR" />
+		    <result column="e_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+		    <result column="e_version" property="version" jdbcType="INTEGER" />
+    	</association>
+    </collection>
+    <collection property="hadBasicSkillList" ofType="com.example.domain.HadBasicSkill" >
+    	<result column="hb_had_basic_skill_id" jdbcType="INTEGER" property="hadBasicSkillId" />
+    	<result column="hb_status_id" jdbcType="INTEGER" property="statusId" />
+    	<result column="hb_basic_skill_id" jdbcType="INTEGER" property="basicSkillId" />
+    	<result column="hb_score" jdbcType="CHAR" property="score" />
+    	<association property="basicSkill" javaType="com.example.domain.BasicSkill" >
+    		<result column="b_basic_skill_id" jdbcType="INTEGER" property="basicSkillId" />
+    		<result column="b_name" jdbcType="VARCHAR" property="name" />
+    		<result column="b_department_id" jdbcType="INTEGER" property="departmentId" />
+    		<result column="b_stage" property="stage" jdbcType="CHAR" />
+		    <result column="b_creator" property="creator" jdbcType="VARCHAR" />
+		    <result column="b_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+		    <result column="b_updater" property="updater" jdbcType="VARCHAR" />
+		    <result column="b_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+		    <result column="b_version" property="version" jdbcType="INTEGER" />
+    	</association>
+    </collection>
+    <collection property="hadPersonalityList" ofType="com.example.domain.HadPersonality" >
+    	<result column="hp_had_personality_id" jdbcType="INTEGER" property="hadPersonalityId" />
+    	<result column="hp_status_id" jdbcType="INTEGER" property="statusId" />
+    	<result column="hp_personality_id" jdbcType="INTEGER" property="personalityId" />
+    	<result column="hp_stage" property="stage" jdbcType="CHAR" />
+    	<association property="personality" javaType="com.example.domain.Personality" >
+    		<result column="p_personality_id" jdbcType="INTEGER" property="personalityId" />
+    		<result column="p_name" jdbcType="VARCHAR" property="name" />
+    		<result column="p_type" jdbcType="CHAR" property="type" />
+    		<result column="p_stage" property="stage" jdbcType="CHAR" />
+		    <result column="p_creator" property="creator" jdbcType="VARCHAR" />
+		    <result column="p_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+		    <result column="p_updater" property="updater" jdbcType="VARCHAR" />
+		    <result column="p_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+		    <result column="p_version" property="version" jdbcType="INTEGER" />
+    	</association>
+    </collection>
+  </resultMap>
+  
+  <resultMap id="ConnectUserResultMap" type="com.example.domain.Status" >
+     <id column="s_status_id" property="statusId" jdbcType="INTEGER" />
+     <result column="s_user_id" property="userId" jdbcType="INTEGER" />
+     <result column="s_using_pc" property="usingPc" jdbcType="VARCHAR" />
+     <result column="s_using_mobile" property="usingMobile" jdbcType="VARCHAR" />
+     <result column="s_stage" property="stage" jdbcType="CHAR" />
+     <result column="s_creator" property="creator" jdbcType="VARCHAR" />
+     <result column="s_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+     <result column="s_updater" property="updater" jdbcType="VARCHAR" />
+     <result column="s_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+     <result column="s_version" property="version" jdbcType="INTEGER" />
+     <result column="s_user_comment" property="userComment" jdbcType="LONGVARCHAR" />
+     <result column="s_admin_comment" property="adminComment" jdbcType="LONGVARCHAR" />
+   <association property="user" javaType="com.example.domain.User">
+     <id column="u_user_id" property="userId" jdbcType="INTEGER" />
+     <result column="u_name" property="name" jdbcType="VARCHAR" />
+     <result column="u_hired_on" property="hiredOn" jdbcType="DATE" />
+     <result column="u_department_id" property="departmentId" jdbcType="INTEGER" />
+     <result column="u_email" property="email" jdbcType="VARCHAR" />
+     <result column="u_password" property="password" jdbcType="CHAR" />
+     <result column="u_stage" property="stage" jdbcType="CHAR" />
+     <result column="u_updated_password_at" property="updatedPasswordAt" jdbcType="DATE" />
+     <result column="u_creator" property="creator" jdbcType="VARCHAR" />
+     <result column="u_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+     <result column="u_updater" property="updater" jdbcType="VARCHAR" />
+     <result column="u_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+     <result column="u_version" property="version" jdbcType="INTEGER" />
+     <association property="department" javaType="com.example.domain.Department">
+    	<id column="d_department_id" property="departmentId" jdbcType="INTEGER" />
+   		<result column="d_name" property="name" jdbcType="VARCHAR" />
+    	<result column="d_staff_id" property="staffId" jdbcType="VARCHAR" />
+    	<result column="d_stage" property="stage" jdbcType="CHAR" />
+    	<result column="d_creator" property="creator" jdbcType="VARCHAR" />
+     	<result column="d_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    	<result column="d_updater" property="updater" jdbcType="VARCHAR" />
+    	<result column="d_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+    	<result column="d_version" property="version" jdbcType="INTEGER" />
+    </association>
+  </association>
+  </resultMap>
+  
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    status_id, user_id, using_pc, using_mobile, stage, creator, created_at, updater, updated_at, version, user_comment, admin_comment
+  </sql>
+  <sql id="Status_Column_List">
+    s.status_id as s_status_id, s.user_id as s_user_id, s.using_pc as s_using_pc, s.using_mobile as s_using_mobile, s.stage as s_stage, s.creator as s_creator, s.created_at as s_created_at, s.updater as s_updater, 
+    s.updated_at as s_updated_at, s.version as s_version, s.user_comment as s_user_comment, s.admin_comment as s_admin_comment
+  </sql>
+  <sql id="Had_Engineer_Skills_Column_List">
+  	,he.had_engineer_skill_id as he_had_engineer_skill_id, he.status_id as he_status_id, he.engineer_skill_id as he_engineer_skill_id, he.score as he_score
+  </sql>
+  <sql id="Had_Basic_Skills_Column_List">
+  	,hb.had_basic_skill_id as hb_had_basic_skill_id, hb.status_id as hb_status_id, hb.basic_skill_id as hb_basic_skill_id, hb.score as hb_score
+  </sql>
+  <sql id="Had_Personalities_Column_List">
+  	,hp.had_personality_id as hp_had_personality_id, hp.status_id as hp_status_id, hp.personality_id as hp_personality_id, hp.stage as hp_stage
+  </sql>
+  <sql id="Engineer_Skills_Column_List">
+  	,e.engineer_skill_id as e_engineer_skill_id, e.name as e_name, e.department_id as e_department_id, e.stage as e_stage,
+  	e.creator as e_creator, e.created_at e_created_at, e.updater as e_updater, e.updated_at as e_updated_at, e.version as e_version
+  </sql>
+  <sql id="Basic_Skills_Column_List">
+  	,b.basic_skill_id as b_basic_skill_id, b.name as b_name, b.department_id as b_department_id, b.stage as b_stage,
+  	b.creator as b_creator, b.created_at b_created_at, b.updater as b_updater, b.updated_at as b_updated_at, b.version as b_version
+  </sql>
+  <sql id="Personalities_Column_List">
+  	,p.personality_id as p_personality_id, p.name as p_name, p.type as p_type, p.stage as p_stage,
+  	p.creator as p_creator, p.created_at p_created_at, p.updater as p_updater, p.updated_at as p_updated_at, p.version as p_version
+  </sql>
+  <sql id="Users_Column_List">
+  	,u.user_id as u_user_id, u.name as u_name, u.hired_on as u_hired_on, u.department_id as u_department_id,
+  	u.email as u_email,u.password as u_password,u.stage as u_stage,u.creator as u_creator, u.created_at u_created_at, u.updater as u_updater, u.updated_at as u_updated_at, u.version as u_version
+  </sql>
+  <sql id="Departments_Column_List">
+  	,d.department_id as d_department_id, d.name as d_name, d.staff_id as d_staff_id ,d.stage as d_stage,d.creator as d_creator, d.created_at d_created_at, d.updater as d_updater, d.updated_at as d_updated_at, d.version as d_version
+  </sql>
+  <sql id="Statuses_Table">
+  	from statuses s
+  </sql>
+  <sql id="Had_Engineer_Skills_Table">
+  	left outer join had_engineer_skills he on s.status_id = he.status_id
+  </sql>
+  <sql id="Engineer_Skills_Table">
+  	Inner join engineer_skills e on he.engineer_skill_id = e.engineer_skill_id
+  </sql>
+  <sql id="Had_Basic_Skills_Table">
+  	left outer join had_basic_skills hb on s.status_id = hb.status_id
+  </sql>
+  <sql id="Basic_Skills_Table">
+  	inner join basic_skills b on hb.basic_skill_id = b.basic_skill_id
+  </sql>
+  <sql id="Had_Personalities_Table">
+  	left outer join had_personalities hp on s.status_id = hp.status_id
+  </sql>
+  <sql id="Personalities_Table">
+  	inner join personalities p on hp.personality_id = p.personality_id
+  </sql>
+  <sql id="Users_Table">
+  	left outer join users u on s.user_id = u.user_id
+  </sql>
+  <sql id="Departments_Table">
+  	inner join departments d on u.department_id = d.department_id
+  </sql>
+  <sql id="Blob_Column_List">
+    ,s.user_comment as s_user_comment, s.admin_comment as s_admin_comment
+  </sql>
+  <!-- テーブル結合(Status, HadBasicSkills, HadEngineerSkills, HadPersonalities, Basic, Engineer, Personality)したselect文(stage2つ) -->
+  <select id="selectStatusAndSkillsByUserIdAndStages" resultMap="ConnectSkillResultMap" parameterType="com.example.domain.Status">
+  	select
+  	<include refid="Status_Column_List" />
+  	<include refid="Users_Column_List" />
+  	<include refid="Departments_Column_List" />
+    <include refid="Had_Engineer_Skills_Column_List" />
+    <include refid="Had_Basic_Skills_Column_List" />
+    <include refid="Had_Personalities_Column_List" />
+    <include refid="Engineer_Skills_Column_List" />
+    <include refid="Basic_Skills_Column_List" />
+    <include refid="Personalities_Column_List" />
+    <include refid="Statuses_Table" />
+    <include refid="Users_Table" />
+    <include refid="Departments_Table" />
+    <include refid="Had_Engineer_Skills_Table" />
+    <include refid="Had_Basic_Skills_Table" />
+    <include refid="Had_Personalities_Table" />
+    <include refid="Engineer_Skills_Table" />
+    <include refid="Basic_Skills_Table" />
+    <include refid="Personalities_Table" />
+    where s.user_id = #{userId,jdbcType=INTEGER} and (s.stage = #{stage1,jdbcType=CHAR} or s.stage = #{stage2,jdbcType=CHAR}) and hp.stage = '0'
+    order by s.version desc, b.basic_skill_id, e.engineer_skill_id, p.personality_id
+  </select>
+  <!-- テーブル結合(Status, HadBasicSkills, HadEngineerSkills, Basic, Engineer)したselect文(stage2つ) -->
+  <select id="selectStatusAndSkillsWithoutPersonalitiesByUserIdAndStages" resultMap="ConnectSkillResultMap" parameterType="com.example.domain.Status">
+  	select
+  	<include refid="Status_Column_List" />
+  	<include refid="Users_Column_List" />
+  	<include refid="Departments_Column_List" />
+    <include refid="Had_Engineer_Skills_Column_List" />
+    <include refid="Had_Basic_Skills_Column_List" />
+    <include refid="Engineer_Skills_Column_List" />
+    <include refid="Basic_Skills_Column_List" />
+    <include refid="Statuses_Table" />
+    <include refid="Users_Table" />
+    <include refid="Departments_Table" />
+    <include refid="Had_Engineer_Skills_Table" />
+    <include refid="Had_Basic_Skills_Table" />
+    <include refid="Engineer_Skills_Table" />
+    <include refid="Basic_Skills_Table" />
+    where s.user_id = #{userId,jdbcType=INTEGER} and (s.stage = #{stage1,jdbcType=CHAR} or s.stage = #{stage2,jdbcType=CHAR})
+    order by s.version desc, b.basic_skill_id, e.engineer_skill_id
+  </select>
+  <!-- statusIdから複数テーブルを結合した結果の検索を行う -->
+  <select id="selectStatusAndSkillsByPrimaryKey" resultMap="ConnectSkillResultMap" parameterType="com.example.domain.Status">
+  	select
+  	<include refid="Status_Column_List" />
+  	<include refid="Users_Column_List" />
+  	<include refid="Departments_Column_List" />
+    <include refid="Had_Engineer_Skills_Column_List" />
+    <include refid="Had_Basic_Skills_Column_List" />
+    <include refid="Had_Personalities_Column_List" />
+    <include refid="Engineer_Skills_Column_List" />
+    <include refid="Basic_Skills_Column_List" />
+    <include refid="Personalities_Column_List" />
+    <include refid="Statuses_Table" />
+    <include refid="Users_Table" />
+    <include refid="Departments_Table" />
+    <include refid="Had_Engineer_Skills_Table" />
+    <include refid="Had_Basic_Skills_Table" />
+    <include refid="Had_Personalities_Table" />
+    <include refid="Engineer_Skills_Table" />
+    <include refid="Basic_Skills_Table" />
+    <include refid="Personalities_Table" />
+    where s.status_id = #{statusId,jdbcType=INTEGER}  
+    order by s.version desc, b.basic_skill_id, e.engineer_skill_id, p.personality_id
+  </select>
+   <!-- テーブル結合したselect(statues,users,departments -->
+  <select id="selectByUserIdAndStageToGetDevice" resultMap="ConnectUserResultMap" parameterType="com.example.domain.Status">
+  	select
+  	<include refid="Status_Column_List" />
+    <include refid="Users_Column_List" />
+    <include refid="Departments_Column_List" />
+    <include refid="Statuses_Table" />
+    <include refid="Users_Table" />
+    <include refid="Departments_Table" />
+    where s.user_id = #{userId,jdbcType=INTEGER} and s.stage = '0'
+  </select>
+  <select id="selectByStageAndApplicant" resultMap="ConnectUserResultMap">
+  	select 
+  	<include refid="Status_Column_List" />
+    <include refid="Users_Column_List" />
+    <include refid="Departments_Column_List" />
+    <include refid="Statuses_Table" />
+    <include refid="Users_Table" />
+    <include refid="Departments_Table" />
+	where s.stage = #{stage} and s.creator like CONCAT('%',#{applicant},'%')
+    order by s.status_id
+    limit 20 offset #{startNumber}
+  </select>
+  <select id="selectByStageAndUserId" resultMap="ConnectUserResultMap">
+  	select 
+  	<include refid="Status_Column_List" />
+    <include refid="Users_Column_List" />
+    <include refid="Departments_Column_List" />
+    <include refid="Statuses_Table" />
+    <include refid="Users_Table" />
+    <include refid="Departments_Table" />
+	where s.stage = #{stage} and u.user_id = #{userId}
+    order by s.status_id
+    limit 20 offset #{startNumber}
+  </select>
+  
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.example.example.StatusExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from statuses 
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause} 
+    </if>
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from statuses
+    where status_id = #{statusId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from statuses
+    where status_id = #{statusId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.example.example.StatusExample" > 
+	delete from statuses
+	<if test="_parameter != null" > 
+		<include refid="Example_Where_Clause" />
+	</if>
+  </delete>
+  <!-- Status情報の登録する際に使用 -->
+  <insert id="insertSelective" parameterType="com.example.domain.Status" >
+    insert into statuses
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="statusId != null" >
+        status_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="usingPc != null" >
+        using_pc,
+      </if>
+      <if test="usingMobile != null" >
+        using_mobile,
+      </if>
+      <if test="stage != null" >
+        stage,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="createdAt != null" >
+        created_at,
+      </if>
+      <if test="updater != null" >
+        updater,
+      </if>
+      <if test="updatedAt != null" >
+        updated_at,
+      </if>
+      <if test="version != null" >
+        version,
+      </if>
+      <if test="userComment != null" >
+        user_comment,
+      </if>
+      <if test="adminComment != null" >
+        admin_comment,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="statusId != null" >
+        #{statusId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="usingPc != null" >
+        #{usingPc,jdbcType=VARCHAR},
+      </if>
+      <if test="usingMobile != null" >
+        #{usingMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="stage != null" >
+        #{stage,jdbcType=CHAR},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null" >
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updater != null" >
+        #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedAt != null" >
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null" >
+        #{version,jdbcType=INTEGER},
+      </if>
+      <if test="userComment != null" >
+        #{userComment,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="adminComment != null" >
+        #{adminComment,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.example.example.StatusExample" resultType="java.lang.Integer" >
+    select count(*) from statuses
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.domain.Status" >
+    update statuses
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="usingPc != null" >
+        using_pc = #{usingPc,jdbcType=VARCHAR},
+      </if>
+      <if test="usingMobile != null" >
+        using_mobile = #{usingMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="stage != null" >
+        stage = #{stage,jdbcType=CHAR},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null" >
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updater != null" >
+        updater = #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedAt != null" >
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null" >
+        version = #{version,jdbcType=INTEGER},
+      </if>
+      <if test="userComment != null" >
+        user_comment = #{userComment,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="adminComment != null" >
+        admin_comment = #{adminComment,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where status_id = #{statusId,jdbcType=INTEGER}
+  </update>
+</mapper>

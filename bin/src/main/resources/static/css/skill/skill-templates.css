@@ -1,0 +1,39 @@
+.template-form-box {
+	position: relative;
+	margin: auto;
+	padding: 0.2rem 1.4rem;
+	border: #007bff 2px solid;
+}
+.template-form-box select {
+	cursor: pointer;
+	font-size: 1.4rem;
+	padding: 10px;
+	border: #007bff 2px solid;
+}
+.skill-value{
+	border: #FF6633 2px solid;
+}
+.contents input[type="number"] {
+	padding: 0.6rem;
+	width: 5rem;
+	border: 1px solid #999999;
+	border:#007bff 2px solid;
+	border-radius: 4px;
+}
+.template-ability {
+	position: relative;
+	display: inline-block;
+	margin: 4px 10px;
+	padding: 2px 0.33rem;
+	width: 12rem;
+	font-size: 1.2rem;
+	text-align: center;
+	line-height: 1.8;
+	letter-spacing: 0.14rem;
+	border: rgba(23, 162, 184, 0.45) 2px solid;
+	background: #eaffff;
+}
+.container {
+    max-width: 100%;
+}
+	

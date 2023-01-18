@@ -1,0 +1,133 @@
+.container {
+	max-width:100%;
+} 
+
+div.col {
+	width: 100%;
+	margin-left: 1%;
+}
+
+.usingHistory{
+	width:8rem;
+}
+
+h1{
+    margin-right:2%;		
+}
+h5{
+    margin-right:2%;	
+}
+
+td.text-center{
+	padding-right:0;
+	padding-left:8%;
+}
+
+tr {
+	width: 1000px;
+}
+
+#userInfo {
+	table-layout: fixed;
+}
+.userInfo {
+	table-layout: fixed;
+	width:30%;
+}
+
+th {
+	text-align: center;
+	width: 700px;
+	background-color:#EEEEEE;
+}
+
+td {
+	padding:1% 0px 1% 1%;
+}
+
+.osSkill{
+	width:49.0%;
+}
+
+.inputDetail {
+	text-align: left;
+}
+
+.skillname {
+	text-align: right;
+	width: 23%;
+}
+
+input {
+	padding: 0.2rem;
+	margin-left:0.4rem;
+	margin-right:0.2rem;
+	width: 5rem;
+	border: #17a2b8 2px solid;
+	border-radius: 4px;
+}
+
+.rowbox {
+	float: left;
+	text-align: center;
+	width: 33%;
+}
+
+#specialAbility {
+	padding: 0 10% 0 10%;
+}
+
+.sample {
+	border: 2px #AAAAAA solid;
+	margin: 10px;
+	border-collapse: separate;
+	　　　　　border-spacing: 3px;
+	border-radius: 5px;
+	text-align: center;
+	background-color: #EEEEEE;
+	color: #AAAAAA;
+	width: 100px;
+	margin: 3px;
+}
+
+.form-box2 {
+	position: relative;
+	margin: 0% 20% 0% 20%;
+	padding: 2rem 1.4rem;
+	border: #17a2b8 2px solid;
+}
+
+label {
+	font-weight: bold;
+}
+
+.form-box {
+	position: relative;
+	margin: 2rem 0.2rem;
+	padding: 0.2rem 1.4rem;
+	border: #17a2b8 2px solid;
+}
+
+.contents {
+	margin: 1rem;
+}
+
+.contents label {
+	display: inline-block;
+	padding: 0.4rem;
+	width: 10rem;
+	text-align: right;
+	font-weight: bold;
+}
+
+.btn {
+	font-size: 1.4rem;
+	font-weight: bold;
+	padding: 0.6rem 1.6rem;
+	border-radius: 8px;
+}
+
+.btn-blue {
+	color: #ffffff;
+	background: #1669CD;
+}

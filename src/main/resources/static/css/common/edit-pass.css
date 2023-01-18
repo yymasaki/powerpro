@@ -1,0 +1,72 @@
+@charset "UTF-8";
+html {
+	font-size: 12px;
+}
+
+.container{
+	max-width: 100%;	
+	margin: 1rem;
+}
+
+#valid-password{
+	font-weight: bold;
+	font: 2rem;
+	color: red;
+	text-align: center;
+	margin-bottom: 1rem;
+}
+
+.edit-pass-form {
+	padding: 3rem 1rem;
+	font-size: 13px;
+	border-radius: 10px;
+	border: #17a2b8 2px solid;
+	margin: 0 auto 20px auto;
+}
+
+.contents label {
+	text-align: right;
+}
+
+.contents input[type="password"], .contents input[type="text"] {
+    padding: 0.6rem;
+    border: 1px solid #999999;
+    border-radius: 4px;
+}
+
+.field-icon{
+		display: inline-block;
+		margin-left: 5px;
+		font-size: 12px
+}
+
+@media only screen and (min-width: 480px) {
+	.edit-pass-form {
+		width: 50%;	
+	}
+	.contents label {
+		padding: 0.4rem;
+		width: 15rem;
+		display: inline-block;
+	}
+	.contents input[type="password"], .contents input[type="text"] {
+		width: 50%;
+	}
+}
+
+@media only screen and (max-width: 479px) {	
+	.edit-pass-form {
+		width: 95%;	
+	}
+	.contents input[type="password"], .contents input[type="text"] {
+		width: 90%;
+	}
+}
+
+.btn {
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 0.6rem 1.6rem;
+    border-radius: 8px;
+}
+

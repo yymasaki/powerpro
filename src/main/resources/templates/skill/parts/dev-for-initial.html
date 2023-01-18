@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>パワフルプロエンジニア</title>
+</head>
+<body>
+<table>
+	<tbody class="devBody" th:fragment="first">
+		<tr>
+			<td rowspan="14" class="cell-white w-3">
+				<input type="hidden" class="devExperienceId" name="devExperienceList[0].devExperienceId">
+				<div class="s1 dev-count">1</div>
+				<button type="button" class="delete-dev">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<input type="hidden" class="devCount" name="devExperienceList[0].devCount" value="1">
+			</td>
+			<td class="cell-gray w-10">
+				<div class="s1">開始年月</div>
+			</td>
+			<td class="cell-white w-14">
+				<input type="month" class="startedOn" name="devExperienceList[0].startedOn">
+			</td>
+			<td rowspan="2" class="cell-gray w-8">
+				<div class="s1">プロジェクト</div>
+			</td>
+			<td rowspan="2" class="cell-white w-21">
+				<input type="text" class="projectName" name="devExperienceList[0].projectName"
+					placeholder="在庫管理システムの作成">
+			</td>
+			<td rowspan="2" class="cell-gray w-8">
+				<div class="s1">担当役割</div>
+			</td>
+			<td rowspan="2" class="cell-white w-14">
+				<input type="text" class="role" name="devExperienceList[0].role" placeholder="PG">
+			</td>
+			<td class="cell-gray w-8">
+				<div class="s1">チーム人数</div>
+			</td>
+			<td class="cell-white w-14">
+				<input type="number" class="teamMembers" name="devExperienceList[0].teamMembers" placeholder="2" min="1">
+			</td>
+		</tr>
+		<tr>
+			<td class="cell-gray">
+				<div class="s1">終了年月</div>
+			</td>
+			<td class="cell-white">
+				<input type="month" class="finishedOn" name="devExperienceList[0].finishedOn">
+			</td>
+			<td class="cell-gray">
+				<div class="s1">PJ全体人数</div>
+			</td>
+			<td class="cell-white">
+				<input type="number" class="projectMembers" name="devExperienceList[0].projectMembers" placeholder="4" min="1">
+			</td>
+		</tr>
+		<tr>
+			<td class="cell-gray">
+				<div class="s1">動作環境(OS)&ensp;
+					<span tabindex="0" data-html="true" data-toggle="popover" 
+						data-trigger="hover" data-placement="top" data-container="body"
+						data-content="ディストリビューションや<br>バージョンまで入力してください">
+						<svg width="1em" height="1em" viewBox="0 0 16 16" 
+							class="bi bi-exclamation-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+							<path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+							<path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+						</svg>
+					</span>
+				</div>
+			</td>
+			<td colspan="3" class="cell-white cell-left">
+				<div>
+					<input type="hidden" class="OS dev-OS" name="usedTechnicalSkillList[0][0]">
+				</div>
+			</td>
+			<td class="cell-gray">
+				<div class="s1">担当工程</div>
+			</td>
+			<td colspan="3" class="cell-white cell-left">
+				<div>
+					<input type="hidden" class="process dev-process" name="usedTechnicalSkillList[0][6]">
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="cell-gray">
+				<div class="s1">言語</div>
+			</td>
+			<td colspan="7" class="cell-white cell-left">
+				<div>
+					<input type="hidden" class="language dev-language" name="usedTechnicalSkillList[0][1]">
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="cell-gray">
+				<div class="s1">フレームワーク</div>
+			</td>
+			<td colspan="7" class="cell-white cell-left">
+				<div>
+					<input type="hidden" class="framework dev-framework" name="usedTechnicalSkillList[0][2]">
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="cell-gray">
+				<div class="s1">ライブラリ</div>
+			</td>
+			<td colspan="7" class="cell-white cell-left">
+				<div>
+					<input type="hidden" class="library dev-library" name="usedTechnicalSkillList[0][3]">
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="cell-gray">
+				<div class="s1">ミドルウェア</div>
+			</td>
+			<td colspan="7" class="cell-white cell-left">
+				<div>
+					<input type="hidden" class="middleware dev-middleware" name="usedTechnicalSkillList[0][4]">
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="cell-gray">
+				<div class="s1">ツール·その他</div>
+			</td>
+			<td colspan="7" class="cell-white cell-left">
+				<div>
+					<input type="hidden" class="tool dev-tool" name="usedTechnicalSkillList[0][5]">
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="8" class="cell-gray cell-left">
+				<div class="pl-3">プロジェクト詳細</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="8" class="cell-white cell-left">
+				<div>
+					<textarea class="projectDetails" name="devExperienceList[0].projectDetails" rows="5"
+						placeholder="在庫管理システムの作成"></textarea>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="8" class="cell-gray cell-left">
+				<div class="pl-3">担当業務</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="8" class="cell-white cell-left">
+				<div>
+					<textarea class="tasks" name="devExperienceList[0].tasks" rows="5"
+						placeholder="約140万件の生データをテーブルに挿入"></textarea>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="8" class="cell-gray cell-left">
+				<div class="pl-3">身に付いた事</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="8" class="cell-white cell-left">
+				<div>
+					<textarea class="acquired" name="devExperienceList[0].acquired" rows="5"
+						placeholder="外部プラグインを用いた機能実装"></textarea>
+				</div>
+			</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>

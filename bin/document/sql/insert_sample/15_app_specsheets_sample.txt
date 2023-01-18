@@ -1,0 +1,22 @@
+-- app_specsheetsテーブル
+INSERT INTO app_specsheets (user_id,employee_id,generation,gender,nearest_station,start_business_date,
+engineer_period,se_period,pg_period,it_period,appeal,effort,certification,pre_job,
+stage,creator, created_at, updater,updated_at,version)
+VALUES 
+(1,9999,'20代後半','M','新宿駅','要相談',
+3,0,3,3,'アピール','学習','資格','前職経験',
+'0','テスト太郎','2020-05-13 12:00:00.000000','テスト太郎','2020-05-13 12:00:00.000000',1);
+
+-- 申請トップ画面動作確認用にデータ増量 ver
+INSERT INTO app_specsheets (user_id,employee_id,generation,gender,nearest_station,start_business_date,
+engineer_period,se_period,pg_period,it_period,appeal,effort,certification,pre_job,
+stage,creator, created_at, updater,updated_at,version)
+VALUES 
+(2,9999,'20代前半','F','小竹向原駅','要相談',
+3,0,3,3,'アピール','学習','資格','前職経験',
+'2','テスト太郎','2020-05-13 12:00:00.000000','テスト太郎','2020-05-13 12:00:00.000000',1),
+(3,9999,'20代前半','M','新宿駅','要相談',
+3,0,3,3,'アピール','学習','資格','前職経験',
+'3','テスト太郎','2020-05-13 12:00:00.000000','テスト太郎','2020-05-13 12:00:00.000000',1);
+
+SELECT * FROM app_specsheets;

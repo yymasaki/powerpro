@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.mapper.TemplateBasicSkillMapper" >
+  <resultMap id="BaseResultMap" type="com.example.domain.TemplateBasicSkill" >
+    <id column="template_basic_skill_id" property="templateBasicSkillId" jdbcType="INTEGER" />
+    <result column="template_id" property="templateId" jdbcType="INTEGER" />
+    <result column="basic_skill_id" property="basicSkillId" jdbcType="INTEGER" />
+    <result column="score" property="score" jdbcType="CHAR" />
+  </resultMap>
+  
+  <resultMap id="TemplateBasicSkillResultMap" type="com.example.domain.TemplateBasicSkill" >
+    <id column="tb_template_basic_skill_id" property="templateBasicSkillId" jdbcType="INTEGER" />
+    <result column="tb_template_id" property="templateId" jdbcType="INTEGER" />
+    <result column="tb_basic_skill_id" property="basicSkillId" jdbcType="INTEGER" />
+    <result column="tb_score" property="score" jdbcType="CHAR" />
+    <association property="basicSkill" javaType="com.example.domain.BasicSkill">
+  		<id property="basicSkillId" column="b_basic_skill_id"/>
+  		<result property="name" column="b_name" />
+  		<result property="departmentId" column="b_department_id" />
+  		<result property="stage" column="b_stage" />
+  		<result property="creator" column="b_creator" />
+  		<result property="createdAt" column="b_created_at" />
+  		<result property="updater" column="b_updater" />
+  		<result property="updatedAt" column="b_updated_at" />
+  		<result property="version" column="b_version" />
+    </association>
+  </resultMap>  
+  
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    tb.template_basic_skill_id AS tb_template_basic_skill_id, tb.template_id AS tb_template_id,
+    tb.basic_skill_id AS tb_basic_skill_id, tb.score AS tb_score
+  </sql>
+  <sql id="Basic_Skills_Column_List">
+	b.basic_skill_id AS b_basic_skill_id, b.name AS b_name, b.department_id AS b_department_id,
+	b.stage AS b_stage, b.creator AS b_creator, b.created_at AS b_created_at,
+	b.updater AS b_updater, b.updated_at AS b_updated_at, b.version AS b_version
+  </sql>  
+  <select id="selectByExample" resultMap="TemplateBasicSkillResultMap" parameterType="com.example.example.TemplateBasicSkillExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />,
+    <include refid="Basic_Skills_Column_List"/>
+    from template_basic_skills tb
+    inner join basic_skills b on tb.basic_skill_id = b.basic_skill_id
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from template_basic_skills
+    where template_basic_skill_id = #{templateBasicSkillId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from template_basic_skills
+    where template_basic_skill_id = #{templateBasicSkillId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.example.example.TemplateBasicSkillExample" >
+    delete from template_basic_skills
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.example.domain.TemplateBasicSkill" >
+    insert into template_basic_skills (template_basic_skill_id, template_id, 
+      basic_skill_id, score)
+    values (#{templateBasicSkillId,jdbcType=INTEGER}, #{templateId,jdbcType=INTEGER}, 
+      #{basicSkillId,jdbcType=INTEGER}, #{score,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.domain.TemplateBasicSkill" >
+    insert into template_basic_skills
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="templateBasicSkillId != null" >
+        template_basic_skill_id,
+      </if>
+      <if test="templateId != null" >
+        template_id,
+      </if>
+      <if test="basicSkillId != null" >
+        basic_skill_id,
+      </if>
+      <if test="score != null" >
+        score,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="templateBasicSkillId != null" >
+        #{templateBasicSkillId,jdbcType=INTEGER},
+      </if>
+      <if test="templateId != null" >
+        #{templateId,jdbcType=INTEGER},
+      </if>
+      <if test="basicSkillId != null" >
+        #{basicSkillId,jdbcType=INTEGER},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.example.example.TemplateBasicSkillExample" resultType="java.lang.Integer" >
+    select count(*) from template_basic_skills
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update template_basic_skills
+    <set >
+      <if test="record.templateBasicSkillId != null" >
+        template_basic_skill_id = #{record.templateBasicSkillId,jdbcType=INTEGER},
+      </if>
+      <if test="record.templateId != null" >
+        template_id = #{record.templateId,jdbcType=INTEGER},
+      </if>
+      <if test="record.basicSkillId != null" >
+        basic_skill_id = #{record.basicSkillId,jdbcType=INTEGER},
+      </if>
+      <if test="record.score != null" >
+        score = #{record.score,jdbcType=CHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update template_basic_skills
+    set template_basic_skill_id = #{record.templateBasicSkillId,jdbcType=INTEGER},
+      template_id = #{record.templateId,jdbcType=INTEGER},
+      basic_skill_id = #{record.basicSkillId,jdbcType=INTEGER},
+      score = #{record.score,jdbcType=CHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.domain.TemplateBasicSkill" >
+    update template_basic_skills
+    <set >
+      <if test="templateId != null" >
+        template_id = #{templateId,jdbcType=INTEGER},
+      </if>
+      <if test="basicSkillId != null" >
+        basic_skill_id = #{basicSkillId,jdbcType=INTEGER},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=CHAR},
+      </if>
+    </set>
+    where template_basic_skill_id = #{templateBasicSkillId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.domain.TemplateBasicSkill" >
+    update template_basic_skills
+    set template_id = #{templateId,jdbcType=INTEGER},
+      basic_skill_id = #{basicSkillId,jdbcType=INTEGER},
+      score = #{score,jdbcType=CHAR}
+    where template_basic_skill_id = #{templateBasicSkillId,jdbcType=INTEGER}
+  </update>
+</mapper>

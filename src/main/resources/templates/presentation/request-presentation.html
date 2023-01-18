@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>パワフルプロエンジニア</title>
+    <link rel="shortcut icon" href="../static/favicon.ico" th:href="@{/favicon.ico}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+
+    <link rel="stylesheet" href="../../static/css/nbase.css" th:href="@{/css/nbase.css}">
+    <link rel="stylesheet" href="../../static/css/presentation/request-presentation.css"
+        th:href="@{/css/presentation/request-presentation.css}">
+    <link rel="stylesheet" href="../static/css/header.css" th:href="@{/css/header.css}">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <script type="text/javascript" src="../../static/js/lib/jquery-3.3.1.min.js"
+        th:src="@{/js/lib/jquery-3.3.1.min.js}"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script th:src="@{/js/presentation/request-presentation.js}"></script>
+</head>
+
+<body>
+    <!-- header start -->
+    <nav th:replace="header::menu">
+    </nav>
+    <!-- header end -->
+    <!--アラートバー  -->
+    <div class="alert alert-warning alert-dismissible fade show" role="alert" id="flash" th:if="${message}">
+        <div class="text-center" th:text="${message}" style="white-space:pre-wrap"></div>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="flash" th:if="${failMessage}">
+        <div class="text-center" th:text="${failMessage}" style="white-space:pre-wrap"></div>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <!-- アラートバー終了 -->
+    <div class="container m-auto">
+        <div class="text-center">
+            <h1 class="title_text">応募一覧</h1>
+        </div>
+        <a href="presentation.html" th:href="@{/presentation}">
+            <div class="text-center">トップに戻る</div>
+        </a><br>
+        <div class="col">
+            <form method="GET" th:action="@{/request/presentation}" th:object="${searchRequestPresentationForm}">
+                <div class="apply-search-form" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_SALES')">
+                    <br>
+                    <div class="contents">
+                        <label class="ml-5" for="stage">申請状況</label>
+                        <select class="ml-3" name="stage" th:field="*{stage}">
+                            <option selected value="">ステータスを選択</option>
+                            <option value="2">申請中(未承認)</option>
+                            <option value="3">差し戻し</option>
+                            <option value="5">否認</option>
+                            <option value="4">仮承認(発表日未定)</option>
+                            <option value="0">承認</option>
+                        </select>
+                    </div>
+                    <div class="contents">
+                        <label class="ml-5" for="department">所属区分</label>
+                        <select class="ml-3" name="departmentId" id="department" th:field="*{departmentId}">
+                            <option selected value="">所属区分を選択</option>
+                            <option value="1">Web</option>
+                            <option value="2">CL</option>
+                            <option value="3">ML</option>
+                            <!-- <option value="6">QA</option>
+                            <option value="7">FR</option> -->
+                        </select>
+                    </div>
+                    <div class="contents">
+                        <label for="name" class="ml-5">名前</label>
+                        <input class="ml-3" type="text" id="name" name="name" placeholder="テスト　太郎" th:field="*{name}">
+                    </div>
+                    <div class="contents">
+                        <label for="presentation-date" class="ml-5">発表日</label>
+                        <input class="ml-3" type="date" id="presentation-date" name="presentationDate"
+                            th:field="*{presentationDate}">
+                    </div>
+
+                    <!--stageの数次第で不要-->
+                    <!-- <div class="contents">
+                        <label for="undecided" class="ml-5">発表日未定</label>
+                        <input class="ml-3" type="checkbox" id="undecided">
+                    </div> -->
+                    <button class="btn btn-outline-primary btn-block">検索</button>
+                </div>
+
+                <!-- エンジニア用 -->
+                <div class="apply-search-form" sec:authorize="hasAnyRole('ROLE_WEB','ROLE_CL','ROLE_ML')">
+                    <br>
+                    <div class="contents">
+                        <label class="ml-5" for="stage">申請状況</label>
+                        <select class="ml-3" name="stage" th:field="*{stage}">
+                            <option selected value="">ステータスを選択</option>
+                            <option value="2">申請中(未承認)</option>
+                            <option value="3">差し戻し</option>
+                            <option value="5">否認</option>
+                            <option value="4">仮承認(発表日未定)</option>
+                            <option value="0">承認</option>
+                        </select>
+                        <button class="btn btn-outline-primary btn-block">検索</button>
+                    </div>
+                </div>
+            </form>
+            <!--未承認数など、必要であれば表示させる。-->
+            <!-- <span id="unapproved"><label>未承認数:&nbsp;</label>
+			<span id="non-approval">〇〇</span></span>
+			<span id="denied"><label>否認数:&nbsp;</label><span th:text="${searchCount}">〇〇</span></span>
+			<span id="approved"><label>承認数:&nbsp;</label><span th:text="${searchCount}">〇〇</span></span> -->
+
+            <!--paging-->
+            <div class="paging">
+                &nbsp;&nbsp;<span th:text="${noDataMessage}" style="color:red"></span>
+                <label>現在のページ:<span th:text="'現在のページ数: ' + ${pageNumber} + '/' + ${maxPageNumber}">1/1</span></label>
+            </div>
+            <div class="presentation-info" th:each="presentation : ${presentationList}">
+                <div class="main-content">
+                    <div class="status">
+                        申請状況： <span class="presentation-status" style="color: red;"><span
+                                th:text="${presentation.currentStage}"></span></span>
+                    </div>
+                    <!-- <div class="favorite">得票数：1</div> -->
+                    <div class="presentation-date">
+                        発表日：
+                        <span th:if="${presentation.stage == 0}" th:text="${presentation.presentationDate}"></span>
+                        <span th:unless="${presentation.stage == 0}" name="preferredDate"
+                            th:text="${presentation.preferredDate}"></span>
+                        <a th:if="${presentation.stage == 4}" id="date-link" name="date-link" href="#"
+                            data-toggle="modal" data-target="#exampleModalCenter"
+                            sec:authorize="hasRole('ROLE_ADMIN')"><i class="fas fa-pen-square"></i>日付を確定</a>
+                        <input type="hidden" name="presentationId" th:value="${presentation.presentationId}">
+                    </div>
+                    
+
+                    <a href="request-presentation-detail.html"
+                        th:href="@{/request/presentation/detail?presentationId=} + ${presentation.presentationId}"
+                        sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_SALES')">
+                        <div class="tittle" th:text="${presentation.title}">パワフルプロエンジニア</div><br>
+                        <div class="content" th:text="${presentation.content}"></div>
+                    </a>
+                    <a href="request-presentation-detail.html"
+                     th:href="@{/presentation/detail(presentationId=${presentation.presentationId},returnFlg=2)}"
+                        sec:authorize="hasAnyRole('ROLE_WEB','ROLE_CL','ROLE_ML')">
+                        <div class="tittle" th:text="${presentation.title}">パワフルプロエンジニア</div><br>
+                        <div class="content" th:text="${presentation.content}"></div>
+                    </a>
+                </div>
+                <div class="presentation-favorite favorite-color">
+                    いいね ♥ <span th:text="${presentation.favoriteCount}"></span>
+                </div>
+
+                <!-- <strong th:if="${presentation.user.departmentId} == 1" class="department web-e">
+                    <i class="fas fa-cog"></i>WEBエンジニア
+                </strong>
+                <strong th:if="${presentation.user.departmentId} == 2" class="department cl-e">
+                    <i class="fas fa-cog"></i>インフラエンジニア
+                </strong>
+                <strong th:if="${presentation.user.departmentId} == 3" class="department ml-e">
+                    <i class="fas fa-cog"></i>機械学習エンジニア
+                </strong> -->
+
+                <div class="presenters text-cent">
+                    <div class="member-title">発表メンバー</div>
+                    <ul th:each="user : ${presentation.presenterList}">
+                        <li th:text="${user.name}"></li>
+                    </ul>
+                </div>
+                <!-- Modal-->
+                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                発表日入力
+                            </div>
+                            <div class="modal-body">
+                                <label for="departure">発表日：</label>
+                                <input type="date" id="presentationDate">
+                                <!-- <input type="hidden" name="presentationId" th:value="${presentation.presentationId}"> -->
+                                <!-- <input type="hidden" id="stage" th:value="${presentation.stage}"> -->
+                                <!-- <div th:text="${presentation.presentationId}"></div> -->
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary">戻る</button>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">確定</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- エンジニア画面
+    <div class="container m-auto" sec:authorize="hasAnyRole('ROLE_WEB','ROLE_CL','ROLE_ML')">
+        <div class="col">
+            <form method="GET">
+                <div class="apply-search-form engineer">
+                    <label for="stage" id="contents-for-e">申請状況</label>
+                    <select class="ml-3" name="stage" id="stage">
+                        <option value="2" th:selected="${session.searchRequestForm.stage==2}">未承認</option>
+                        <option value="4">承認(発表日未定)</option>
+                        <option value="0">確定</option>
+                        <option value="3">修正依頼</option>
+                        <option value="">否認</option>
+                    </select>
+                    &nbsp;&nbsp;<button class="btn btn-outline-primary" type="button" id="searchButton">検索</button>
+                </div>
+            </form>
+
+            <span id="unapproved"><label>未承認数:&nbsp;</label><span th:text="${searchCount}">〇〇</span></span>
+            <span id="denied"><label>否認数:&nbsp;</label><span th:text="${searchCount}">〇〇</span></span>
+            <span id="approved"><label>承認数:&nbsp;</label><span th:text="${searchCount}">〇〇</span></span> -->
+
+    <!--paging-->
+    <!-- <div class="paging">
+                &nbsp;&nbsp;<span th:text="${noDataMessage}" style="color:red"></span>
+                <label>現在のページ:<span th:text="'現在のページ数: ' + ${pageNumber} + '/' + ${maxPageNumber}">1/1</span></label>
+            </div>
+
+            <div class="presentation-info">
+                <div class="main-content">
+                    <div class="presentation-date">発表日：2020年10月下旬</div>
+                    <a href="#">
+                        <div class="tittle">パワフルプロエンジニア</div><br>
+                        <div class="content">
+                            ・エンジニアのスキルを可視化するシステム。<br>
+                            ・社内での利用を想定。<br>
+                            ・スペックシートをシステム内でしてExcel出力でき、今後PDF化にも対応する予定。現状Excelシートを入力してPDF化し、メールで添付送信する形式からシンプルなフローに移行できる。<br>
+                            ・管理者、営業はユーザー一覧からエンジニア情報を閲覧することができ、必要なスキルをもったエンジニアを探し出す事ができる。
+                        </div>
+                    </a>
+                </div>
+                <strong class="department web-e">
+                    <i class="fas fa-cog"></i>WEBエンジニア
+                </strong>
+                <div class="presenters text-cent">
+                    <div class="member-title">発表メンバー</div>
+                    <ul>
+                        <li>藤井勇気</li>
+                        <li>藤島克也</li>
+                        <li>並木翼</li>
+                        <li>野中敦史</li>
+                        <li>岡田悠里</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="presentation-info">
+                <div class="main-content">
+                    <div class="presentation-date">発表日：2020年9月下旬</div>
+                    <a href="#">
+                        <div class="tittle">●●を用いた環境構築</div><br>
+                        <div class="content">
+                            ・テストの文章。<br>
+                            ・応募フォームで入力した内容が5行分表示されます。とりあえず発表メンバーとのバランスがいいので4~5行がベストかと思います。<br>
+                            ・箇条書きでなくても可能ですがエンジニアに要点をまとめて書いてもらう必要あり。
+                        </div>
+                    </a>
+                </div>
+                <strong class="department cl-e">
+                    <i class="fas fa-cog"></i>インフラエンジニア
+                </strong>
+                <div class="presenters text-cent">
+                    <div class="member-title">発表メンバー</div>
+                    <ul>
+                        <li>CL1</li>
+                        <li>CL2</li>
+                        <li>CL3</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="presentation-info">
+                <div class="main-content">
+                    <div class="presentation-date">発表日：2020年8月下旬</div>
+                    <a href="#">
+                        <div class="tittle">機械学習を活用した●●の開発</div><br>
+                        <div class="content">
+                            ・テストの文章。<br>
+                        </div>
+                    </a>
+                </div>
+                <strong class="department ml-e">
+                    <i class="fas fa-cog"></i>機械学習エンジニア
+                </strong>
+                <div class="presenters text-cent">
+                    <div class="member-title">発表メンバー</div>
+                    <ul>
+                        <li>ML1</li>
+                        <li>ML2</li>
+                        <li>ML3</li>
+                    </ul>
+                </div>
+            </div>
+            &nbsp;&nbsp;<span th:text="${noDataMessage}" style="color:red"></span>
+            <label style="float:right"><span
+                    th:text="'現在のページ数: ' + ${pageNumber} + '/' + ${maxPageNumber}"></span></label>
+            <div class="pages">
+                <input name="pageNumber" type="hidden" th:value="${pageNumber}">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-between">
+                        <li class="previous" th:unless="${pageNumber} == 1"><a href="#">&larr; prev</a></li>
+                        <li class="text-right next" th:unless="${pageNumber} == ${maxPageNumber}"
+                            style="margin:0 0 0 auto"><a href="#">next &rarr;</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div> -->
+</body>
+
+</html>

@@ -1,0 +1,56 @@
+@charset "UTF-8";
+
+.edit-comment-box {
+    padding: 1rem;
+    /* border-radius: 10px;
+    border: rgb(193, 27, 27) 2px solid; */
+    margin-top: 0.2rem;
+}
+
+#editRequestCommentBtn{
+    padding-top: 0.5rem ;
+    padding-left: 0%;
+    font-size: 1rem;
+}
+
+.acd-check{
+    display: none;
+}
+.stage-if{
+    background: rgb(196, 27, 27);
+    padding: 10px;
+}
+.stage-unless{
+    background:  #17a2b8 ;
+    padding: 8px;
+}
+
+.acd-label{
+    color: #fff;
+    display: block;
+    margin-bottom: 1px;
+    padding:3px;
+}
+.acd-content{
+    border-radius: 10px;
+    border:  #17a2b8 2px solid;
+    height: 0;
+    opacity: 0;
+    padding: 0 10px;
+    transition: .5s;
+    visibility: hidden;
+}
+.acd-check:checked + .acd-label + .acd-content{
+    height: min-content;
+    opacity: 1;
+    padding: 10px;
+    visibility: visible;
+}
+
+.first-comment{
+    margin: 5px;
+}
+
+.editRequestCommentMore{
+    margin-top: 7px;
+}

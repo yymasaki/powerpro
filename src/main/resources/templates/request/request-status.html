@@ -1,0 +1,212 @@
+ <html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<title>パワフルプロエンジニア</title>
+<link rel="shortcut icon" href="../static/favicon.ico" th:href="@{/favicon.ico}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"	rel="stylesheet">
+<link rel="stylesheet" href="../../static/css/nbase.css" th:href="@{/css/nbase.css}">
+<link rel="stylesheet" href="../../static/css/nability.css" th:href="@{/css/nability.css}">
+<link rel="stylesheet" href="../../static/css/skill/skill-status-detail.css" th:href="@{/css/skill/skill-status.css}">
+<link rel="stylesheet" href="../../static/css/nregist.css" th:href="@{/css/nregist.css}">
+<link rel="stylesheet" href="../../static/css/request/request.css" th:href="@{/css/request/request.css}">
+<link rel="stylesheet" href="../../static/css/request/request-status.css" th:href="@{/css/request/request-status.css}">
+<link rel="stylesheet" href="../static/css/header.css" th:href="@{/css/header.css}">
+
+<script src="../../static/js/lib/jquery-3.3.1.min.js" th:src="@{/js/lib/jquery-3.3.1.min.js}"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script src="../../static/js/main.js" th:src="@{/js/main.js}"></script>
+<script src="../../static/js/chart.js" th:src="@{/js/chart.js}"></script>
+<script th:src="@{/js/skill/personality.js}"></script>
+<script th:src="@{/js/request/request-status-modal.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+</head>
+<body>
+	<!-- header start -->
+	<nav th:replace="header::menu"></nav>
+	<!-- header end -->
+		<div class="alert alert-danger fade show text-center" role="alert" th:if="${alertMessage}" id="flash">
+		  	<span th:text="${alertMessage}"></span>
+		  	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		  		<span aria-hidden="true">&times;</span>
+		  	</button>
+		</div>
+		<div class="alert alert-warning fade show text-center" role="alert" th:if="${editCompleted}" id="flash">
+		  	<span th:text="${editCompleted}"></span>
+		  	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		  		<span aria-hidden="true">&times;</span>
+		  	</button>
+		</div>
+		<div class="form-box">
+		<h1 class="text-center">ステータス申請詳細</h1>
+		<div class="text-center">
+			<span th:if="${session.searchRequestForm}">
+				<span th:if="${session.searchRequestForm.content == 1}">
+					<a href="request.html" th:href="@{/request?pageBack=true}">申請トップにもどる</a>
+				</span>
+				<!-- ステータス以外の検索条件がsessionに残っている場合、pageBack=trueは使用しない -->
+				<span th:if="${session.searchRequestForm.content != 1}">
+					<a href="request.html" th:href="@{/request}">申請トップにもどる</a>
+				</span>
+			</span>
+			<!-- 申請一覧画面を経由せずにこの画面に遷移してきた場合、pageBack=trueは使用しない -->
+			<span th:unless="${session.searchRequestForm}"><a href="request.html" th:href="@{/request}">申請トップにもどる</a></span>
+		</div>
+		<h2 class="text-center" th:unless="${statusData}">現在申請中のデータは存在していません</h2>
+		<br>
+		<div class="col"><br>	
+			<div class="request-table-wide" th:if="${statusData}">
+				<table style="width:100%; font-size : 12px;">
+					<tbody class="text-center">
+						<tr>
+							<th class="text-center">申請日</th>
+							<th class="text-center" sec:authorize="hasRole('ROLE_ADMIN')">申請者名</th>
+							<th class="text-center" sec:authorize="hasRole('ROLE_ADMIN')">所属</th>
+							<th class="text-center">申請状況</th>
+							<th class="text-center">申請者コメント</th>
+							<th class="text-center" sec:authorize="!(hasRole('ROLE_ADMIN'))">管理者コメント</th>
+						</tr>
+						<tr>
+							<td th:text="${#temporals.format(statusData.createdAt, 'yyyy年M月d日')}">2020年5月5日</td>
+							<td th:text="${statusData.creator}" sec:authorize="hasRole('ROLE_ADMIN')">太郎</td>
+							<td th:text="${statusData.user.department.name}" sec:authorize="hasRole('ROLE_ADMIN')">WEBアプリケーション開発</td>
+							<td th:text="${currentStage}"></td>
+							<td class="text-left" th:text="${statusData.userComment}">プログラム→個人でのアプリケーション開発でマスターしています。データベース→ほぼ理解しています。ネットワーク→エンジニアとしての基礎知識はあります。
+							OS・ハードウェア・セキュリティ・ミドルウェア→コーティング以外の分野はまだ浅い状態です。</td>
+							<td class="text-left" th:text="${statusData.adminComment}" id="adminComment" sec:authorize="!(hasRole('ROLE_ADMIN'))" >プログラム→個人でのアプリケーション開発でマスターしています。データベース→ほぼ理解しています。ネットワーク→エンジニアとしての基礎知識はあります。
+							OS・ハードウェア・セキュリティ・ミドルウェア→コーティング以外の分野はまだ浅い状態です。</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>	
+			<br>
+			<div class="main-contents">
+				<div class="box ability-box" style="background:white;">
+					<div class="profile">
+					<div class="row　mx-auto">
+						<div class="col">
+							<div class="name row text-center mx-auto w-100"><span th:text="${statusData.user.name}">テスト太郎</span></div>
+							<div class="belong-to row mx-auto w-100">
+								<span>最終更新日　：　</span>
+								<span th:if="${statusData}" th:text="${#temporals.format(statusData.updatedAt, 'yyyy年MM月dd日')}"></span>
+								<span th:unless="${statusData}">—</span>
+							</div>
+							<div class="title row mx-auto w-100" th:text="${statusData.user.department.name}">プログラマー</div>
+						</div>
+					</div>
+					<div class="row mx-auto">
+						<div class="style mx-auto text-center">
+							<i class="fas fa-desktop"></i>&nbsp;
+							<span class="style-desktop dark-blue" id="pc" th:if="${statusData}" th:text="${statusData.usingPc}">Mac</span>
+							<span class="style-desktop dark-blue" th:unless="${statusData}">:&emsp;—&emsp;</span>
+							<i class="fas fa-mobile-alt ml-3"></i>&nbsp;
+							<span class="style-mobile dark-red" id="mobile" th:if="${statusData}" th:text="${statusData.usingMobile}">Android</span>
+							<span class="style-mobile dark-red" th:unless="${statusData}">:&emsp;—&emsp;</span>
+						</div>
+					</div>
+				</div>
+	
+					<div class="point-skills" th:if="${statusData}">
+						<div class="point-skill"  th:each="hadEngineerSkill : ${statusData.hadEngineerSkillList}">
+							<div class="skill-name" th:text="${hadEngineerSkill.engineerSkill.name}"></div>
+							<div class="skill-score score-g" th:if="${20 gt hadEngineerSkill.score and hadEngineerSkill.score ge 0}">
+								<span>G</span>
+							</div>						
+							<div class="skill-score score-f" th:if="${40 gt hadEngineerSkill.score and hadEngineerSkill.score ge 20}">
+								<span>F</span>
+							</div>						
+							<div class="skill-score score-e" th:if="${50 gt hadEngineerSkill.score and hadEngineerSkill.score ge 40}">
+								<span>E</span>
+							</div>						
+							<div class="skill-score score-d" th:if="${60 gt hadEngineerSkill.score and hadEngineerSkill.score ge 50}">
+								<span>D</span>
+							</div>						
+							<div class="skill-score score-c" th:if="${70 gt hadEngineerSkill.score and hadEngineerSkill.score ge 60}">
+								<span>C</span>
+							</div>						
+							<div class="skill-score score-b" th:if="${80 gt hadEngineerSkill.score and hadEngineerSkill.score ge 70}">
+								<span>B</span>
+							</div>						
+							<div class="skill-score score-a" th:if="${90 gt hadEngineerSkill.score and hadEngineerSkill.score ge 80}">
+								<span>A</span>
+							</div>						
+							<div class="skill-score score-s" th:if="${hadEngineerSkill.score ge 90}">
+								<span>S</span>
+							</div>						
+							<div class="skill-point engineer-skill-score" th:text="${hadEngineerSkill.score}">100</div>
+						</div>
+					</div>
+	
+					<div class="row">
+						<div class="abilities col-5">
+							<div class="ability-chart">
+								<h2 class="mt-3 mb-3">基本スキル</h2>
+								<canvas th:if="${statusData}" id="basicSkillChart" class="mt-5" style="position: relative; height:50; width:50; font-size:8px;"></canvas>
+							</div>
+						</div>
+						<div class="abilities col-6">
+							<h2 class="mt-3 mb-5">性格</h2>
+							<div class="inline-row" th:each="personality : ${personalityList}">
+								<div class="special-ability" th:id="${personality.personalityId}">
+									<strong class="personality-name" th:text="${personality.name}" style="visibility: hidden;" data-toggle="popover" data-trigger="hover"  data-placement="top" th:data-content="${personality.explanation}"></strong>
+								</div>
+							</div>
+							<input th:if="${statusData}" type="hidden" id="status-id" th:value="${statusData.statusId}">
+						</div>
+					</div>
+				</div>		
+				<div class="table-wide mt-3" th:if="${statusData.stage == 2 or statusData.stage == 3}" >
+					<form  action="request.html" th:action="@{/request/status/process}" method="post" th:object="${statusForm}" class="process request-status-form">
+						<div class="text-center button" th:if="${statusData}">
+							<button sec:authorize="hasRole('ROLE_ADMIN')" th:unless="${statusData.stage == 3}" type="button" class="btn btn-outline-primary modal-open" data-toggle="modal" data-target="#exampleModal" id=""  data-whatever="approval">承認</button>
+							<button sec:authorize="hasRole('ROLE_ADMIN')" th:unless="${statusData.stage == 3}" type="button" class="btn btn-outline-primary modal-open" data-toggle="modal" data-target="#exampleModal" id="disapproval-button"  data-whatever="disapproval">否承認</button>
+							<button class="btn btn-outline-primary" th:formaction="@{/request/status/edit}">修正</button>
+							<button sec:authorize="!(hasRole('ROLE_ADMIN'))" type="button" class="btn btn-outline-primary modal-open" data-toggle="modal" data-target="#exampleModal" id=""  data-whatever="delete" >取消</button>
+						</div>
+						<!-- Modal -->
+						<div th:if="${statusData}" class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+							<div class="modal-dialog modal-dialog-centered" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+		   							<h5 class="modal-title" id="exampleModalCenterTitle">内容確認</h5>
+		   							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		     								<span aria-hidden="true">&times;</span>
+		   							</button>
+		 							</div>
+		 							<div class="modal-body">
+		 								<div sec:authorize="hasRole('ROLE_ADMIN')" class="confirm">
+		     								<h5>管理者コメント<small id="requirement"></small></h5>
+											<div class="contents">					
+												<textarea cols="40" style="width:80%;"maxlength="200" rows="4" id="adminComment" name="adminComment" placeholder="管理者からエンジニアへのコメント"></textarea>
+											</div>
+		   								</div>
+		    							<br>
+		    							<h5 id=sentense>この内容で確定しますか？</h5>
+		    							<input type="hidden" name="processName" class="processName" th:value="processName">
+		 							</div>
+		 							<div class="modal-footer text-right">
+		   							<button type="button" class="btn btn-secondary back" data-dismiss="modal">戻る</button>
+		   							<button type="submit" class="btn btn-primary modal-button" id="done" name="stage" value=""><span id="process"></span>を確定する</button>
+		 							</div>
+								</div>
+							</div>
+						</div>
+					<!-- Modal end -->
+						<input type="hidden" id="stage" name="stage" value="">
+						<input type="hidden" name="userId" th:value="${statusData.userId}">
+						<input type="hidden" name="version" th:value="${statusData.version}">
+						<input th:if="${statusData}" type="hidden" id="status-id" name="statusId" th:value="${statusData.statusId}">
+					</form>
+				</div>
+				</div>
+			</div>
+		</div>	
+		<div th:replace="loader::loader"></div>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</body>
+</html>

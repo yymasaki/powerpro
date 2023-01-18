@@ -1,0 +1,12 @@
+#logo{
+	width: 24rem;
+}
+.nav-link{
+	margin:0.5rem;
+}
+.nav-link,.dropdown-item{
+	font-size: 1.25rem;
+}
+.dropdown:hover > .dropdown-menu{
+  display: block;
+}

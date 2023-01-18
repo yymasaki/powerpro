@@ -1,0 +1,23 @@
+DROP TABLE IF EXISTS had_engineer_skills ;
+
+CREATE TABLE IF NOT EXISTS had_engineer_skills (
+  `had_engineer_skill_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `status_id` INT UNSIGNED NOT NULL,
+  `engineer_skill_id` INT UNSIGNED NOT NULL,
+  `score` INT NULL,
+  PRIMARY KEY (`had_engineer_skill_id`),
+  CONSTRAINT `fk_had_engineer_skills_statuses1`
+    FOREIGN KEY (`status_id`)
+    REFERENCES `powerpro`.`statuses` (`status_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_had_engineer_skills_engineer_skills1`
+    FOREIGN KEY (`engineer_skill_id`)
+    REFERENCES `powerpro`.`engineer_skills` (`engineer_skill_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+CREATE INDEX `fk_had_engineer_skills_statuses1_idx` ON `powerpro`.`had_engineer_skills` (`status_id` ASC) VISIBLE;
+
+CREATE INDEX `fk_had_engineer_skills_engineer_skills1_idx` ON `powerpro`.`had_engineer_skills` (`engineer_skill_id` ASC) VISIBLE;

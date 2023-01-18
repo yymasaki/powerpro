@@ -1,0 +1,34 @@
+DROP TABLE IF EXISTS app_specsheets ;
+
+CREATE TABLE IF NOT EXISTS app_specsheets (
+  `specsheet_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` INT UNSIGNED NOT NULL,
+  `employee_id` INT NULL,
+  `generation` VARCHAR(255) NULL,
+  `gender` CHAR(1) NULL,
+  `nearest_station` VARCHAR(255) NULL,
+  `start_business_date` VARCHAR(255) NULL DEFAULT '要相談',
+  `engineer_period` INT NULL,
+  `se_period` INT NULL,
+  `pg_period` INT NULL,
+  `it_period` INT NULL,
+  `appeal` TEXT NULL,
+  `effort` TEXT NULL,
+  `certification` TEXT NULL,
+  `pre_job` TEXT NULL,
+  `admin_comment` TEXT NULL,
+  `stage` CHAR(1) NOT NULL,
+  `creator` VARCHAR(255) NOT NULL,
+  `created_at` DATETIME NOT NULL,
+  `updater` VARCHAR(255) NOT NULL,
+  `updated_at` DATETIME NOT NULL,
+  `version` INT NOT NULL,
+  PRIMARY KEY (`specsheet_id`),
+  CONSTRAINT `fk_app_specsheets_users1`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `powerpro`.`users` (`user_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+CREATE INDEX `fk_app_specsheets_users1_idx` ON `powerpro`.`app_specsheets` (`user_id` ASC) VISIBLE;

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>パワフルプロエンジニア</title>
+<link rel="shortcut icon" href="../static/favicon.ico" th:href="@{/favicon.ico}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/cupertino/jquery-ui.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css">
+<link rel="stylesheet" href="../../static/css/user/multi-select.css" th:href="@{/css/user/multi-select.css}">
+
+<link rel="stylesheet" href="../../static/css/nbase.css" th:href="@{/css/nbase.css}">
+<link rel="stylesheet" href="../../static/css/nability.css" th:href="@{/css/nability.css}">
+<link rel="stylesheet" href="../../static/css/skill/skill-spec.css" th:href="@{/css/skill/skill-spec.css}">
+<link rel="stylesheet" href="../static/css/header.css" th:href="@{/css/header.css}">
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+<script src="../../static/js/main.js" th:src="@{/js/main.js}"></script>
+<script src="../../static/js/jquery.multi-select.js" th:src="@{/js/jquery.multi-select.js}"></script>
+<script src="../../static/js/skill/skill-spec.js" th:src="@{/js/skill/skill-spec.js}"></script>
+<script>
+$(function(){
+	$('#select-dev').multiSelect({
+		  selectableHeader: "<div class='custom-header'>登録済開発経験</div>",
+		  selectionHeader: "<div class='custom-header'>出力対象<small style='color:red'>(必須)</small></div>",
+		});
+});
+</script>
+
+</head>
+<body>
+<!-- 	<div class="container"> -->
+		<!-- header -->
+		<nav th:replace="header::menu"></nav>
+		
+		<div id="flash" class="alert alert-warning alert-dismissible fade show flash text-center" th:if="${success}" role="alert">
+			<div class="text-center" th:text="${success}"></div>
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		<div id="flash" class="alert alert-danger alert-dismissible fade show flash" th:if="${message}" role="alert">
+			<div class="text-center" th:text="${message}" style="white-space:pre-wrap"></div>
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		
+<!-- main content -->
+		<div class="main-contents">
+			<div class="tabs">
+				<a class="tab ability" href="skill-status.html" 
+					th:href="@{'/skill/status?userId='+${specsheet.user.userId}}">ステータス</a> 
+				<a class="tab technical" href="skill-technique.html" 
+					th:href="@{'/skill/technique?userId='+${specsheet.user.userId}}">テクニカルスキル</a>
+				<a class="tab management tab-active" href="skill-spec.html" 
+					th:href="@{'/skill/spec?userId='+${specsheet.user.userId}}">スペックシート</a>
+			</div>
+
+<!-- status情報 -->
+			<div class="box management-box">
+				<div class="profile">
+					<div class="row mx-auto">
+						<div class="col">
+							<div class="name row text-center mx-auto w-100" th:text="${specsheet.user.name}">テスト太郎</div>
+							<div class="belong-to row mx-auto w-100">
+								<span>最終更新日　：　</span>
+								<span th:text="${specsheet.updatedAt}?${#temporals.format(specsheet.updatedAt,'yyyy年M月d日')}:'  —  '"></span>
+							</div>
+							<div class="title row mx-auto w-100" th:text="${specsheet.user.department.name}">エンジニア</div>
+						</div>
+					</div>
+					<div class="row mx-auto">
+						<div class="style mx-auto text-center">
+							<i class="fas fa-desktop"></i>&nbsp;
+							<span class="style-desktop dark-blue" th:if="${specsheet.status}" 
+								th:text="${specsheet.status.usingPc}!=''?${specsheet.status.usingPc}:':&emsp;—&emsp;'">Mac</span>
+							<span class="style-desktop dark-blue" th:unless="${specsheet.status}">:&emsp;—&emsp;</span>
+							<i class="fas fa-mobile-alt ml-3"></i>&nbsp;
+							<span class="style-mobile dark-red" th:if="${specsheet.status}" 
+								th:text="${specsheet.status.usingMobile}!=''?${specsheet.status.usingMobile}:':&emsp;—&emsp;'">Android</span>
+							<span class="style-desktop dark-red" th:unless="${specsheet.status}">:&emsp;—&emsp;</span>
+						</div>
+					</div>
+				</div>
+			
+				<div class="d-inline-block ml-5 my-3" sec:authorize="hasAnyRole('ADMIN','WEB','CL','ML')">
+					<a id="edit-spec-btn" class="btn btn-primary" href="skill-edit-spec.html" 
+						th:href="@{/skill/spec/edit(userId=${specsheet.userId})}">スペックシート編集</a>				
+					<a id="request-spec-btn" class="btn btn-primary ml-3" th:if="${requestOrSentBackSpec}" href="request-spec.html" 
+						th:href="@{/request/spec(specsheetId=${requestOrSentBackSpec.specsheetId},
+							userId=${requestOrSentBackSpec.userId},stage=${requestOrSentBackSpec.stage})}">申請詳細</a>				
+				</div>
+				<div class="spec-download d-inline-block my-3" th:if="${noRecord}==null">
+					<button id="dl-modal-btn" type="button" class="btn btn-primary ml-3" data-toggle="modal"
+						data-show="true" data-target="#download-spec">ダウンロード</button>
+					<button type="button" class="btn btn-primary ml-3" data-toggle="modal" data-show="true"
+						data-target="#delete-spec" sec:authorize="hasRole('ADMIN')">削除</button>
+				</div>
+
+<!-- specsheet content -->
+				<div class="profile d-block mb-3" th:if="${noRecord}">
+					<div class="text-center my-3">登録されたスペックシートはありません</div>
+				</div>
+				<div id="summaryTable" th:replace="skill/parts/spec-for-reading::(${noRecord} == null ? spec : empty)"></div>
+				
+<!-- devExperience -->
+				<div id="developmentTable" th:replace="~{skill/parts/dev-for-reading::#developmentTable}"></div>
+			</div>
+		</div>
+<!-- 	</div> -->
+
+<!-- download modal -->
+	<div class="modal fade" id="download-spec" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<form id="download-form" action="#" th:action="@{/skill/download/xlsx}" method="post">
+					<div class="modal-header">
+						<h5 class="modal-title">スペックシートダウンロード</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="text-center mt-3 error1">出力する開発経験を選択してください。</div>
+						<div class="text-center mb-3 error2">※10件まで選択できます。</div>
+						<div class="contents" style="display:table;margin: 0 auto;">
+							<select id="select-dev" class="limit10" name="devExperienceIdList" multiple size="10" required>
+								<option class="option-dev" th:each="dev:${specsheet.devExperienceList}"
+									th:value="${dev.devExperienceId}" th:text="${dev.projectName}"></option>
+							</select>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">戻る</button>
+						<button type="submit" id="download-btn" class="btn btn-primary" disabled>ダウンロード</button>
+					</div>
+					<input type="hidden" name="specsheetId" th:value="${specsheet.specsheetId}">
+					<input type="hidden" name="userId" th:value="${specsheet.userId}">
+					<input type="hidden" name="version" th:value="${specsheet.version}">
+				</form>
+			</div>
+		</div>
+	</div>
+	
+<!-- delete modal -->
+	<div class="modal fade" id="delete-spec" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<form id="delete-form" action="#" th:action="@{/skill/spec/delete}" th:object="${processSpecsheetForm}" method="post">
+					<div class="modal-header">
+						<h5 class="modal-title">スペックシート削除</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="container-fluid">
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label" for="commment" style="font-size:80%">
+									削除理由<small style="color:red">(必須)</small></label>
+								<label id="error-comment" class="col-form-label" style="color:red" th:errors="*{adminComment}"></label>
+								<div class="col-sm-8">
+									<textarea id="comment" class="form-control" name="adminComment"
+										th:value="${processSpecsheetForm.adminComment}?:null" required></textarea>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">戻る</button>
+						<button type="submit" id="delete-btn" class="btn btn-primary" disabled>確定</button>
+					</div>
+					<input type="hidden" name="specsheetId" th:value="${specsheet.specsheetId}">
+					<input type="hidden" name="userId" th:value="${specsheet.userId}">
+					<input type="hidden" name="stage" th:value="${specsheet.stage}">
+					<input type="hidden" name="version" th:value="${specsheet.version}">
+				</form>
+			</div>
+		</div>
+	</div>
+	<div th:replace="loader::loader"></div>
+</body>
+</html>

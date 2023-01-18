@@ -1,0 +1,14 @@
+-- presentation_documents(発表資料)
+DROP TABLE IF EXISTS presentation_documents;
+
+CREATE TABLE IF NOT EXISTS presentation_documents(
+`presentation_document_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+`document_path` VARCHAR(255) NOT NULL,
+`presentation_id` INT UNSIGNED NOT NULL,
+PRIMARY KEY (`presentation_document_id`),
+CONSTRAINT `fk_presentation_documents_presnetations1`
+FOREIGN KEY (`presentation_id`)
+REFERENCES `powerpro`.`presentations`(`presentation_id`)
+ON DELETE CASCADE 
+ON UPDATE CASCADE
+)

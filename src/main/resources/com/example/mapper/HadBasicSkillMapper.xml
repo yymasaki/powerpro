@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.mapper.HadBasicSkillMapper" >
+  <resultMap id="BaseResultMap" type="com.example.domain.HadBasicSkill" >
+    <id column="had_basic_skill_id" property="hadBasicSkillId" jdbcType="INTEGER" />
+    <result column="status_id" property="statusId" jdbcType="INTEGER" />
+    <result column="basic_skill_id" property="basicSkillId" jdbcType="INTEGER" />
+    <result column="score" property="score" jdbcType="CHAR" />
+  </resultMap>
+  <resultMap id="ConnectHadBasicSkillResultMap" type="com.example.domain.HadBasicSkill" >
+    <id column="hb_had_basic_skill_id" jdbcType="INTEGER" property="hadBasicSkillId" />
+   	<result column="hb_status_id" jdbcType="INTEGER" property="statusId" />
+   	<result column="hb_basic_skill_id" jdbcType="INTEGER" property="basicSkillId" />
+   	<result column="hb_score" jdbcType="CHAR" property="score" />
+   	<association property="basicSkill" javaType="com.example.domain.BasicSkill" >
+   		<result column="b_basic_skill_id" jdbcType="INTEGER" property="basicSkillId" />
+   		<result column="b_name" jdbcType="VARCHAR" property="name" />
+   		<result column="b_department_id" jdbcType="INTEGER" property="departmentId" />
+   		<result column="b_stage" property="stage" jdbcType="CHAR" />
+	    <result column="b_creator" property="creator" jdbcType="VARCHAR" />
+	    <result column="b_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+	    <result column="b_updater" property="updater" jdbcType="VARCHAR" />
+	    <result column="b_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+	    <result column="b_version" property="version" jdbcType="INTEGER" />
+   	</association>
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    had_basic_skill_id, status_id, basic_skill_id, score
+  </sql>
+  <sql id="Had_Basic_Skills_Column_List">
+  	hb.had_basic_skill_id as hb_had_basic_skill_id, hb.status_id as hb_status_id, hb.basic_skill_id as hb_basic_skill_id, hb.score as hb_score
+  </sql>
+  <sql id="Basic_Skills_Column_List">
+  	,b.basic_skill_id as b_basic_skill_id, b.name as b_name, b.department_id as b_department_id, b.stage as b_stage,
+  	b.creator as b_creator, b.created_at b_created_at, b.updater as b_updater, b.updated_at as b_updated_at, b.version as b_version
+  </sql>
+  <sql id="Had_Basic_Skills_Table">
+  	had_basic_skills hb 
+  </sql>
+  <sql id="Basic_Skills_Table">
+  	inner join basic_skills b on hb.basic_skill_id = b.basic_skill_id
+  </sql>
+  <!-- 2つのテーブルを結合 -->
+  <select id="selectHadBasicSkillAndBasicSkillByStatusId" resultMap="ConnectHadBasicSkillResultMap" parameterType="com.example.domain.HadBasicSkill">
+  	select
+  	<include refid="Had_Basic_Skills_Column_List" />
+  	<include refid="Basic_Skills_Column_List" />
+  	from
+  	<include refid="Had_Basic_Skills_Table" />
+  	<include refid="Basic_Skills_Table" />
+  	where hb.status_id = #{statusId,jdbcType=INTEGER}
+    order by b.basic_skill_id
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from had_basic_skills
+    where had_basic_skill_id = #{hadBasicSkillId,jdbcType=INTEGER}
+    order by had_basic_skill_id
+  </select>
+  <!-- listのinsertを行う -->
+  <insert id ="insertSelectiveList" parameterType= "java.util.List" >
+  	insert into had_basic_skills ( 
+          had_basic_skill_id
+        , status_id
+        , basic_skill_id
+        , score
+   )
+   values
+   <foreach collection ="hadBasicSkillList" item="hb" separator= ",">
+     (
+        #{hb.hadBasicSkillId, jdbcType=INTEGER},
+        #{hb.statusId, jdbcType=INTEGER},
+        #{hb.basicSkillId, jdbcType=INTEGER},
+        #{hb.score, jdbcType=CHAR}
+     )
+   </foreach>
+  </insert >
+  <!-- listのアップデートを行う -->
+  <update id="bulkUpdate" parameterType="java.util.List">
+       update had_basic_skills
+       set score = elt(field(had_basic_skill_id,
+       <foreach collection="hadBasicSkillList" item="hb" separator=",">
+           #{hb.hadBasicSkillId}
+       </foreach>
+       ),
+       <foreach collection="hadBasicSkillList" item="hb" separator=",">
+           #{hb.score}
+       </foreach>
+       )
+       where had_basic_skill_id in (
+       <foreach collection="hadBasicSkillList" item="hb" separator=",">
+           #{hb.hadBasicSkillId}
+       </foreach>
+       )
+       and status_id = #{statusId, jdbcType=INTEGER};
+  </update>
+</mapper>

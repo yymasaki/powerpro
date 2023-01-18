@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+	<meta charset="UTF-8">
+	<title>パワフルプロエンジニア</title>
+
+	<link rel="shortcut icon" href="../static/favicon.ico" th:href="@{/favicon.ico}">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+	<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+	<link rel="stylesheet" href="../../static/css/nbase.css" th:href="@{/css/nbase.css}">
+	<link rel="stylesheet" href="../../static/css/nability.css" th:href="@{/css/nability.css}">
+	<link rel="stylesheet" href="../../static/css/nregist.css" th:href="@{/css/nregist.css}">
+	<link rel="stylesheet" href="../static/css/header.css" th:href="@{/css/header.css}">
+	<link rel="stylesheet" href="../../static/css/presentation/presentation_details.css"
+		th:href="@{/css/presentation/presentation_details.css}">
+
+	<script type="text/javascript" src="../../static/js/lib/jquery-3.3.1.min.js"
+		th:src="@{/js/lib/jquery-3.3.1.min.js}"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script th:src="@{/js/presentation/request-presentation-detail.js}"></script>
+</head>
+
+<body>
+	<!-- header start -->
+	<nav th:replace="header::menu">
+	</nav>
+	<!-- header end -->
+	<!--アラートバー  -->
+	<div class="alert alert-warning alert-dismissible fade show" role="alert" id="flash" th:if="${message}">
+		<div class="text-center" th:text="${message}" style="white-space:pre-wrap"></div>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="alert alert-danger alert-dismissible fade show" role="alert" id="flashfail" th:if="${commentError}">
+		<div class="text-center" th:text="${commentError}" style="white-space:pre-wrap"></div>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<!-- アラートバー終了 -->
+	<div class="presentation-link text-center">
+		<a href="request-presentation.html" th:href="@{/request/presentation}">応募一覧に戻る</a>
+	</div>
+	<div class="presentation form-box w-75 mx-auto">
+		<div class="presentation-info">
+			<div class="presentation-dateandstage">
+				<span th:if="${requestedPresentation.stage} == 0"
+					th:text="${#temporals.format(requestedPresentation.presentationDate, 'yyyy/MM/dd')}">発表日：2020年10月20日</span>
+				<span th:unless="${requestedPresentation.stage} == 0"
+					th:text="発表日：+ ${requestedPresentation.preferredDate}">発表日：2020年10月20日</span>
+				<div>
+					申請状況：<span th:text="${requestedPresentation.currentStage}">
+				</div>
+			</div>
+			<div class="presentation-favorite presentation-belong">
+				いいね ♥ <span th:text="${requestedPresentation.favoriteCount}">いいね数</span>
+			</div>
+
+		</div>
+		<div class="presentation__title text-center mt-5">
+			<h1 class="presentation__title__text" th:text="${requestedPresentation.title}">パワフルプロエンジニア</h1>
+		</div>
+		<div class="presentation__concept mt-5">
+			<h3 class="presetation__subtitle">概要</h3>
+			<div th:text="${requestedPresentation.content}">&nbsp;&nbsp;エンジニアスキル可視化アプリです</div>
+		</div>
+		<div class="presentation__members mt-5">
+			<h3 class="presetation__subtitle">発表メンバー</h3>
+			<ul th:each="presenter : ${requestedPresentation.presenterList}">
+				<li class="presenstation__member" th:text="${presenter.name}">藤井勇気</li>
+			</ul>
+		</div>
+		<div class="presentation__resource mt-5">
+			<h3 class="presetation__subtitle">資料</h3>
+			<div class="presentation__resource__link"
+				th:each="document : ${requestedPresentation.presentationDocumentList}">
+				<a href="https://rakus-powerpro.herokuapp.com/login"
+					th:text="${document.documentPath}">&nbsp;&nbsp;https://rakus-powerpro.herokuapp.com/login</a>
+			</div>
+		</div>
+
+		<form th:action="@{/request/presentation/process}" method="post">
+			<input type="hidden" name="presentationId" th:value="${requestedPresentation.presentationId}">
+			<th:block th:if="${requestedPresentation.stage} == 2">
+				<div class="presentation__process mt-5">
+					<button class="btn btn-outline-primary" sec:authorize="hasRole('ROLE_ADMIN')" data-toggle="modal"
+						data-target="#exampleModalApprove" type="button">承認</button>
+					<button class="btn btn-outline-primary" sec:authorize="hasRole('ROLE_ADMIN')" data-toggle="modal"
+						data-target="#exampleModalReject" type="button">否認</button>
+					<button class="btn btn-outline-primary" sec:authorize="hasRole('ROLE_ADMIN')" data-toggle="modal"
+						data-target="#exampleModalFix" type="button">差し戻し</button>
+					<button class="btn btn-outline-primary" sec:authorize="hasRole('ROLE_ADMIN')" data-toggle="modal"
+						data-target="#exampleModalProvisionalApproval" type="button">仮承認</button>
+				</div>
+			</th:block>
+
+			<!-- 承認後の取消ボタン -->
+			<th:block th:if="${requestedPresentation.stage} == 0">
+				<div class="presentation__process mt-5">
+					<button class="btn btn-outline-primary" sec:authorize="hasRole('ROLE_ADMIN')" data-toggle="modal"
+						data-target="#exampleModalCancel" type="button">取消</button>
+				</div>
+			</th:block>
+
+			<!-- コメント欄 -->
+			<div class="presentation__comments mt-5">
+				<h3 class="presetation__subtitle">閲覧者コメント</h3>
+				<div th:if="${!#lists.isEmpty(requestedPresentation.presentationCommentList)}"
+					th:each="presentationComment:${requestedPresentation.presentationCommentList}">
+					<div class="presentation__comment">
+						<div class="comment">
+							<div>氏名：
+								<span th:text="${presentationComment.presentationCommentCreatorName}">コメント投稿者名</span>
+							</div>
+							<div>
+								<span th:text="${presentationComment.presentationComment}">エンジニアからのコメント</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div th:if="${#lists.isEmpty(requestedPresentation.presentationCommentList)}">
+					<h5 class="null-comments">閲覧者コメントはありません。</h5>
+				</div>
+			</div>
+
+			<!-- Modal(承認)-->
+			<div class="modal fade" id="exampleModalApprove" tabindex="-1" role="dialog"
+				aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-header">確認画面</div>
+						<div class="modal-body">
+							本当によろしいですか？
+						</div>
+						<div class="modal-footer">
+							発表日：<input type="date" name="presentationDate"><br>
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">戻る</button>
+							<button type="submit" class="btn btn-primary" name="stage" value="0"
+								id="approveButton">確定</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Modal(否認)-->
+			<div class="modal fade" id="exampleModalReject" tabindex="-1" role="dialog"
+				aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-header">確認画面</div>
+						<div class="modal-body">
+							本当によろしいですか？
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">戻る</button>
+							<button type="submit" class="btn btn-primary" name="stage" value="5"
+								id="rejectButton">確定</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Modal(差し戻し)-->
+			<div class="modal fade" id="exampleModalFix" tabindex="-1" role="dialog"
+				aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-header">確認画面</div>
+						<div class="modal-body">
+							<label for="departure">コメント：</label>
+							<textarea class="datepicker" placeholder="修正依頼のコメントを記入してください"
+								style="width:100%;height:200px;" name="adminComment" id="adminComment"></textarea>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">戻る</button>
+							<button type="submit" class="btn btn-primary" name="stage" value="3"
+								id="fixButton">確定</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Modal(仮承認)-->
+			<div class="modal fade" id="exampleModalProvisionalApproval" tabindex="-1" role="dialog"
+				aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-header">確認画面</div>
+						<div class="modal-body">
+							本当によろしいですか？
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">戻る</button>
+							<button type="submit" class="btn btn-primary" name="stage" value="4"
+								id="tmpApprovedButton">確定</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Modal(取消)-->
+			<div class="modal fade" id="exampleModalCancel" tabindex="-1" role="dialog"
+				aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-header">確認画面</div>
+						<div class="modal-body">
+							承認を取り消しますが本当によろしいですか？（仮承認へ変更）
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">戻る</button>
+							<button type="submit" class="btn btn-primary" name="stage" value="4"
+								id="cancelApprove">確定</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div th:replace="loader::loader"></div>
+	<!-- Optional JavaScript -->
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+		integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+		integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.mapper.InformationMapper" >
+  <resultMap id="BaseResultMap" type="com.example.domain.Information" >
+ 
+    <id column="information_id" property="informationId" jdbcType="INTEGER" />
+    <result column="create_user_id" property="createUserId" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="start_posted_on" property="startPostedOn" jdbcType="DATE" />
+    <result column="end_posted_on" property="endPostedOn" jdbcType="DATE" />
+    <result column="stage" property="stage" jdbcType="CHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.example.domain.Information" extends="BaseResultMap" >
+
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+ 
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+
+    information_id, create_user_id, title, start_posted_on, end_posted_on, stage
+  </sql>
+  <sql id="Blob_Column_List" >
+
+    content
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.example.example.InformationExample" >
+  
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from informations
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by $orderByClause$
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.example.example.InformationExample" >
+    
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from informations
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+  
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from informations
+    where information_id = #{informationId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectByDepartmentIdAndStageAndCurrentDate" resultMap="BaseResultMap">
+    select * from informations  AS A INNER JOIN informations_department_link  AS B ON a.information_id=b.information_id  
+    WHERE department_id = (select department_id from users where user_id=#{userId,jdbcType=INTEGER}) and `stage`=0  
+    and #{currentDate,jdbcType=DATE} between start_posted_on and end_posted_on order by a.information_id desc,start_posted_on desc
+    limit 6 offset #{offset,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectAll" resultMap="BaseResultMap">
+    select * from informations  AS A INNER JOIN informations_department_link  AS B ON a.information_id=b.information_id  
+    WHERE department_id = (select department_id from users where user_id=#{userId,jdbcType=INTEGER}) and `stage`=0  
+    and #{currentDate,jdbcType=DATE} between start_posted_on and end_posted_on
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+
+    delete from informations
+    where information_id = #{informationId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.example.example.InformationExample" >
+
+    delete from informations
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+
+  <insert id="insert" parameterType="com.example.domain.Information" >
+    insert into informations (create_user_id, title, 
+      start_posted_on, end_posted_on, stage, 
+      content)
+    values (#{createUserId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, 
+      #{startPostedOn,jdbcType=DATE}, #{endPostedOn,jdbcType=DATE}, #{stage,jdbcType=CHAR}, 
+      #{content,jdbcType=LONGVARCHAR})
+    <selectKey resultType="int" keyProperty="informationId" order="AFTER">
+      select @@IDENTITY
+    </selectKey>
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.domain.Information" >
+
+    insert into informations (create_user_id, title, 
+      start_posted_on, end_posted_on, stage, 
+      content)
+    values (#{createUserId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, 
+      #{startPostedOn,jdbcType=DATE}, #{endPostedOn,jdbcType=DATE}, #{stage,jdbcType=CHAR}, 
+      #{content,jdbcType=LONGVARCHAR})
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="informationId != null" >
+        information_id,
+      </if>
+      <if test="createUserId != null" >
+        create_user_id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="startPostedOn != null" >
+        start_posted_on,
+      </if>
+      <if test="endPostedOn != null" >
+        end_posted_on,
+      </if>
+      <if test="stage != null" >
+        stage,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="informationId != null" >
+        #{informationId,jdbcType=INTEGER},
+      </if>
+      <if test="createUserId != null" >
+        #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="startPostedOn != null" >
+        #{startPostedOn,jdbcType=DATE},
+      </if>
+      <if test="endPostedOn != null" >
+        #{endPostedOn,jdbcType=DATE},
+      </if>
+      <if test="stage != null" >
+        #{stage,jdbcType=CHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.example.example.InformationExample" resultType="java.lang.Integer" >
+    
+    select count(*) from informations
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+
+    update informations
+    <set >
+      <if test="record.informationId != null" >
+        information_id = #{record.informationId,jdbcType=INTEGER},
+      </if>
+      <if test="record.createUserId != null" >
+        create_user_id = #{record.createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="record.title != null" >
+        title = #{record.title,jdbcType=VARCHAR},
+      </if>
+      <if test="record.startPostedOn != null" >
+        start_posted_on = #{record.startPostedOn,jdbcType=DATE},
+      </if>
+      <if test="record.endPostedOn != null" >
+        end_posted_on = #{record.endPostedOn,jdbcType=DATE},
+      </if>
+      <if test="record.stage != null" >
+        stage = #{record.stage,jdbcType=CHAR},
+      </if>
+      <if test="record.content != null" >
+        content = #{record.content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+
+    update informations
+    set information_id = #{record.informationId,jdbcType=INTEGER},
+      create_user_id = #{record.createUserId,jdbcType=INTEGER},
+      title = #{record.title,jdbcType=VARCHAR},
+      start_posted_on = #{record.startPostedOn,jdbcType=DATE},
+      end_posted_on = #{record.endPostedOn,jdbcType=DATE},
+      stage = #{record.stage,jdbcType=CHAR},
+      content = #{record.content,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+
+    update informations
+    set information_id = #{record.informationId,jdbcType=INTEGER},
+      create_user_id = #{record.createUserId,jdbcType=INTEGER},
+      title = #{record.title,jdbcType=VARCHAR},
+      start_posted_on = #{record.startPostedOn,jdbcType=DATE},
+      end_posted_on = #{record.endPostedOn,jdbcType=DATE},
+      stage = #{record.stage,jdbcType=CHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.domain.Information" >
+
+    update informations
+    <set >
+      <if test="createUserId != null" >
+        create_user_id = #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="startPostedOn != null" >
+        start_posted_on = #{startPostedOn,jdbcType=DATE},
+      </if>
+      <if test="endPostedOn != null" >
+        end_posted_on = #{endPostedOn,jdbcType=DATE},
+      </if>
+      <if test="stage != null" >
+        stage = #{stage,jdbcType=CHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where information_id = #{informationId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.example.domain.Information" >
+
+    update informations
+    set create_user_id = #{createUserId,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      start_posted_on = #{startPostedOn,jdbcType=DATE},
+      end_posted_on = #{endPostedOn,jdbcType=DATE},
+      stage = #{stage,jdbcType=CHAR},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where information_id = #{informationId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.domain.Information" >
+
+    update informations
+    set create_user_id = #{createUserId,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      start_posted_on = #{startPostedOn,jdbcType=DATE},
+      end_posted_on = #{endPostedOn,jdbcType=DATE},
+      stage = #{stage,jdbcType=CHAR}
+    where information_id = #{informationId,jdbcType=INTEGER}
+  </update>
+</mapper>

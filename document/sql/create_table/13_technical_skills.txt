@@ -1,0 +1,15 @@
+DROP TABLE IF EXISTS technical_skills ;
+
+CREATE TABLE IF NOT EXISTS technical_skills (
+  `technical_skill_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `category` INT NOT NULL,
+  `request_user_id` INT UNSIGNED ,
+  `stage` CHAR(1) NOT NULL,
+  `creator` VARCHAR(255) NOT NULL,
+  `created_at` DATETIME NOT NULL,
+  `updater` VARCHAR(255) NOT NULL,
+  `updated_at` DATETIME NOT NULL,
+  `version` INT NOT NULL,
+  PRIMARY KEY (`technical_skill_id`))
+ENGINE = InnoDB;

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.mapper.UsedTechnicalSkillMapper" >
+
+<!-- 単一テーブル用のResultMap -->
+  <resultMap id="BaseResultMap" type="UsedTechnicalSkill" >
+    <id column="used_technical_skill_id" property="usedTechnicalSkillId" jdbcType="INTEGER" />
+    <result column="dev_experience_id" property="devExperienceId" jdbcType="INTEGER" />
+    <result column="technical_skill_id" property="technicalSkillId" jdbcType="INTEGER" />
+    <result column="stage" property="stage" jdbcType="CHAR" />
+  </resultMap>
+
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+<!--   <sql id="Update_By_Example_Where_Clause" > -->
+<!--     <where > -->
+<!--       <foreach collection="example.oredCriteria" item="criteria" separator="or" > -->
+<!--         <if test="criteria.valid" > -->
+<!--           <trim prefix="(" suffix=")" prefixOverrides="and" > -->
+<!--             <foreach collection="criteria.criteria" item="criterion" > -->
+<!--               <choose > -->
+<!--                 <when test="criterion.noValue" > -->
+<!--                   and ${criterion.condition} -->
+<!--                 </when> -->
+<!--                 <when test="criterion.singleValue" > -->
+<!--                   and ${criterion.condition} #{criterion.value} -->
+<!--                 </when> -->
+<!--                 <when test="criterion.betweenValue" > -->
+<!--                   and ${criterion.condition} #{criterion.value} and #{criterion.secondValue} -->
+<!--                 </when> -->
+<!--                 <when test="criterion.listValue" > -->
+<!--                   and ${criterion.condition} -->
+<!--                   <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," > -->
+<!--                     #{listItem} -->
+<!--                   </foreach> -->
+<!--                 </when> -->
+<!--               </choose> -->
+<!--             </foreach> -->
+<!--           </trim> -->
+<!--         </if> -->
+<!--       </foreach> -->
+<!--     </where> -->
+<!--   </sql> -->
+  <sql id="Base_Column_List" >
+    used_technical_skill_id, dev_experience_id, technical_skill_id, stage
+  </sql>
+  
+<!--   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.example.example.UsedTechnicalSkillExample" > -->
+<!--     select -->
+<!--     <if test="distinct" > -->
+<!--       distinct -->
+<!--     </if> -->
+<!--     <include refid="Base_Column_List" /> -->
+<!--     from used_technical_skills -->
+<!--     <if test="_parameter != null" > -->
+<!--       <include refid="Example_Where_Clause" /> -->
+<!--     </if> -->
+<!--     <if test="orderByClause != null" > -->
+<!--       order by ${orderByClause} -->
+<!--     </if> -->
+<!--   </select> -->
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from used_technical_skills
+    where used_technical_skill_id = #{usedTechnicalSkillId,jdbcType=INTEGER}
+  </select>
+  
+<!--   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" > -->
+<!--     delete from used_technical_skills -->
+<!--     where used_technical_skill_id = #{usedTechnicalSkillId,jdbcType=INTEGER} -->
+<!--   </delete> -->
+  
+  <delete id="deleteListByPrimaryKey">
+    delete from used_technical_skills
+    where used_technical_skill_id in (
+      <foreach item="ut" collection="usedTechnicalSkillList" separator=",">
+        #{ut.usedTechnicalSkillId,jdbcType=INTEGER}
+      </foreach>)
+  </delete>
+  
+  <delete id="deleteByExample" parameterType="com.example.example.UsedTechnicalSkillExample" >
+    delete from used_technical_skills
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  
+  <insert id="insertList" useGeneratedKeys="true" keyProperty="usedTechnicalSkillId">
+    insert into used_technical_skills (dev_experience_id, technical_skill_id, stage)
+    values 
+    <foreach item="ut" collection="usedTechnicalSkillList" separator=",">
+      (#{ut.devExperienceId,jdbcType=INTEGER}, #{ut.technicalSkillId,jdbcType=INTEGER}, '0')
+    </foreach>
+  </insert>
+  
+<!--   <insert id="insert" parameterType="com.example.domain.UsedTechnicalSkill" > -->
+<!--     insert into used_technical_skills (used_technical_skill_id, dev_experience_id,  -->
+<!--       technical_skill_id) -->
+<!--     values (#{usedTechnicalSkillId,jdbcType=INTEGER}, #{devExperienceId,jdbcType=INTEGER},  -->
+<!--       #{technicalSkillId,jdbcType=INTEGER}) -->
+<!--   </insert> -->
+  
+<!--   <insert id="insertSelective" parameterType="com.example.domain.UsedTechnicalSkill" > -->
+<!--     insert into used_technical_skills -->
+<!--     <trim prefix="(" suffix=")" suffixOverrides="," > -->
+<!--       <if test="usedTechnicalSkillId != null" > -->
+<!--         used_technical_skill_id, -->
+<!--       </if> -->
+<!--       <if test="devExperienceId != null" > -->
+<!--         dev_experience_id, -->
+<!--       </if> -->
+<!--       <if test="technicalSkillId != null" > -->
+<!--         technical_skill_id, -->
+<!--       </if> -->
+<!--     </trim> -->
+<!--     <trim prefix="values (" suffix=")" suffixOverrides="," > -->
+<!--       <if test="usedTechnicalSkillId != null" > -->
+<!--         #{usedTechnicalSkillId,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="devExperienceId != null" > -->
+<!--         #{devExperienceId,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="technicalSkillId != null" > -->
+<!--         #{technicalSkillId,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--     </trim> -->
+<!--   </insert> -->
+  
+<!--   <select id="countByExample" parameterType="com.example.example.UsedTechnicalSkillExample" resultType="java.lang.Integer" > -->
+<!--     select count(*) from used_technical_skills -->
+<!--     <if test="_parameter != null" > -->
+<!--       <include refid="Example_Where_Clause" /> -->
+<!--     </if> -->
+<!--   </select> -->
+  
+<!--   <update id="updateByExampleSelective" parameterType="map" > -->
+<!--     update used_technical_skills -->
+<!--     <set > -->
+<!--       <if test="record.usedTechnicalSkillId != null" > -->
+<!--         used_technical_skill_id = #{record.usedTechnicalSkillId,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="record.devExperienceId != null" > -->
+<!--         dev_experience_id = #{record.devExperienceId,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="record.technicalSkillId != null" > -->
+<!--         technical_skill_id = #{record.technicalSkillId,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--     </set> -->
+<!--     <if test="_parameter != null" > -->
+<!--       <include refid="Update_By_Example_Where_Clause" /> -->
+<!--     </if> -->
+<!--   </update> -->
+  
+<!--   <update id="updateByExample" parameterType="map" > -->
+<!--     update used_technical_skills -->
+<!--     set used_technical_skill_id = #{record.usedTechnicalSkillId,jdbcType=INTEGER}, -->
+<!--       dev_experience_id = #{record.devExperienceId,jdbcType=INTEGER}, -->
+<!--       technical_skill_id = #{record.technicalSkillId,jdbcType=INTEGER} -->
+<!--     <if test="_parameter != null" > -->
+<!--       <include refid="Update_By_Example_Where_Clause" /> -->
+<!--     </if> -->
+<!--   </update> -->
+  
+<!--   <update id="updateByPrimaryKeySelective" parameterType="com.example.domain.UsedTechnicalSkill" > -->
+<!--     update used_technical_skills -->
+<!--     <set > -->
+<!--       <if test="devExperienceId != null" > -->
+<!--         dev_experience_id = #{devExperienceId,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="technicalSkillId != null" > -->
+<!--         technical_skill_id = #{technicalSkillId,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--     </set> -->
+<!--     where used_technical_skill_id = #{usedTechnicalSkillId,jdbcType=INTEGER} -->
+<!--   </update> -->
+  
+<!--   <update id="updateByPrimaryKey" parameterType="com.example.domain.UsedTechnicalSkill" > -->
+<!--     update used_technical_skills -->
+<!--     set dev_experience_id = #{devExperienceId,jdbcType=INTEGER}, -->
+<!--       technical_skill_id = #{technicalSkillId,jdbcType=INTEGER} -->
+<!--     where used_technical_skill_id = #{usedTechnicalSkillId,jdbcType=INTEGER} -->
+<!--   </update> -->
+</mapper>

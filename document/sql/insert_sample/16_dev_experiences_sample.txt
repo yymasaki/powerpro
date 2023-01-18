@@ -1,0 +1,6 @@
+-- dev_experiencesテーブル
+INSERT INTO dev_experiences 
+(specsheet_id,project_name,started_on,finished_on,team_members,project_members,role,project_details,tasks,acquired,stage)
+VALUES (1,'パワプロ','2020-05-01','2020-06-01',6,6,'設計、実装','詳細','タスク','身についたこと','0');
+
+SELECT * FROM dev_experiences;

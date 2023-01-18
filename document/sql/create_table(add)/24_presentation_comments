@@ -1,0 +1,22 @@
+DROP TABLE IF EXISTS presentation_comments;
+
+CREATE TABLE IF NOT EXISTS presentation_comments(
+`presentation_comment_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+`comment` text NOT NULL,
+`creator_user_id` INT UNSIGNED NOT NULL,
+`created_at` DATETIME NOT NULL,
+`stage` char(1) NOT NULL,
+`deleted_at` DATETIME,
+`presentation_id` INT UNSIGNED NOT NULL,
+PRIMARY KEY (`presentation_comment_id`),
+CONSTRAINT `fk_presentation_comments_presentations1`
+FOREIGN KEY (`presentation_id`)
+REFERENCES `powerpro`.`presentations`(`presentation_id`)
+ON DELETE CASCADE 
+ON UPDATE CASCADE,
+CONSTRAINT `fk_presentation_comments_users1` 
+FOREIGN KEY (`creator_user_id`) 
+REFERENCES `powerpro`.`users`(`user_id`) 
+ON DELETE CASCADE 
+ON UPDATE CASCADE
+)

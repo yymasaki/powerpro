@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.mapper.HadEngineerSkillMapper" >
+  <resultMap id="BaseResultMap" type="com.example.domain.HadEngineerSkill" >
+    <id column="had_engineer_skill_id" property="hadEngineerSkillId" jdbcType="INTEGER" />
+    <result column="status_id" property="statusId" jdbcType="INTEGER" />
+    <result column="engineer_skill_id" property="engineerSkillId" jdbcType="INTEGER" />
+    <result column="score" property="score" jdbcType="INTEGER" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    had_engineer_skill_id, status_id, engineer_skill_id, score
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from had_engineer_skills
+    where had_engineer_skill_id = #{hadEngineerSkillId,jdbcType=INTEGER}
+  </select>
+  <!-- listのinsertを行う -->
+  <insert id ="insertSelectiveList" parameterType= "java.util.List" >
+  	insert into had_engineer_skills ( 
+          had_engineer_skill_id
+        , status_id
+        , engineer_skill_id
+        , score
+   )
+   values
+   <foreach collection ="hadEngineerSkillList" item="he" separator= ",">
+     (
+        #{he.hadEngineerSkillId, jdbcType=INTEGER},
+        #{he.statusId, jdbcType=INTEGER},
+        #{he.engineerSkillId, jdbcType=INTEGER},
+        #{he.score, jdbcType=CHAR}
+     )
+   </foreach>
+  </insert >
+  <!-- listのupdateを行う -->
+  <update id="bulkUpdate" parameterType="java.util.List">
+       update had_engineer_skills
+       set score = elt(field(had_engineer_skill_id,
+       <foreach collection="hadEngineerSkillList" item="he" separator=",">
+           #{he.hadEngineerSkillId}
+       </foreach>
+       ),
+       <foreach collection="hadEngineerSkillList" item="he" separator=",">
+           #{he.score}
+       </foreach>
+       )
+       where had_engineer_skill_id in (
+       <foreach collection="hadEngineerSkillList" item="he" separator=",">
+           #{he.hadEngineerSkillId}
+       </foreach>
+       )
+       and status_id = #{statusId, jdbcType=INTEGER};
+  </update>
+</mapper>

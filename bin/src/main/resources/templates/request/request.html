@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="ja"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<title>パワフルプロエンジニア</title>
+<link rel="shortcut icon" href="../static/favicon.ico" th:href="@{/favicon.ico}">
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+	integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+	crossorigin="anonymous">	
+
+<link rel="stylesheet" href="../../static/css/nbase.css" th:href="@{/css/nbase.css}">
+<link rel="stylesheet" href="../../static/css/request/request.css" th:href="@{/css/request/request.css}">
+<link rel="stylesheet" href="../static/css/header.css" th:href="@{/css/header.css}">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<script type="text/javascript" src="../../static/js/lib/jquery-3.3.1.min.js" th:src="@{/js/lib/jquery-3.3.1.min.js}"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="../../static/js/request/request.js" th:src="@{/js/request/request.js}"></script>
+
+</head>
+<script>
+	$(function(){
+		var tags = [ [(${userListForAutocomplete})] ];
+		
+		$( "#applicant" ).autocomplete({
+			source: function(request,response){
+				var results = $.ui.autocomplete.filter(tags, request.term);
+			    response(results.slice(0,20));
+			}
+		});		
+	});
+</script>
+<body>
+	<!-- header start -->
+	<nav th:replace="header::menu">
+	</nav>
+	<!-- header end -->
+	<!--アラートバー  -->
+	<div class="alert alert-warning alert-dismissible fade show" role="alert" id="flash" th:if="${message}">
+  		<div class="text-center" th:text="${message}" style="white-space:pre-wrap"></div> 
+  		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    		<span aria-hidden="true">&times;</span>
+  		</button>
+	</div>	
+	<div class="alert alert-danger alert-dismissible fade show" role="alert" id="flash" th:if="${failMessage}">
+  		<div class="text-center" th:text="${failMessage}" style="white-space:pre-wrap"></div> 
+  		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    		<span aria-hidden="true">&times;</span>
+  		</button>
+	</div>
+	<!-- アラートバー終了 -->				
+	<div class="container" sec:authorize="hasRole('ROLE_ADMIN')">
+		<div class="form-box2">
+			<h1 class="text-center">申請状況トップ</h1>
+			<div class="text-right">
+				<button class="btn btn-outline-primary" data-toggle="modal" data-target="#exampleModal" th:if="${technicalSkillRequestList}" id="approval-all">一括承認する</button> 
+			</div>
+			<!-- 一括承認クリック時のModal  -->
+			<form action="request.html" th:action="@{/request/item/approval-all}" th:object="${approvalAllTechnicalSkillForm}" method="post" id="approvalAllForm">
+				<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  				<div class="modal-dialog modal-dialog-centered" role="document">
+						<div class="text-right modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLabel">内容確認</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body" style="text-align:left">
+								<div class="form-group confirm">
+								<h5>現在表示されている申請中のテクニカルスキルを全て承認します。</h5>
+								<h5>この内容で確定しますか？</h5>
+								</div>
+								<div class="modal-footer text-right">
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">戻る</button>
+									<button type="button" class="btn btn-primary" id="all-done">
+									一括承認を確定する
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+			<!-- Modal-end-->
+			<div class="col">
+				<form class="searchRequestForm" action="skill-detail.html" th:action="@{/request}" th:object="${searchRequestForm}" method="GET">
+					<div class="contents skill-point">
+						申請内容<select name="content" id="content" class="check">
+							<option value="1" th:selected="${session.searchRequestForm.content==1}">ステータス更新</option>
+							<option value="2" th:selected="${session.searchRequestForm.content==2}">スペックシート更新</option>
+							<option value="3" th:selected="${session.searchRequestForm.content==3}">新規テクニカルスキル申請</option>
+						</select> 申請状況<select name="stage" id="stage" class="check">
+							<option value="2" th:selected="${session.searchRequestForm.stage==2}">未承認</option>
+							<option value="3" th:selected="${session.searchRequestForm.stage==3}">否認</option>
+						</select> 申請者名<input id="applicant" type="text" name="applicant">
+						<!-- jsファイルで使用 -->
+						<input type="hidden" id="session-applicant" th:value="${session.searchRequestForm.applicant}">
+						&nbsp;&nbsp;<button type="button" id="searchButton">検索</button>
+					</div>
+					<span id="unapproved"><label>未承認数:&nbsp;</label><span th:text="${searchCount}" id="non-approval">〇〇</span></span>
+					<span id="denied"><label>否認数:&nbsp;</label><span th:text="${searchCount}">〇〇</span></span>
+					<span id="approved"><label>承認数:&nbsp;</label><span th:text="${searchCount}">〇〇</span></span>
+					
+					&nbsp;&nbsp;<span th:text="${noDataMessage}" style="color:red"></span>
+					<label style="float:right"><span th:text="'現在のページ数: ' + ${pageNumber} + '/' + ${maxPageNumber}"></span></label>
+		
+					<table class="table-hover" border="1" style="width: 100%;">
+						<tbody>
+							<tr align="center">
+								<th>申請日</th>
+								<th>申請者名</th>
+								<th>所属</th>
+								<th>申請状況</th>
+								<th th:unless="${technicalSkillRequestList}">申請内容</th>
+								<th th:if="${technicalSkillRequestList}">カテゴリ名</th>
+								<th th:if="${technicalSkillRequestList}">スキル名</th>
+								<th th:if="${technicalSkillRequestList}">承認</th>
+								<th th:if="${technicalSkillRequestList}">修正</th>
+							</tr>
+							<tr class="status-request-tr clickable" th:each="statusRequest : ${statusRequestList}" 
+								th:if="${statusRequestList}" align="center" th:data-status_id="${statusRequest.statusId}">
+								<td th:text="${statusRequest.applicationDateString}">2020/06/12</td>
+								<td>
+									<span th:text="${statusRequest.user.name}">太郎</span>
+								</td>
+								<td th:text="${statusRequest.user.department.name}">WEBアプリケーション開発</td>
+								<td th:text="${statusRequest.stageString}">未承認</td>
+								<td>ステータス更新</td>
+							</tr>
+							<tr class="specsheet-request-tr clickable" th:each="appSpecsheetRequest : ${appSpecsheetRequestList}" th:if="${appSpecsheetRequestList}" align="center"
+								th:data-specsheet_id="${appSpecsheetRequest.specsheetId}" th:data-user_id="${appSpecsheetRequest.userId}" th:data-stage="${appSpecsheetRequest.stage}">
+								<td th:text="${appSpecsheetRequest.applicationDateString}">2020/06/12</td>
+								<td th:text="${appSpecsheetRequest.user.name}">太郎</td>
+								<td th:text="${appSpecsheetRequest.user.department.name}">WEBアプリケーション開発</td>
+								<td th:text="${appSpecsheetRequest.stageString}">未承認</td>
+								<td>スペックシート更新</td>
+							</tr>							
+							<tr th:each="technicalSkillRequest,status : ${technicalSkillRequestList}" th:if="${technicalSkillRequestList}" align="center">
+								<td th:text="${technicalSkillRequest.applicationDateString}">2020/06/12</td>
+								<td th:text="${technicalSkillRequest.user.name}">太郎</td>
+								<td th:text="${technicalSkillRequest.user.department.name}">WEBアプリケーション開発</td>
+								<td th:text="${technicalSkillRequest.stageString}">未承認</td>
+								<td>
+									<span th:text="${technicalSkillRequest.categoryName}" th:id="${technicalSkillRequest.technicalSkillId}+category"></span>
+									<input type="hidden" name="technicalSkillId" th:value="${technicalSkillRequest.technicalSkillId}" th:form="approvalForm+${technicalSkillRequest.technicalSkillId}">
+									<input type="hidden" name="version" th:value="${technicalSkillRequest.version}" th:form="approvalForm+${technicalSkillRequest.technicalSkillId}">
+									<input type="hidden" name="technicalSkillIdList" th:value="${technicalSkillRequest.technicalSkillId}" form="approvalAllForm">
+									<input type="hidden" name="versionList" th:value="${technicalSkillRequest.version}" form="approvalAllForm">
+								 </td>
+								 <td>
+									<span th:text="${technicalSkillRequest.name}" th:id="${technicalSkillRequest.technicalSkillId}+skill">スキル名</span>
+								 </td>
+								 <td>
+								 	<a data-toggle="modal" data-target="#exampleModalCenter" class="modal-open" th:id="${technicalSkillRequest.technicalSkillId}" href="">
+ 									 承認
+									</a>					
+								 </td>
+								 <td>
+									<a href="request-edit-item.html" th:href="@{/request/item/edit(technicalSkillId=${technicalSkillRequest.technicalSkillId},version=${technicalSkillRequest.version})}">
+										修正
+									</a>
+								 </td>
+							</tr>							
+						</tbody>
+					</table>
+					<div class="pages">
+						<input name="pageNumber" type="hidden" th:value="${pageNumber}">
+						<nav aria-label="Page navigation">
+							<ul class="pagination justify-content-between">
+								<li class="previous" th:unless="${pageNumber} == 1"><a href="#">&larr; prev</a></li>
+								<li class="text-right next" th:unless="${pageNumber} == ${maxPageNumber}" style="margin:0 0 0 auto"><a href="#">next &rarr;</a></li>
+							</ul>
+						</nav>
+					</div>
+				</form>	
+			</div>
+		</div>
+		<!-- 承認クリック時のModal  -->
+		<form action="request.html" th:action="@{/request/item/approval}" th:object="${approvalTechnicalSkillForm}" method="post" id="approvalForm">
+			<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  			<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="text-right modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">内容確認</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body" style="text-align:left">
+							<div class="form-group confirm">
+								<h5>カテゴリ名：<span id="modalCategoryName" th:text="test"></span></h5>
+								<h5>スキル名：<span id="modalSkillName" th:text="test"></span></h5>
+							</div><br>
+							<h5>この内容で確定しますか？</h5>
+						</div>
+						<div class="modal-footer" id="">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">戻る</button>
+							<button type="button" class="btn btn-primary process" id="done">
+	 							承認を確定する
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+		<!-- Modal-end -->	
+	</div>
+	<div class="container" sec:authorize="hasAnyRole('ROLE_WEB','ROLE_CL','ROLE_ML')">
+		<div class="form-box2">
+			<h1 class="text-center">申請状況トップ</h1>
+			<div class="col">
+				<form class="searchRequestForm" action="skill-detail.html" th:action="@{/request}" method="GET" th:object="${searchRequestForm}">
+				<div class="contents skill-point">
+					申請内容<select name="content">
+							<option value="1" th:selected="${session.searchRequestForm.content==1}">ステータス更新</option>
+							<option value="2" th:selected="${session.searchRequestForm.content==2}">スペックシート更新</option>
+					</select> 申請状況<select name="stage">
+						<option value="2" th:selected="${session.searchRequestForm.stage==2}">未承認</option>
+						<option value="3" th:selected="${session.searchRequestForm.stage==3}">否認</option>
+					</select>
+					&nbsp;&nbsp;<button type="button" id="searchButton">検索</button>
+				</div>
+				<span id="unapproved"><label>未承認数:&nbsp;</label><span th:text="${searchCount}">〇〇</span></span>
+				<span id="denied"><label>否認数:&nbsp;</label><span th:text="${searchCount}">〇〇</span></span>
+				<span id="approved"><label>承認数:&nbsp;</label><span th:text="${searchCount}">〇〇</span></span>			
+				
+				&nbsp;&nbsp;<span th:text="${noDataMessage}" style="color:red"></span>
+				<label style="float:right"><span th:text="'現在のページ数: ' + ${pageNumber} + '/' + ${maxPageNumber}"></span></label>
+				<table class="table-hover" border="1" style="width: 100%;">
+					<tbody>
+						<tr align="center">
+							<th>申請日</th>
+							<th>申請状況</th>
+							<th>申請内容</th>
+						</tr>
+						<tr class="status-request-tr clickable" th:each="statusRequest : ${statusRequestList}" 
+							th:if="${statusRequestList}" align="center" th:data-status_id="${statusRequest.statusId}">
+							<td th:text="${statusRequest.applicationDateString}">2020/06/12</td>
+							<td th:text="${statusRequest.stageString}">未承認</td>
+							<td>ステータス更新</td>
+						</tr>
+						<tr class="specsheet-request-tr clickable" th:each="appSpecsheetRequest : ${appSpecsheetRequestList}" th:if="${appSpecsheetRequestList}" align="center"
+							th:data-specsheet_id="${appSpecsheetRequest.specsheetId}" th:data-user_id="${appSpecsheetRequest.userId}" th:data-stage="${appSpecsheetRequest.stage}">
+							<td th:text="${appSpecsheetRequest.applicationDateString}">2020/06/12</td>
+							<td th:text="${appSpecsheetRequest.stageString}">未承認</td>
+							<td>スペックシート更新</td>
+						</tr>					
+					</tbody>
+				</table>
+				<div class="pages">
+					<input name="pageNumber" type="hidden" th:value="${pageNumber}">
+					<nav aria-label="Page navigation">
+						<ul class="pagination justify-content-between">
+							<li class="previous" th:unless="${pageNumber} == 1"><a href="#">&larr; prev</a></li>
+							<li class="text-right next" th:unless="${pageNumber} == ${maxPageNumber}" style="margin:0 0 0 auto"><a href="#">next &rarr;</a></li>
+						</ul>
+					</nav>
+				</div>
+			</form>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

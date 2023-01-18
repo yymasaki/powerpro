@@ -1,0 +1,61 @@
+@charset "UTF-8";
+
+.page-tittle {
+    font-weight: bold;
+}
+
+#introduction {
+    padding: 1rem;
+    width: 50%;
+    font-size: 13px;
+    border-radius: 10px;
+    border: #b82d18 4px solid;
+    background: #fff4f2;
+    margin: 2rem auto 2rem auto;
+    text-align: center;
+}
+
+#introduction strong {
+    font-size: 18px;
+}
+
+.presentation__title__text {
+    border-radius: 0%;
+    border-bottom: #17a2b8 2px solid;
+    display: inline-block;
+    font-weight: bold;
+}
+
+.presentation-info a {
+    color: black;
+    text-decoration: none;
+}
+
+.presentation-info:hover {
+    flex-shrink: 0;
+    object-fit: cover;
+    display: block;
+    opacity: .5;
+}
+
+@media only screen and (max-width:1020px) {
+    .btn {
+        width: 30%;
+    }
+
+    #introduction {
+        width: 80%;
+    }
+
+}
+
+.loader {
+    position: absolute;
+    top: 50%;
+    width: 24rem;
+    margin-left: -12rem;
+}
+
+.null-presentation{
+    margin: 2rem auto 2rem auto;
+}

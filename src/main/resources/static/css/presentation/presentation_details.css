@@ -1,0 +1,103 @@
+@charset "UTF-8";
+
+.presentation {
+    font-size: 1.2rem;
+    padding-bottom: 15px;
+}
+
+.presentation-info {
+    display: flex;
+}
+
+.presentation-belong {
+    margin-left: auto;
+}
+
+.presentation-dateandstage {
+    font-size: 1.2rem;
+    border-radius: 0px;
+}
+
+/* いいねボタン */
+.presentation-favorite {
+    border-radius: 1rem;
+    border: 1px #cccccc solid;
+    background: white;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.4);
+    float: left;
+    font-size: 1.2rem;
+    padding: 1.2rem;
+    text-align: center;
+    color: rgb(255, 0, 0);
+    border: rgba(255, 0, 0, 0.98) 2px solid;
+    background-color: rgb(255, 178, 225);
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.4);
+}
+
+#favoriteButton {
+    color: rgb(255, 0, 0);
+    border: rgba(255, 0, 0, 0.98) 2px solid;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.4);
+}
+
+#favoriteButton:hover {
+    background-color: rgb(255, 178, 225);
+}
+
+.presentation__title__text,
+.presetation__subtitle {
+    border-radius: 0%;
+    border-bottom: #17a2b8 2px solid;
+    display: inline-block;
+    font-weight: bold;
+}
+
+.department {
+    border-radius: 1rem;
+    border: 1px #cccccc solid;
+    background: white;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.4);
+    float: left;
+    font-size: 1rem;
+    padding: 1.2rem;
+    text-align: center;
+}
+
+.presentation__comment{
+    display: flex;
+    background-color: rgb(245, 251, 255);
+    border-bottom: #17a2b8 1.5px solid;
+    border-top: #17a2b8 1.5px solid;
+    padding: 7px;
+    margin: 7px;
+    border-radius:0px;
+}
+
+.comment{
+    width: 90%;
+}
+
+.comment-btn{
+    width: 10%;
+}
+
+.null-comments{
+    margin: 2rem auto 2rem auto;
+}
+
+/* .web-e{
+    color: rgba(255, 108, 0, 0.98);
+    border: rgba(255, 108, 0, 0.98) 2px solid;
+    background-color: rgba(255, 165, 0, 0.56);
+}
+
+.cl-e{
+    color: rgba(24, 116, 31, 0.98);
+    border: rgba(24, 116, 31, 0.98) 2px solid;
+    background-color: rgba(22, 224, 38, 0.37);
+}
+.ml-e{
+    color:#0e5aad;
+    border: #0e5aad 2px solid;
+    background-color: #CDE3FC;
+} */

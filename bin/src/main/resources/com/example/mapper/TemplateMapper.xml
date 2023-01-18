@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.mapper.TemplateMapper" >
+  <resultMap id="BaseResultMap" type="Template" >
+    <id column="t_template_id" property="templateId" jdbcType="INTEGER" />
+    <result column="t_name" property="name" jdbcType="VARCHAR" />
+    <result column="t_department_id" property="departmentId" jdbcType="INTEGER" />
+    <result column="t_stage" property="stage" jdbcType="CHAR" />
+    <result column="t_creator" property="creator" jdbcType="VARCHAR" />
+    <result column="t_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="t_updater" property="updater" jdbcType="VARCHAR" />
+    <result column="t_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+    <result column="t_version" property="version" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <resultMap type="Template" id="templateResultMap">
+  	<id property="templateId" column="t_template_id"/>
+  	<result property="name" column="t_name"/>
+  	<result property="departmentId" column="t_department_id"/>
+  	<result property="stage" column="t_stage"/>
+  	<result property="creator" column="t_creator"/>
+  	<result property="createdAt" column="t_created_at"/>
+  	<result property="updater" column="t_updater"/>
+  	<result property="updatedAt" column="t_updated_at"/>
+  	<result property="version" column="t_version"/>
+  	<association property="department" javaType="Department">
+  		<id property="departmentId" column="d_department_id"/>
+  		<result property="name" column="d_name" />
+  		<result property="staffId" column="d_staff_id" />
+  		<result property="stage" column="d_stage" />
+  		<result property="creator" column="d_creator" />
+  		<result property="createdAt" column="d_created_at" />
+  		<result property="updater" column="d_updater" />
+  		<result property="updatedAt" column="d_updated_at" />
+  		<result property="version" column="d_version" />
+  	</association>
+  	<collection property="templateEngineerSkillList" ofType="TemplateEngineerSkill">
+		<id property="templateEngineerSkillId" column="te_template_engineer_skill_id"/>
+		<result property="templateId" column="te_template_id"/>
+		<result property="engineerSkillId" column="te_engineer_skill_id"/>
+		<result property="score" column="te_score"/>
+		<association property="engineerSkill" javaType="EngineerSkill">
+			<id property="engineerSkillId" column="e_engineer_skill_id" />
+			<result property="name" column="e_name"/>
+			<result property="departmentId" column="e_department_id"/>
+			<result property="stage" column="e_stage"/>
+			<result property="creator" column="e_creator"/>
+			<result property="createdAt" column="e_created_at"/>
+			<result property="updater" column="e_updater"/>
+			<result property="updatedAt" column="e_updated_at"/>
+			<result property="version" column="e_version"/>
+		</association>
+  	</collection>
+  	<collection property="templateBasicSkillList" ofType="TemplateBasicSkill">
+  		<id property="templateBasicSkillId" column="tb_template_basic_skill_id"/>
+  		<result property="templateId" column="tb_template_id"/>
+  		<result property="basicSkillId" column="tb_basic_skill_id"/>
+  		<result property="score" column="tb_score"/>
+  		<association property="basicSkill" javaType="BasicSkill">
+  			<id property="basicSkillId" column="b_basic_skill_id"/>
+  			<result property="name" column="b_name" />
+  			<result property="departmentId" column="b_department_id" />
+  			<result property="stage" column="b_stage" />
+  			<result property="creator" column="b_creator" />
+  			<result property="createdAt" column="b_created_at" />
+  			<result property="updater" column="b_updater" />
+  			<result property="updatedAt" column="b_updated_at" />
+  			<result property="version" column="b_version" />
+  		</association>
+  	</collection>
+  </resultMap>  
+  
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    template_id, name, department_id, stage, creator, created_at, updater, updated_at, 
+    version
+  </sql>
+  <!-- 自分で作成 ここから -->
+  <sql id="Templates_Column_List">
+  	t.template_id AS t_template_id, t.name AS t_name, t.department_id AS t_department_id,
+  	t.stage AS t_stage, t.creator AS t_creator, t.created_at AS t_created_at, t.updater AS t_updater,
+  	t.updated_at AS t_updated_at,t.version AS t_version
+  </sql>
+  <sql id="Template_Engineer_Skills_Column_List">
+  	te.template_engineer_skill_id AS te_template_engineer_skill_id,te.template_id AS te_template_id,
+	te.engineer_skill_id AS te_engineer_skill_id, te.score AS te_score
+  </sql>
+  <sql id="Engineer_Skills_Column_List">
+	e.engineer_skill_id AS e_engineer_skill_id, e.name AS e_name, e.department_id AS e_department_id,
+	e.stage AS e_stage, e.creator AS e_creator, e.created_at AS e_created_at,
+	e.updater AS e_updater, e.updated_at AS e_updated_at, e.version AS e_version	
+  </sql>
+  <sql id="Template_Basic_Skills_Column_List">
+	tb.template_basic_skill_id AS tb_template_basic_skill_id,tb.template_id AS tb_template_id,
+	tb.basic_skill_id AS tb_basic_skill_id,tb.score AS tb_score 
+  </sql>
+  <sql id="Basic_Skills_Column_List">
+	b.basic_skill_id AS b_basic_skill_id, b.name AS b_name, b.department_id AS b_department_id,
+	b.stage AS b_stage, b.creator AS b_creator, b.created_at AS b_created_at,
+	b.updater AS b_updater, b.updated_at AS b_updated_at, b.version AS b_version
+  </sql>
+  <sql id="Departments_Column_List">
+	d.department_id AS d_department_id,d.name AS d_name,d.staff_id AS d_staff_id,d.stage AS d_stage,
+	d.creator AS d_creator,d.created_at AS d_created_at,d.updater AS d_updater,
+	d.updated_at AS d_updated_at,d.version AS d_version  	
+  </sql>
+  <select id="selectByTemplateId" resultMap="templateResultMap" parameterType="Integer">
+  	select
+  	<include refid="Templates_Column_List"/>,
+  	<include refid="Template_Engineer_Skills_Column_List"/>,
+  	<include refid="Engineer_Skills_Column_List"/>,
+  	<include refid="Template_Basic_Skills_Column_List"/>,
+  	<include refid="Basic_Skills_Column_List"/>,
+  	<include refid="Departments_Column_List"/>
+  	from templates t
+	inner  join  template_engineer_skills te on t.template_id = te.template_id
+	inner  join  engineer_skills e on te.engineer_skill_id = e.engineer_skill_id
+	inner  join  template_basic_skills tb on t.template_id = tb.template_id
+	inner  join  basic_skills b on tb.basic_skill_id = b.basic_skill_id
+	inner  join  departments d on t.department_id = d.department_id   	
+  	where t.template_id = #{templateId,jdbcType=INTEGER}
+  </select>
+<!--   <select id="selectByDepartmentId" resultType="Template" parameterType="Integer">
+  	select
+  	<include refid="Templates_Column_List"/>
+  	from templates t
+  	where t.department_id = #{departmentId,jdbcType=INTEGER}
+  </select> -->
+  <!-- 自分で作成　ここまで -->
+  <select id="selectByExample" parameterType="com.example.example.TemplateExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Templates_Column_List" />
+    from templates t
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from templates
+    where template_id = #{templateId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from templates
+    where template_id = #{templateId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.example.example.TemplateExample" >
+    delete from templates
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <!-- 元々ある -->
+  <insert id="insert" parameterType="com.example.domain.Template">
+    insert into templates (template_id, name, department_id, 
+      stage, creator, created_at, 
+      updater, updated_at, version
+      )
+    values (#{templateId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{departmentId,jdbcType=INTEGER}, 
+      #{stage,jdbcType=CHAR}, #{creator,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, 
+      #{updater,jdbcType=VARCHAR}, #{updatedAt,jdbcType=TIMESTAMP}, #{version,jdbcType=INTEGER}
+      )
+  </insert>
+  <!-- 自分で作成 -->
+  <insert id="insertReturnId" parameterType="com.example.domain.Template">
+    insert into templates (template_id, name, department_id, 
+      stage, creator, created_at, 
+      updater, updated_at, version
+      )
+    values (#{templateId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{departmentId,jdbcType=INTEGER}, 
+      #{stage,jdbcType=CHAR}, #{creator,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, 
+      #{updater,jdbcType=VARCHAR}, #{updatedAt,jdbcType=TIMESTAMP}, #{version,jdbcType=INTEGER}
+      )
+      <selectKey resultType="int" keyProperty="templateId" order="AFTER">
+      	select @@IDENTITY
+      </selectKey>
+  </insert>  
+  <insert id="insertSelective" parameterType="com.example.domain.Template" >
+    insert into templates
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="templateId != null" >
+        template_id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="departmentId != null" >
+        department_id,
+      </if>
+      <if test="stage != null" >
+        stage,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="createdAt != null" >
+        created_at,
+      </if>
+      <if test="updater != null" >
+        updater,
+      </if>
+      <if test="updatedAt != null" >
+        updated_at,
+      </if>
+      <if test="version != null" >
+        version,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="templateId != null" >
+        #{templateId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentId != null" >
+        #{departmentId,jdbcType=INTEGER},
+      </if>
+      <if test="stage != null" >
+        #{stage,jdbcType=CHAR},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null" >
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updater != null" >
+        #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedAt != null" >
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null" >
+        #{version,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.example.example.TemplateExample" resultType="java.lang.Integer" >
+    select count(*) from templates
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update templates
+    <set >
+      <if test="record.templateId != null" >
+        template_id = #{record.templateId,jdbcType=INTEGER},
+      </if>
+      <if test="record.name != null" >
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.departmentId != null" >
+        department_id = #{record.departmentId,jdbcType=INTEGER},
+      </if>
+      <if test="record.stage != null" >
+        stage = #{record.stage,jdbcType=CHAR},
+      </if>
+      <if test="record.creator != null" >
+        creator = #{record.creator,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createdAt != null" >
+        created_at = #{record.createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updater != null" >
+        updater = #{record.updater,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updatedAt != null" >
+        updated_at = #{record.updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.version != null" >
+        version = #{record.version,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update templates
+    set template_id = #{record.templateId,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      department_id = #{record.departmentId,jdbcType=INTEGER},
+      stage = #{record.stage,jdbcType=CHAR},
+      creator = #{record.creator,jdbcType=VARCHAR},
+      created_at = #{record.createdAt,jdbcType=TIMESTAMP},
+      updater = #{record.updater,jdbcType=VARCHAR},
+      updated_at = #{record.updatedAt,jdbcType=TIMESTAMP},
+      version = #{record.version,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.domain.Template" >
+    update templates
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentId != null" >
+        department_id = #{departmentId,jdbcType=INTEGER},
+      </if>
+      <if test="stage != null" >
+        stage = #{stage,jdbcType=CHAR},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null" >
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updater != null" >
+        updater = #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedAt != null" >
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null" >
+        version = #{version,jdbcType=INTEGER},
+      </if>
+    </set>
+    where template_id = #{templateId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.domain.Template" >
+    update templates
+    set name = #{name,jdbcType=VARCHAR},
+      department_id = #{departmentId,jdbcType=INTEGER},
+      stage = #{stage,jdbcType=CHAR},
+      creator = #{creator,jdbcType=VARCHAR},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updater = #{updater,jdbcType=VARCHAR},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      version = #{version,jdbcType=INTEGER}
+    where template_id = #{templateId,jdbcType=INTEGER}
+  </update>
+</mapper>

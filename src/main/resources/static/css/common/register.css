@@ -1,0 +1,94 @@
+@charset "UTF-8";
+
+#invalid-page{
+	width: 70%;
+	margin: 10% auto 10px auto;
+}
+
+pre{
+	color:red;
+	font-size:20px;
+	text-align:center;
+}
+
+.title{
+	text-align: center;
+	font-size: 2rem;
+}
+
+.register-form {
+	font-size: 13px;
+	border-radius: 10px;
+	padding: 2rem 1rem;
+	border: #17a2b8 2px solid;
+	margin: 4% auto 10px auto;
+}
+
+.contents label {
+	font-weight: bold;
+}
+
+.register-form select {
+	cursor: pointer;
+	font-size: 0.8rem;
+	padding: 8px;
+	border: #c0c0c02px solid;
+}
+
+.contents input[type="password"], .contents input[type="month"], .contents input[type="text"], .contents select{
+	padding: 0.6rem;
+	border: 1px solid #999999;
+	border-radius: 4px;
+}
+
+@media only screen and (min-width: 480px) {
+	.register-form {
+		width: 60%;
+	}
+	.contents label {
+		text-align: right;
+		width: 8rem;
+		display: inline-block;
+		padding: 0.4rem;
+	}
+	.contents input[type="password"], .contents input[type="month"], .contents input[type="text"], .contents select{
+		width: 50%;
+	}
+	#email{
+		display: inline;
+	}
+}
+
+
+@media only screen and (max-width: 479px) {	
+	.register-form {
+		width: 100%;	
+	}
+	.contents label {
+		padding-top: 1rem;
+	}
+	.contents input[type="password"], .contents input[type="month"], .contents input[type="text"], .contents select{
+		width: 90%;
+	}
+	#email{
+		margin: 0 auto 1rem auto;
+		padding-left: 1rem;
+	}
+}
+
+#check-datas-error{
+	color: red;
+	font-weight: 900;
+	margin: 1rem 0;
+}
+
+.btn {
+    font-size: 0.8rem;
+    font-weight: bold;
+    padding: 0.5rem 1.4rem;
+    border-radius: 8px;
+}
+
+.confirm{
+	font-size: 1rem
+}

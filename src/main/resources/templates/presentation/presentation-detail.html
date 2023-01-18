@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>パワフルプロエンジニア</title>
+
+	<link rel="shortcut icon" href="../static/favicon.ico" th:href="@{/favicon.ico}">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+	<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+	<link rel="stylesheet" href="../../static/css/nbase.css" th:href="@{/css/nbase.css}">
+	<link rel="stylesheet" href="../../static/css/nability.css" th:href="@{/css/nability.css}">
+	<link rel="stylesheet" href="../../static/css/nregist.css" th:href="@{/css/nregist.css}">
+	<link rel="stylesheet" href="../static/css/header.css" th:href="@{/css/header.css}">
+	<link rel="stylesheet" href="../../static/css/presentation/presentation_details.css"
+		th:href="@{/css/presentation/presentation_details.css}">
+	<link rel="stylesheet" href="../../static/css/presentation/editRequestComment.css"
+		th:href="@{/css/presentation/editRequestComment.css}">
+
+	<script type="text/javascript" src="../../static/js/lib/jquery-3.3.1.min.js"
+		th:src="@{/js/lib/jquery-3.3.1.min.js}"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script type="text/javascript" th:src="@{/js/presentation/editRequestComment.js}"></script>
+	<script type="text/javascript" th:src="@{/js/presentation/presentationFavorite.js}"></script>
+
+
+</head>
+
+<body>
+	<!-- header start -->
+	<nav th:replace="header::menu"></nav>
+	<!-- header end -->
+	<!--アラートバー  -->
+	<div class="alert alert-warning alert-dismissible fade show" role="alert" id="flash" th:if="${message}">
+		<div class="text-center" th:text="${message}" style="white-space: pre-wrap"></div>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="alert alert-danger alert-dismissible fade show" role="alert" id="flash" th:if="${failMessage}">
+		<div class="text-center" th:text="${failMessage}" style="white-space: pre-wrap"></div>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<!-- アラートバー終了 -->
+	<div class="presentation-link text-center">
+		<a th:if="${returnFlg}==1" th:href="@{/presentation}">トップに戻る</a>
+		<a th:if="${returnFlg}==2" th:href="@{/request/presentation}">応募一覧に戻る</a>
+	</div>
+
+	<div th:each="presenter:${presentation.presenterList}">
+		<div th:if="${presentation.editRequestCommentList!=null}">
+		<div
+			th:if="${presentation.editRequestCommentList.size != 0 && presenter.userId == #authentication.principal.user.userId}">
+			<input id="acd-check1" class="acd-check" type="checkbox">
+			<label class="acd-label" for="acd-check1">
+				<div th:if="${presentation.stage}==3">
+					<h4 class="text-center stage-if">▼　修正依頼コメントが届いています　▼</h4>
+				</div>
+				<div th:unless="${presentation.stage}==3">
+					<h4 class="text-center stage-unless">▼　過去の修正依頼コメントはこちら　▼</h4>
+				</div>
+			</label>
+			<div class="acd-content w-75 mx-auto edit-comment-box first-comment">
+				<div th:each="editRequestComment, commentStat:${presentation.editRequestCommentList}">
+					<div th:if="${commentStat.first}">
+						<div class="first-comment">
+							<div>
+								名前：<span th:text="${editRequestComment.editRequestCommentCreatorName}">管理者○○</span>
+							</div>
+							<div>
+								日時：<span
+									th:text="${#temporals.format(editRequestComment.editRequestCommentCreatedAt, 'yyyy/MM/dd HH:mm:ss')}">日時</span>
+							</div>
+							<div>コメント：<span class="edit-comment" th:text="${editRequestComment.editRequestComment}">
+									修正依頼コメント（1件目）</span>
+							</div>
+						</div>
+						<a th:href="@{/presentation/reApply(presentationId=${presentation.presentationId})}">
+							<span th:if="${presentation.stage}==3">
+								<input type="hidden" th:value="${presentation.editRequestCommentList}">
+								<button class="btn btn-outline-primary">修正してもう一度応募する</button>
+							</span>
+						</a>
+					</div>
+					<div th:if="${commentStat.count}==2">
+						<input type="button" class="btn btn-link" value="▼過去の修正依頼コメントを見る" id="editRequestCommentBtn">
+					</div>
+					<div th:unless="${commentStat.first}">
+						<div class="editRequestCommentMore" style="display: none;">
+							<div class="edit-comment-user">
+								名前：<span th:text="${editRequestComment.editRequestCommentCreatorName}">管理者○○</span>
+							</div>
+							<div>
+								日時：<span
+									th:text="${#temporals.format(editRequestComment.editRequestCommentCreatedAt, 'yyyy/MM/dd HH:mm:ss')}">日時</span>
+							</div>
+							コメント：<span class="edit-comment" th:text="${editRequestComment.editRequestComment}">
+								修正依頼コメント（1件目）</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
+	</div>
+
+	<div class="presentation form-box w-75 mx-auto">
+		<div class="presentation-info">
+			<div class="presentation-dateandstage">
+				発表日：<span th:if="${presentation.presentationDate}!=null"
+					th:text="${#temporals.format(presentation.presentationDate, 'yyyy/MM/dd')}">2022年10月20日</span>
+				<span th:unless="${presentation.presentationDate}!=null">未確定</span>
+				<div>
+					申請状況：<span th:text="${presentation.currentStage}">
+				</div>
+			</div>
+		</div>
+		<div class="presentation__title text-center mt-3">
+			<h1 class="presentation__title__text" th:text="${presentation.title}">パワフルプロエンジニア</h1>
+		</div>
+		<div class="presentation__concept mt-5">
+			<h3 class="presetation__subtitle">概要</h3>
+			<div th:text="${presentation.content}">エンジニアスキル可視化アプリです</div>
+		</div>
+		<div class="presentation__members mt-5">
+			<h3 class="presetation__subtitle">発表メンバー</h3>
+			<ul>
+				<span th:each="presenter:${presentation.presenterList}">
+					<li th:text="${presenter.name}">発表メンバー名</li>
+				</span>
+			</ul>
+		</div>
+		<div class="presentation__resource mt-5">
+			<h3 class="presetation__subtitle">資料</h3>
+			<div class="presentation__resource__link" th:each="document:${presentation.presentationDocumentList}">
+				<a th:href="${document.documentPath}" th:text="${document.documentPath}">資料パス</a>
+			</div>
+		</div>
+
+		<div class="presentation__favorite__button mt-5">
+			<input type="hidden" id="presentationId" th:value="${presentation.presentationId}"> <input type="hidden"
+				id="userId" th:value="${userId}"> <span style="color: red"> ♥ <span
+					id="favoriteCount">総いいね数</span></span>
+			<button class="btn" id="favoriteButton">いいね/いいね解除</button>
+		</div>
+		<div class="presentation__comments mt-5">
+			<h3 class="presetation__subtitle">閲覧者コメント</h3>
+			<form th:action="@{/presentation/detail/comment/do}" th:object="${presentationCommentForm}" method="post">
+				<div class="presentation__input__name">
+					<label for="name">氏名:</label> <span th:text="${#authentication.principal.user.name}"></span>
+				</div>
+				<div class="persentation__input_comment">
+					<label for="presentationComment">コメント</label><br>
+					<textarea id="presentationComment" class="form-control w-50" name="presentationComment" cols="50"
+						rows="5"></textarea>
+					<div id="error-comment" class="col-form-label" style="color: red"
+						th:errors="*{presentationComment}"></div>
+				</div>
+				<input type="hidden" name="presentationCommentPresentationId" th:value="${presentation.presentationId}">
+				<input type="hidden" name="returnFlg" th:value="${returnFlg}">
+				<button type="submit" class="btn btn-outline-primary mt-3">投稿</button>
+			</form>
+
+			<div th:if="${presentation.presentationCommentList}!=null">
+				<div th:each="presentationComment:${presentation.presentationCommentList}">
+					<form th:action="@{/presentation/detail/comment/delete}">
+
+						<div class="presentation__comment">
+							<div class="comment">
+								<div>氏名：<span
+										th:text="${presentationComment.presentationCommentCreatorName}">コメント投稿者名</span>
+								</div>
+								<div><span th:text="${presentationComment.presentationComment}">エンジニアからのコメント</span>
+								</div>
+							</div>
+							<div class="comment-btn"
+								th:if="${presentationComment.presentationCommentCreatorId}==${#authentication.principal.user.userId}">
+								<button type="submit" class="btn btn-outline-primary mt-3">削除</button>
+							</div>
+							<input type="hidden" name="presentationId" th:value="${presentation.presentationId}"> <input
+								type="hidden" name="presentationCommentId"
+								th:value="${presentationComment.presentationCommentId}">
+							<input type="hidden" name="returnFlg" th:value="${returnFlg}">
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Optional JavaScript -->
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+		integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+		integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>

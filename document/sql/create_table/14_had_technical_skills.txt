@@ -1,0 +1,28 @@
+DROP TABLE IF EXISTS had_technical_skills ;
+
+CREATE TABLE IF NOT EXISTS had_technical_skills (
+  `had_technical_skill_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` INT UNSIGNED NOT NULL,
+  `technical_skill_id` INT UNSIGNED NOT NULL,
+  `using_period` INT NULL,
+  `stage` CHAR(1) NOT NULL,
+  `creator` VARCHAR(255) NOT NULL,
+  `created_at` DATETIME NOT NULL,
+  `updater` VARCHAR(255) NOT NULL,
+  `updated_at` DATETIME NOT NULL,
+  PRIMARY KEY (`had_technical_skill_id`),
+  CONSTRAINT `fk_had_technical_skills_technical_skills1`
+    FOREIGN KEY (`technical_skill_id`)
+    REFERENCES `powerpro`.`technical_skills` (`technical_skill_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_had_technical_skills_users1`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `powerpro`.`users` (`user_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+CREATE INDEX `fk_had_technical_skills_technical_skills1_idx` ON `powerpro`.`had_technical_skills` (`technical_skill_id` ASC) VISIBLE;
+
+CREATE INDEX `fk_had_technical_skills_users1_idx` ON `powerpro`.`had_technical_skills` (`user_id` ASC) VISIBLE;

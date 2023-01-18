@@ -1,0 +1,815 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.mapper.AppSpecsheetMapper" >
+
+<!-- 単一テーブル用のResultMap -->
+  <resultMap id="BaseResultMap" type="AppSpecsheet" >
+    <id column="specsheet_id" property="specsheetId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="employee_id" property="employeeId" jdbcType="INTEGER" />
+    <result column="generation" property="generation" jdbcType="VARCHAR" />
+    <result column="gender" property="gender" jdbcType="CHAR" />
+    <result column="nearest_station" property="nearestStation" jdbcType="VARCHAR" />
+    <result column="start_business_date" property="startBusinessDate" jdbcType="VARCHAR" />
+    <result column="engineer_period" property="engineerPeriod" jdbcType="INTEGER" />
+    <result column="se_period" property="sePeriod" jdbcType="INTEGER" />
+    <result column="pg_period" property="pgPeriod" jdbcType="INTEGER" />
+    <result column="it_period" property="itPeriod" jdbcType="INTEGER" />
+    <result column="appeal" property="appeal" jdbcType="LONGVARCHAR" />
+    <result column="effort" property="effort" jdbcType="LONGVARCHAR" />
+    <result column="certification" property="certification" jdbcType="LONGVARCHAR" />
+    <result column="pre_job" property="preJob" jdbcType="LONGVARCHAR" />
+    <result column="admin_comment" property="adminComment" jdbcType="LONGVARCHAR" />
+    <result column="stage" property="stage" jdbcType="CHAR" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updater" property="updater" jdbcType="VARCHAR" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+    <result column="version" property="version" jdbcType="INTEGER" />
+  </resultMap>
+  
+<!-- テーブル結合用のResultMap -->
+  <resultMap id="SpecResultMap" type="AppSpecsheet" >
+    <id column="a_specsheet_id" property="specsheetId" jdbcType="INTEGER" />
+    <result column="a_user_id" property="userId" jdbcType="INTEGER" />
+    <result column="a_employee_id" property="employeeId" jdbcType="INTEGER" />
+    <result column="a_generation" property="generation" jdbcType="VARCHAR" />
+    <result column="a_gender" property="gender" jdbcType="CHAR" />
+    <result column="a_nearest_station" property="nearestStation" jdbcType="VARCHAR" />
+    <result column="a_start_business_date" property="startBusinessDate" jdbcType="VARCHAR" />
+    <result column="a_engineer_period" property="engineerPeriod" jdbcType="INTEGER" />
+    <result column="a_se_period" property="sePeriod" jdbcType="INTEGER" />
+    <result column="a_pg_period" property="pgPeriod" jdbcType="INTEGER" />
+    <result column="a_it_period" property="itPeriod" jdbcType="INTEGER" />
+    <result column="a_appeal" property="appeal" jdbcType="LONGVARCHAR" />
+    <result column="a_effort" property="effort" jdbcType="LONGVARCHAR" />
+    <result column="a_certification" property="certification" jdbcType="LONGVARCHAR" />
+    <result column="a_pre_job" property="preJob" jdbcType="LONGVARCHAR" />
+    <result column="a_admin_comment" property="adminComment" jdbcType="LONGVARCHAR" />
+    <result column="a_stage" property="stage" jdbcType="CHAR" />
+    <result column="a_creator" property="creator" jdbcType="VARCHAR" />
+    <result column="a_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="a_updater" property="updater" jdbcType="VARCHAR" />
+    <result column="a_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+    <result column="a_version" property="version" jdbcType="INTEGER" />
+    <association property="user" resultMap="UserResultMap" />
+    <association property="status" resultMap="StatusResultMap" />
+    <collection property="hadTechnicalSkillList" resultMap="HadTechnicalSkillResultMap" />
+    <collection property="devExperienceList" resultMap="DevExperienceResultMap" />
+  </resultMap>
+
+<!-- 結合部品としてのResultMap -->
+  <resultMap id="UserResultMap" type="User">
+    <id column="u_user_id" property="userId" jdbcType="INTEGER" />
+    <result column="u_name" property="name" jdbcType="VARCHAR" />
+    <result column="u_hired_on" property="hiredOn" jdbcType="DATE" />
+    <result column="u_department_id" property="departmentId" jdbcType="INTEGER" />
+    <result column="u_email" property="email" jdbcType="VARCHAR" />
+    <result column="u_password" property="password" jdbcType="CHAR" />
+    <result column="u_stage" property="stage" jdbcType="CHAR" />
+    <result column="u_updated_password_at" property="updatedPasswordAt" jdbcType="DATE" />
+    <result column="u_creator" property="creator" jdbcType="VARCHAR" />
+    <result column="u_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="u_updater" property="updater" jdbcType="VARCHAR" />
+    <result column="u_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+    <result column="u_version" property="version" jdbcType="INTEGER" />
+    <association property="department" javaType="Department">
+      <id column="d_department_id" property="departmentId" jdbcType="INTEGER" />
+      <result column="d_name" property="name" jdbcType="VARCHAR" />
+      <result column="d_staff_id" property="staffId" jdbcType="VARCHAR" />
+      <result column="d_stage" property="stage" jdbcType="CHAR" />
+      <result column="d_creator" property="creator" jdbcType="VARCHAR" />
+      <result column="d_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+      <result column="d_updater" property="updater" jdbcType="VARCHAR" />
+      <result column="d_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+      <result column="d_version" property="version" jdbcType="INTEGER" />
+    </association>
+  </resultMap>
+  <resultMap id="StatusResultMap" type="Status">
+    <id column="s_status_id" property="statusId" jdbcType="INTEGER" />
+    <result column="s_user_id" property="userId" jdbcType="INTEGER" />
+    <result column="s_using_pc" property="usingPc" jdbcType="VARCHAR" />
+    <result column="s_using_mobile" property="usingMobile" jdbcType="VARCHAR" />
+    <result column="s_user_comment" property="userComment" jdbcType="LONGVARCHAR" />
+    <result column="s_admin_comment" property="adminComment" jdbcType="LONGVARCHAR" />
+    <result column="s_stage" property="stage" jdbcType="CHAR" />
+    <result column="s_creator" property="creator" jdbcType="VARCHAR" />
+    <result column="s_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="s_updater" property="updater" jdbcType="VARCHAR" />
+    <result column="s_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+    <result column="s_version" property="version" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="HadTechnicalSkillResultMap" type="HadTechnicalSkill">
+    <id column="ht_had_technical_skill_id" property="hadTechnicalSkillId" jdbcType="INTEGER" />
+    <result column="ht_user_id" property="userId" jdbcType="INTEGER" />
+    <result column="ht_technical_skill_id" property="technicalSkillId" jdbcType="INTEGER" />
+    <result column="ht_using_period" property="usingPeriod" jdbcType="INTEGER" />
+    <result column="ht_stage" property="stage" jdbcType="CHAR" />
+    <result column="ht_creator" property="creator" jdbcType="VARCHAR" />
+    <result column="ht_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="ht_updater" property="updater" jdbcType="VARCHAR" />
+    <result column="ht_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+    <association property="technicalSkill" javaType="TechnicalSkill">
+      <id column="htt_technical_skill_id" property="technicalSkillId" jdbcType="INTEGER" />
+      <result column="htt_name" property="name" jdbcType="VARCHAR" />
+      <result column="htt_category" property="category" jdbcType="INTEGER" />
+      <result column="htt_request_user_id" property="requestUserId" jdbcType="INTEGER" />
+      <result column="htt_stage" property="stage" jdbcType="CHAR" />
+      <result column="htt_creator" property="creator" jdbcType="VARCHAR" />
+      <result column="htt_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+      <result column="htt_updater" property="updater" jdbcType="VARCHAR" />
+      <result column="htt_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+      <result column="htt_version" property="version" jdbcType="INTEGER" />
+    </association>
+  </resultMap>
+  <resultMap id="DevExperienceResultMap" type="DevExperience" >
+    <id column="de_dev_experience_id" property="devExperienceId" jdbcType="INTEGER" />
+    <result column="de_specsheet_id" property="specsheetId" jdbcType="INTEGER" />
+    <result column="de_project_name" property="projectName" jdbcType="VARCHAR" />
+    <result column="de_started_on" property="startedOn" jdbcType="DATE" />
+    <result column="de_finished_on" property="finishedOn" jdbcType="DATE" />
+    <result column="de_team_members" property="teamMembers" jdbcType="INTEGER" />
+    <result column="de_project_members" property="projectMembers" jdbcType="INTEGER" />
+    <result column="de_role" property="role" jdbcType="VARCHAR" />
+    <result column="de_project_details" property="projectDetails" jdbcType="LONGVARCHAR" />
+    <result column="de_tasks" property="tasks" jdbcType="LONGVARCHAR" />
+    <result column="de_acquired" property="acquired" jdbcType="LONGVARCHAR" />
+    <result column="de_stage" property="stage" jdbcType="CHAR" />
+    <collection property="usedTechnicalSkillList" ofType="UsedTechnicalSkill">
+      <id column="ut_used_technical_skill_id" property="usedTechnicalSkillId" jdbcType="INTEGER" />
+      <result column="ut_dev_experience_id" property="devExperienceId" jdbcType="INTEGER" />
+      <result column="ut_technical_skill_id" property="technicalSkillId" jdbcType="INTEGER" />
+      <result column="ut_stage" property="stage" jdbcType="CHAR" />
+      <association property="technicalSkill" javaType="TechnicalSkill">
+        <id column="utt_technical_skill_id" property="technicalSkillId" jdbcType="INTEGER" />
+        <result column="utt_name" property="name" jdbcType="VARCHAR" />
+        <result column="utt_category" property="category" jdbcType="INTEGER" />
+        <result column="utt_request_user_id" property="requestUserId" jdbcType="INTEGER" />
+        <result column="utt_stage" property="stage" jdbcType="CHAR" />
+        <result column="utt_creator" property="creator" jdbcType="VARCHAR" />
+        <result column="utt_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+        <result column="utt_updater" property="updater" jdbcType="VARCHAR" />
+        <result column="utt_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+        <result column="utt_version" property="version" jdbcType="INTEGER" />
+      </association>
+    </collection>
+  </resultMap>
+  
+<!-- 検索条件 Where句のexmaple -->
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                   and ${criterion.condition} 
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where> 
+　　</sql> 
+  <sql id="Base_Column_List" >
+    specsheet_id, user_id, employee_id, generation a_generation, gender, nearest_station, start_business_date, 
+    engineer_period, se_period, pg_period, it_period, appeal, effort, certification, pre_job, admin_comment, stage, 
+    creator, created_at, updater, updated_at, version
+  </sql>
+  <sql id="Spec_Column_List" >
+    a.specsheet_id a_specsheet_id, a.user_id a_user_id, a.employee_id a_employee_id, a.generation a_generation, 
+    a.gender a_gender, a.nearest_station a_nearest_station, a.start_business_date a_start_business_date, 
+    a.engineer_period a_engineer_period, a.se_period a_se_period, a.pg_period a_pg_period, a.it_period a_it_period, 
+    a.appeal a_appeal, a.effort a_effort, a.certification a_certification, a.pre_job a_pre_job, 
+    a.admin_comment a_admin_comment, a.stage a_stage, a.creator a_creator, a.created_at a_created_at, 
+    a.updater a_updater, a.updated_at a_updated_at, a.version a_version
+  </sql>
+  <sql id="User_Column_List" >
+    u.user_id u_user_id, u.name u_name, u.hired_on u_hired_on, u.department_id u_department_id, u.email u_email, 
+    u.password u_password, u.stage u_stage, u.updated_password_at u_updated_password_at, u.creator u_creator, 
+    u.created_at u_created_at, u.updater u_updater, u.updated_at u_updated_at, u.version u_version
+  </sql>
+  <sql id="Department_Column_List" >
+    d.department_id d_department_id, d.name d_name, d.staff_id d_staff_id, d.stage d_stage, d.creator d_creator, 
+    d.created_at d_created_at, d.updater d_updater, d.updated_at d_updated_at, d.version d_version
+  </sql>
+  <sql id="Status_Column_List" >
+    s.status_id s_status_id, s.user_id s_user_id, s.using_pc s_using_pc, s.using_mobile s_using_mobile, 
+    s.user_comment s_user_comment, s.admin_comment s_admin_comment, s.stage s_stage, s.creator s_creator, 
+    s.created_at s_created_at, s.updater s_updater, s.updated_at s_updated_at, s.version s_version
+  </sql>
+  <sql id="HadTechnicalSkill_Column_List" >
+    ht.had_technical_skill_id ht_had_technical_skill_id, ht.user_id ht_user_id, 
+    ht.technical_skill_id ht_technical_skill_id, ht.using_period ht_using_period, ht.stage ht_stage, 
+    ht.creator ht_creator, ht.created_at ht_created_at, ht.updater ht_updater, ht.updated_at ht_updated_at
+  </sql>
+  <sql id="HT_TechnicalSkill_Column_List" >
+    htt.technical_skill_id htt_technical_skill_id, htt.name htt_name, htt.category htt_category, 
+    htt.request_user_id htt_request_user_id, htt.stage htt_stage, htt.creator htt_creator, 
+    htt.created_at htt_created_at, htt.updater htt_updater, htt.updated_at htt_updated_at, htt.version htt_version
+  </sql>
+  <sql id="DevExperience_Column_List" >
+    de.dev_experience_id de_dev_experience_id, de.specsheet_id de_specsheet_id, de.project_name de_project_name, 
+    de.started_on de_started_on, de.finished_on de_finished_on, de.team_members de_team_members, 
+    de.project_members de_project_members, de.role de_role, de.project_details de_project_details, 
+    de.tasks de_tasks, de.acquired de_acquired, de.stage de_stage
+  </sql>
+  <sql id="UsedTechnicalSkill_Column_List" >
+    ut.used_technical_skill_id ut_used_technical_skill_id, ut.dev_experience_id ut_dev_experience_id, 
+    ut.technical_skill_id ut_technical_skill_id, ut.stage ut_stage
+  </sql>
+  <sql id="UT_TechnicalSkill_Column_List" >
+    utt.technical_skill_id utt_technical_skill_id, utt.name utt_name, utt.category utt_category, 
+    utt.request_user_id utt_request_user_id, utt.stage utt_stage, utt.creator utt_creator, 
+    utt.created_at utt_created_at, utt.updater utt_updater, utt.updated_at utt_updated_at, utt.version utt_version
+  </sql>
+  
+  <select id="selectByCondition" resultMap="SpecResultMap" >
+    select
+    <include refid="Spec_Column_List" />
+    , 
+    <include refid="User_Column_List" />
+    , 
+    <include refid="Department_Column_List" />
+    , 
+    <include refid="Status_Column_List" />
+    , 
+    <include refid="HadTechnicalSkill_Column_List" />
+    , 
+    <include refid="HT_TechnicalSkill_Column_List" />
+    , 
+    <include refid="DevExperience_Column_List" />
+    , 
+    <include refid="UsedTechnicalSkill_Column_List" />
+    , 
+    <include refid="UT_TechnicalSkill_Column_List" />
+    from (select * from app_specsheets 
+    		<trim prefix="WHERE" prefixOverrides="and |or ">
+              <if test="specsheetId != 0" >
+                and specsheet_id = #{specsheetId,jdbcType=INTEGER}
+              </if>
+              <if test="specsheetId == 0" >
+                and user_id = #{userId,jdbcType=INTEGER}
+              </if>
+              <if test="specsheetId == 0" >
+                and stage IN 
+                  <foreach item="stage" collection="specStageList" open="(" separator="," close=")">
+                    #{stage,jdbcType=CHAR}
+                  </foreach>
+              </if>
+            </trim>
+    		order by version desc limit 2) a 
+    inner join users u on a.user_id = u.user_id 
+    inner join departments d on u.department_id = d.department_id 
+    left join (select * from statuses 
+    		where user_id = #{userId,jdbcType=INTEGER} and stage = 0 
+    		order by version desc limit 1) s 
+		on a.user_id = s.user_id 
+    left join (select * from had_technical_skills 
+            where user_id = #{userId,jdbcType=INTEGER} and stage in 
+              <foreach item="stage" collection="htStageList" open="(" separator="," close=")">
+                #{stage,jdbcType=CHAR}
+              </foreach>
+			order by created_at) ht 
+		on a.user_id = ht.user_id 
+    left join (select * from technical_skills where stage != 9) htt on ht.technical_skill_id = htt.technical_skill_id 
+    left join dev_experiences de on a.specsheet_id = de.specsheet_id 
+    left join used_technical_skills ut on de.dev_experience_id = ut.dev_experience_id 
+    left join (select * from technical_skills where stage != 9) utt on ut.technical_skill_id = utt.technical_skill_id 
+    where u.stage = 0 
+    order by a.version desc, ht.created_at, de.finished_on desc, de.started_on desc, ut.used_technical_skill_id
+  </select>
+  
+  <select id="selectByStageAndApplicant" resultMap="SpecResultMap">
+  	select
+    <include refid="Spec_Column_List" />
+    , 
+    <include refid="User_Column_List" />
+    , 
+    <include refid="Department_Column_List" />
+    from app_specsheets a
+    inner join users u on a.user_id = u.user_id 
+    inner join departments d on u.department_id = d.department_id
+    where a.stage = #{stage,jdbcType=INTEGER} and a.creator like CONCAT('%',#{applicant},'%')
+    order by a.specsheet_id
+    limit 20 offset #{startNumber,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectByStageAndUserId" resultMap="SpecResultMap">
+  	select
+    <include refid="Spec_Column_List" />
+    , 
+    <include refid="User_Column_List" />
+    , 
+    <include refid="Department_Column_List" />
+    from app_specsheets a
+    inner join users u on a.user_id = u.user_id 
+    inner join departments d on u.department_id = d.department_id
+    where a.stage = #{stage,jdbcType=INTEGER} and u.user_id = #{userId,jdbcType=INTEGER}
+    order by a.specsheet_id
+    limit 20 offset #{startNumber,jdbcType=INTEGER}	
+  </select>
+  
+  <select id="selectByPrimaryKeyAndDevExperience" resultMap="SpecResultMap">
+    select 
+    <include refid="Spec_Column_List" />
+    , 
+    <include refid="User_Column_List" />
+    , 
+    <include refid="Department_Column_List" />
+    , 
+    <include refid="HadTechnicalSkill_Column_List" />
+    , 
+    <include refid="HT_TechnicalSkill_Column_List" />
+    , 
+    <include refid="DevExperience_Column_List" />
+    , 
+    <include refid="UsedTechnicalSkill_Column_List" />
+    , 
+    <include refid="UT_TechnicalSkill_Column_List" />
+    from (select * from app_specsheets 
+    		<trim prefix="WHERE" prefixOverrides="and |or ">
+              <if test="specsheetId != 0" >
+                and specsheet_id = #{specsheetId,jdbcType=INTEGER}
+              </if>
+              <if test="version != 0" >
+                and version = #{version,jdbcType=INTEGER}
+              </if>
+            </trim>
+    		order by updated_at desc limit 1) a 
+    inner join users u on a.user_id = u.user_id 
+    inner join departments d on u.department_id = d.department_id 
+    left join (select * from had_technical_skills 
+            where user_id = #{userId,jdbcType=INTEGER} and stage = 0 
+			order by created_at) ht 
+		on a.user_id = ht.user_id 
+    left join (select * from technical_skills where stage != 9) htt on ht.technical_skill_id = htt.technical_skill_id 
+    left join (select * from dev_experiences 
+            where dev_experience_id in 
+              <foreach item="devExperienceId" collection="devExperienceIdList" open="(" separator="," close=")">
+                #{devExperienceId,jdbcType=INTEGER}
+              </foreach>
+              and stage = 0 
+			order by finished_on desc, started_on desc) de on a.specsheet_id = de.specsheet_id 
+    left join used_technical_skills ut on de.dev_experience_id = ut.dev_experience_id 
+    left join (select * from technical_skills where stage != 9) utt on ut.technical_skill_id = utt.technical_skill_id 
+    where u.stage = 0 
+    order by ht.technical_skill_id, de.finished_on desc, de.started_on desc, ut.technical_skill_id
+  </select>
+  
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.example.example.AppSpecsheetExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from app_specsheets
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from app_specsheets
+    where specsheet_id = #{specsheetId,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from app_specsheets 
+    where specsheet_id = #{specsheetId,jdbcType=INTEGER}
+  </delete>
+  
+  <delete id="deleteByExample" parameterType="com.example.example.AppSpecsheetExample" >
+    delete from app_specsheets
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  
+  <insert id="insert" parameterType="AppSpecsheet" useGeneratedKeys="true" keyProperty="specsheetId">
+    insert into app_specsheets (user_id, employee_id, 
+      generation, gender, nearest_station, 
+      start_business_date, engineer_period, se_period, 
+      pg_period, it_period, stage, 
+      creator, created_at, updater, 
+      updated_at, version, appeal, 
+      effort, certification, pre_job, admin_comment
+      )
+    values (#{userId,jdbcType=INTEGER}, #{employeeId,jdbcType=INTEGER}, 
+      #{generation,jdbcType=VARCHAR}, #{gender,jdbcType=CHAR}, #{nearestStation,jdbcType=VARCHAR}, 
+      #{startBusinessDate,jdbcType=VARCHAR}, #{engineerPeriod,jdbcType=INTEGER}, #{sePeriod,jdbcType=INTEGER}, 
+      #{pgPeriod,jdbcType=INTEGER}, #{itPeriod,jdbcType=INTEGER}, #{stage,jdbcType=CHAR}, 
+      #{creator,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, #{updater,jdbcType=VARCHAR}, 
+      #{updatedAt,jdbcType=TIMESTAMP}, #{version,jdbcType=INTEGER}, #{appeal,jdbcType=LONGVARCHAR}, 
+      #{effort,jdbcType=LONGVARCHAR}, #{certification,jdbcType=LONGVARCHAR}, #{preJob,jdbcType=LONGVARCHAR}, 
+      #{adminComment,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  
+<!--   <insert id="insertSelective" parameterType="com.example.domain.AppSpecsheet" > -->
+<!--     insert into app_specsheets -->
+<!--     <trim prefix="(" suffix=")" suffixOverrides="," > -->
+<!--       <if test="specsheetId != null" > -->
+<!--         specsheet_id, -->
+<!--       </if> -->
+<!--       <if test="userId != null" > -->
+<!--         user_id, -->
+<!--       </if> -->
+<!--       <if test="employeeId != null" > -->
+<!--         employee_id, -->
+<!--       </if> -->
+<!--       <if test="generation != null" > -->
+<!--         generation, -->
+<!--       </if> -->
+<!--       <if test="gender != null" > -->
+<!--         gender, -->
+<!--       </if> -->
+<!--       <if test="nearestStation != null" > -->
+<!--         nearest_station, -->
+<!--       </if> -->
+<!--       <if test="startBusinessDate != null" > -->
+<!--         start_business_date, -->
+<!--       </if> -->
+<!--       <if test="engineerPeriod != null" > -->
+<!--         engineer_period, -->
+<!--       </if> -->
+<!--       <if test="sePeriod != null" > -->
+<!--         se_period, -->
+<!--       </if> -->
+<!--       <if test="pgPeriod != null" > -->
+<!--         pg_period, -->
+<!--       </if> -->
+<!--       <if test="itPeriod != null" > -->
+<!--         it_period, -->
+<!--       </if> -->
+<!--       <if test="stage != null" > -->
+<!--         stage, -->
+<!--       </if> -->
+<!--       <if test="creator != null" > -->
+<!--         creator, -->
+<!--       </if> -->
+<!--       <if test="createdAt != null" > -->
+<!--         created_at, -->
+<!--       </if> -->
+<!--       <if test="updater != null" > -->
+<!--         updater, -->
+<!--       </if> -->
+<!--       <if test="updatedAt != null" > -->
+<!--         updated_at, -->
+<!--       </if> -->
+<!--       <if test="version != null" > -->
+<!--         version, -->
+<!--       </if> -->
+<!--       <if test="appeal != null" > -->
+<!--         appeal, -->
+<!--       </if> -->
+<!--       <if test="effort != null" > -->
+<!--         effort, -->
+<!--       </if> -->
+<!--       <if test="certification != null" > -->
+<!--         certification, -->
+<!--       </if> -->
+<!--       <if test="preJob != null" > -->
+<!--         pre_job, -->
+<!--       </if> -->
+<!--       <if test="adminComment != null" > -->
+<!--         admin_comment, -->
+<!--       </if> -->
+<!--     </trim> -->
+<!--     <trim prefix="values (" suffix=")" suffixOverrides="," > -->
+<!--       <if test="specsheetId != null" > -->
+<!--         #{specsheetId,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="userId != null" > -->
+<!--         #{userId,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="employeeId != null" > -->
+<!--         #{employeeId,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="generation != null" > -->
+<!--         #{generation,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="gender != null" > -->
+<!--         #{gender,jdbcType=CHAR}, -->
+<!--       </if> -->
+<!--       <if test="nearestStation != null" > -->
+<!--         #{nearestStation,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="startBusinessDate != null" > -->
+<!--         #{startBusinessDate,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="engineerPeriod != null" > -->
+<!--         #{engineerPeriod,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="sePeriod != null" > -->
+<!--         #{sePeriod,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="pgPeriod != null" > -->
+<!--         #{pgPeriod,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="itPeriod != null" > -->
+<!--         #{itPeriod,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="stage != null" > -->
+<!--         #{stage,jdbcType=CHAR}, -->
+<!--       </if> -->
+<!--       <if test="creator != null" > -->
+<!--         #{creator,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="createdAt != null" > -->
+<!--         #{createdAt,jdbcType=TIMESTAMP}, -->
+<!--       </if> -->
+<!--       <if test="updater != null" > -->
+<!--         #{updater,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="updatedAt != null" > -->
+<!--         #{updatedAt,jdbcType=TIMESTAMP}, -->
+<!--       </if> -->
+<!--       <if test="version != null" > -->
+<!--         #{version,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="appeal != null" > -->
+<!--         #{appeal,jdbcType=LONGVARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="effort != null" > -->
+<!--         #{effort,jdbcType=LONGVARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="certification != null" > -->
+<!--         #{certification,jdbcType=LONGVARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="preJob != null" > -->
+<!--         #{preJob,jdbcType=LONGVARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="adminComment != null" > -->
+<!--         #{adminComment,jdbcType=LONGVARCHAR}, -->
+<!--       </if> -->
+<!--     </trim> -->
+<!--   </insert> -->
+  
+<select id="countByExample" parameterType="com.example.example.AppSpecsheetExample" resultType="java.lang.Integer" >
+	select count(*) from app_specsheets
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+ </select>
+  
+<!--   <update id="updateByExampleSelective" parameterType="map" > -->
+<!--     update app_specsheets -->
+<!--     <set > -->
+<!--       <if test="record.specsheetId != null" > -->
+<!--         specsheet_id = #{record.specsheetId,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="record.userId != null" > -->
+<!--         user_id = #{record.userId,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="record.employeeId != null" > -->
+<!--         employee_id = #{record.employeeId,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="record.generation != null" > -->
+<!--         generation = #{record.generation,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="record.gender != null" > -->
+<!--         gender = #{record.gender,jdbcType=CHAR}, -->
+<!--       </if> -->
+<!--       <if test="record.nearestStation != null" > -->
+<!--         nearest_station = #{record.nearestStation,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="record.startBusinessDate != null" > -->
+<!--         start_business_date = #{record.startBusinessDate,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="record.engineerPeriod != null" > -->
+<!--         engineer_period = #{record.engineerPeriod,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="record.sePeriod != null" > -->
+<!--         se_period = #{record.sePeriod,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="record.pgPeriod != null" > -->
+<!--         pg_period = #{record.pgPeriod,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="record.itPeriod != null" > -->
+<!--         it_period = #{record.itPeriod,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="record.stage != null" > -->
+<!--         stage = #{record.stage,jdbcType=CHAR}, -->
+<!--       </if> -->
+<!--       <if test="record.creator != null" > -->
+<!--         creator = #{record.creator,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="record.createdAt != null" > -->
+<!--         created_at = #{record.createdAt,jdbcType=TIMESTAMP}, -->
+<!--       </if> -->
+<!--       <if test="record.updater != null" > -->
+<!--         updater = #{record.updater,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="record.updatedAt != null" > -->
+<!--         updated_at = #{record.updatedAt,jdbcType=TIMESTAMP}, -->
+<!--       </if> -->
+<!--       <if test="record.version != null" > -->
+<!--         version = #{record.version,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="record.appeal != null" > -->
+<!--         appeal = #{record.appeal,jdbcType=LONGVARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="record.effort != null" > -->
+<!--         effort = #{record.effort,jdbcType=LONGVARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="record.certification != null" > -->
+<!--         certification = #{record.certification,jdbcType=LONGVARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="record.preJob != null" > -->
+<!--         pre_job = #{record.preJob,jdbcType=LONGVARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="record.adminComment != null" > -->
+<!--         admin_comment = #{record.adminComment,jdbcType=LONGVARCHAR}, -->
+<!--       </if> -->
+<!--     </set> -->
+<!--     <if test="_parameter != null" > -->
+<!--       <include refid="Update_By_Example_Where_Clause" /> -->
+<!--     </if> -->
+<!--   </update> -->
+  
+<!--   <update id="updateByExample" parameterType="map" > -->
+<!--     update app_specsheets -->
+<!--     set specsheet_id = #{record.specsheetId,jdbcType=INTEGER}, -->
+<!--       user_id = #{record.userId,jdbcType=INTEGER}, -->
+<!--       employee_id = #{record.employeeId,jdbcType=INTEGER}, -->
+<!--       generation = #{record.generation,jdbcType=VARCHAR}, -->
+<!--       gender = #{record.gender,jdbcType=CHAR}, -->
+<!--       nearest_station = #{record.nearestStation,jdbcType=VARCHAR}, -->
+<!--       start_business_date = #{record.startBusinessDate,jdbcType=VARCHAR}, -->
+<!--       engineer_period = #{record.engineerPeriod,jdbcType=INTEGER}, -->
+<!--       se_period = #{record.sePeriod,jdbcType=INTEGER}, -->
+<!--       pg_period = #{record.pgPeriod,jdbcType=INTEGER}, -->
+<!--       it_period = #{record.itPeriod,jdbcType=INTEGER}, -->
+<!--       stage = #{record.stage,jdbcType=CHAR}, -->
+<!--       creator = #{record.creator,jdbcType=VARCHAR}, -->
+<!--       created_at = #{record.createdAt,jdbcType=TIMESTAMP}, -->
+<!--       updater = #{record.updater,jdbcType=VARCHAR}, -->
+<!--       updated_at = #{record.updatedAt,jdbcType=TIMESTAMP}, -->
+<!--       version = #{record.version,jdbcType=INTEGER}, -->
+<!--       appeal = #{record.appeal,jdbcType=LONGVARCHAR}, -->
+<!--       effort = #{record.effort,jdbcType=LONGVARCHAR}, -->
+<!--       certification = #{record.certification,jdbcType=LONGVARCHAR}, -->
+<!--       pre_job = #{record.preJob,jdbcType=LONGVARCHAR}, -->
+<!--       admin_comment = #{record.adminComment,jdbcType=LONGVARCHAR} -->
+<!--     <if test="_parameter != null" > -->
+<!--       <include refid="Update_By_Example_Where_Clause" /> -->
+<!--     </if> -->
+<!--   </update> -->
+
+<!--   <update id="updateByPrimaryKeySelective" parameterType="com.example.domain.AppSpecsheet" > -->
+<!--     update app_specsheets -->
+<!--     <set > -->
+<!--       <if test="userId != null" > -->
+<!--         user_id = #{userId,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="employeeId != null" > -->
+<!--         employee_id = #{employeeId,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="generation != null" > -->
+<!--         generation = #{generation,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="gender != null" > -->
+<!--         gender = #{gender,jdbcType=CHAR}, -->
+<!--       </if> -->
+<!--       <if test="nearestStation != null" > -->
+<!--         nearest_station = #{nearestStation,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="startBusinessDate != null" > -->
+<!--         start_business_date = #{startBusinessDate,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="engineerPeriod != null" > -->
+<!--         engineer_period = #{engineerPeriod,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="sePeriod != null" > -->
+<!--         se_period = #{sePeriod,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="pgPeriod != null" > -->
+<!--         pg_period = #{pgPeriod,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="itPeriod != null" > -->
+<!--         it_period = #{itPeriod,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="stage != null" > -->
+<!--         stage = #{stage,jdbcType=CHAR}, -->
+<!--       </if> -->
+<!--       <if test="creator != null" > -->
+<!--         creator = #{creator,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="createdAt != null" > -->
+<!--         created_at = #{createdAt,jdbcType=TIMESTAMP}, -->
+<!--       </if> -->
+<!--       <if test="updater != null" > -->
+<!--         updater = #{updater,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="updatedAt != null" > -->
+<!--         updated_at = #{updatedAt,jdbcType=TIMESTAMP}, -->
+<!--       </if> -->
+<!--       <if test="version != null" > -->
+<!--         version = #{version,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="appeal != null" > -->
+<!--         appeal = #{appeal,jdbcType=LONGVARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="effort != null" > -->
+<!--         effort = #{effort,jdbcType=LONGVARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="certification != null" > -->
+<!--         certification = #{certification,jdbcType=LONGVARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="preJob != null" > -->
+<!--         pre_job = #{preJob,jdbcType=LONGVARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="adminComment != null" > -->
+<!--         admin_comment = #{adminComment,jdbcType=LONGVARCHAR}, -->
+<!--       </if> -->
+<!--     </set> -->
+<!--     where specsheet_id = #{specsheetId,jdbcType=INTEGER} -->
+<!--   </update> -->
+
+  <update id="updateByPrimaryKey" parameterType="AppSpecsheet" >
+    update app_specsheets
+    set specsheet_id = #{specsheetId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      employee_id = #{employeeId,jdbcType=INTEGER},
+      generation = #{generation,jdbcType=VARCHAR},
+      gender = #{gender,jdbcType=CHAR},
+      nearest_station = #{nearestStation,jdbcType=VARCHAR},
+      start_business_date = #{startBusinessDate,jdbcType=VARCHAR},
+      engineer_period = #{engineerPeriod,jdbcType=INTEGER},
+      se_period = #{sePeriod,jdbcType=INTEGER},
+      pg_period = #{pgPeriod,jdbcType=INTEGER},
+      it_period = #{itPeriod,jdbcType=INTEGER},
+      stage = #{stage,jdbcType=CHAR},
+      appeal = #{appeal,jdbcType=LONGVARCHAR},
+      effort = #{effort,jdbcType=LONGVARCHAR},
+      certification = #{certification,jdbcType=LONGVARCHAR},
+      pre_job = #{preJob,jdbcType=LONGVARCHAR},
+      admin_comment = #{adminComment,jdbcType=LONGVARCHAR},
+      creator = #{creator,jdbcType=VARCHAR},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updater = #{updater,jdbcType=VARCHAR},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      version = version + 1
+    where specsheet_id = #{specsheetId,jdbcType=INTEGER} and version = #{version,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateStageByPrimaryKey" parameterType="AppSpecsheet" >
+    update app_specsheets 
+    set admin_comment = #{adminComment,jdbcType=LONGVARCHAR}, 
+      stage = #{stage,jdbcType=CHAR}, 
+      updater = #{updater,jdbcType=VARCHAR}, 
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP}, 
+      version = version + 1
+    where specsheet_id = #{specsheetId,jdbcType=INTEGER} and version = #{version,jdbcType=INTEGER}
+  </update>
+  
+</mapper>

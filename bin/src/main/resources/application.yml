@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#  heroku DB情報  mysql://(--username--):(--password--)@(--hostname--)/(--dbname--)?reconnect=true
+#    url: jdbc:mysql://b6f1b0a06ccf77:52ed9bd2@us-cdbr-east-06.cleardb.net/heroku_89bf10c11d512ca?reconnect=true&useUnicode=true&characterEncoding=UTF-8
+#    username: b6f1b0a06ccf77
+#    password: 52ed9bd2 heroku_
+# localhost DB情報
+    url: jdbc:mysql://localhost:3306/powerpro?serverTimezone=JST
+    username: root
+    password: mysqlmysql
+    
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: powerpro2022.rakuspertners@gmail.com
+    password: bjzkhesatvxeccaa
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+mybatis:
+  configuration:
+#   スネークケースからキャメルケースへの変換
+    mapUnderscoreToCamelCase: true
+    auto-mapping-behavior: full
+#   〇〇Mapper.xmlファイルのresultTypeやparameterTypeを簡単に書けるようになる
+#　（例）： com.example.domain.Users → Users
+  type-aliases-package: com.example.domain

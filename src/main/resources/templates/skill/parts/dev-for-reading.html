@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>パワフルプロエンジニア</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/cupertino/jquery-ui.css">
+<link rel="stylesheet" href="../../static/css/lib/solid.min.css" th:href="@{/css/lib/solid.min.css}">
+<link rel="stylesheet" href="../../static/css/lib/brands.min.css" th:href="@{/css/lib/brands.min.css}">
+<link rel="stylesheet" href="../../static/css/lib/fontawesome.min.css" th:href="@{/css/lib/fontawesome.min.css}">
+<link rel="stylesheet" href="../../static/css/user/multi-select.css" th:href="@{/css/user/multi-select.css}">
+
+<link rel="stylesheet" href="../../static/css/nbase.css" th:href="@{/css/nbase.css}">
+<link rel="stylesheet" href="../../static/css/nability.css" th:href="@{/css/nability.css}">
+<link rel="stylesheet" href="../../static/css/skill/skill-spec.css" th:href="@{/css/skill/skill-spec.css}">
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+<script src="../../static/js/main.js" th:src="@{/js/main.js}"></script>
+<script src="../../static/js/jquery.multi-select.js" th:src="@{/js/jquery.multi-select.js}"></script>
+<script src="../../static/js/skill/skill-spec.js" th:src="@{/js/skill/skill-spec.js}"></script>
+</head>
+<body>
+
+<div id="developmentTable">
+	<table class="mx-auto dev-title-table" th:if="${noRecord}==null">
+		<tr>
+			<td class="cell-gray">
+				<div class="dev-title">開発経験</div>
+			</td>
+		</tr>
+	</table>
+	<table class="mx-auto" th:if="${noRecord}==null and ${#lists.size(specsheet.devExperienceList)}==0">
+		<tr><td class="cell-white"><div class="text-center">登録された開発経験はありません</div></td></tr>
+	</table>
+	<table class="mx-auto" th:each="devExperience,status:${specsheet.devExperienceList}">
+		<tr>
+			<td rowspan="14" class="cell-white w-3">
+				<div class="s1" th:text="${status.count}">1</div>
+			</td>
+			<td class="cell-gray w-10">
+				<div class="s1">開始年月</div>
+			</td>
+			<td class="cell-white w-10">
+				<div th:text="${#temporals.format(devExperience.startedOn,'yyyy年M月')}">2021年5月</div>
+			</td>
+			<td rowspan="2" class="cell-gray w-10">
+				<div class="s1">プロジェクト</div>
+			</td>
+			<td rowspan="2" class="cell-white w-22">
+				<div class="p5" th:text="${devExperience.projectName}">在庫管理システムの作成</div>
+			</td>
+			<td rowspan="2" class="cell-gray w-10">
+				<div class="s1">担当役割</div>
+			</td>
+			<td rowspan="2" class="cell-white w-15">
+				<div class="p11" th:text="${devExperience.role}">PG</div>
+			</td>
+			<td class="cell-gray w-10">
+				<div class="s1">チーム人数</div>
+			</td>
+			<td class="cell-white w-10">
+				<div class="s1" th:text="${devExperience.teamMembers}">5</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="cell-gray">
+				<div class="s1">期間</div>
+			</td>
+			<td class="cell-white">
+				<div th:text="${devExperience.projectPeriod}">5ヶ月</div>
+			</td>
+			<td class="cell-gray">
+				<div class="s1">PJ全体人数</div>
+			</td>
+			<td class="cell-white">
+				<div class="s1" th:text="${devExperience.projectMembers}">10</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="cell-gray">
+				<div class="s1">動作環境(OS)</div>
+			</td>
+			<td colspan="3" class="cell-white cell-left">
+				<div class="ut-div">
+					<span class="p10" th:each="OS,status:${devExperience.usedTechnicalSkillList}">
+						<span th:if="${OS.technicalSkill.category==1}" th:text="${OS.technicalSkill.name}">MacOS</span><!-- 
+						--><span class="comma" th:if="${OS.technicalSkill.category==1}">, </span>
+					</span>
+				</div>
+			</td>
+			<td class="cell-gray">
+				<div class="s1">担当工程</div>
+			</td>
+			<td colspan="3" class="cell-white cell-left">
+				<div class="ut-div">
+					<span class="p11" th:each="process,status:${devExperience.usedTechnicalSkillList}">
+						<span th:if="${process.technicalSkill.category==7}" th:text="${process.technicalSkill.name}">実装・デバック</span><!-- 
+						--><span class="comma" th:if="${process.technicalSkill.category==7}">、</span>
+					</span>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="cell-gray">
+				<div class="s1">言語</div>
+			</td>
+			<td colspan="7" class="cell-white cell-left">
+				<div class="ut-div">
+					<span class="p10" th:each="language,status:${devExperience.usedTechnicalSkillList}">
+						<span th:if="${language.technicalSkill.category==2}" th:text="${language.technicalSkill.name}">Java8</span><!-- 
+						--><span class="comma" th:if="${language.technicalSkill.category==2}">, </span>
+					</span>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="cell-gray">
+				<div class="s1">フレームワーク</div>
+			</td>
+			<td colspan="7" class="cell-white cell-left">
+				<div class="ut-div">
+					<span class="p10" th:each="framework,status:${devExperience.usedTechnicalSkillList}">
+						<span th:if="${framework.technicalSkill.category==3}" th:text="${framework.technicalSkill.name}">SpringBoot</span><!-- 
+						--><span class="comma" th:if="${framework.technicalSkill.category==3}">, </span>
+					</span>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="cell-gray">
+				<div class="s1">ライブラリ</div>
+			</td>
+			<td colspan="7" class="cell-white cell-left">
+				<div class="ut-div">
+					<span class="p10" th:each="library,status:${devExperience.usedTechnicalSkillList}">
+						<span th:if="${library.technicalSkill.category==4}" th:text="${library.technicalSkill.name}">jQuery</span><!-- 
+						--><span class="comma" th:if="${library.technicalSkill.category==4}">, </span>
+					</span>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="cell-gray">
+				<div class="s1">ミドルウェア</div>
+			</td>
+			<td colspan="7" class="cell-white cell-left">
+				<div class="ut-div">
+					<span class="p10" th:each="middleware,status:${devExperience.usedTechnicalSkillList}">
+						<span th:if="${middleware.technicalSkill.category==5}" th:text="${middleware.technicalSkill.name}">Tomcat8.0</span><!-- 
+						--><span class="comma" th:if="${middleware.technicalSkill.category==5}">, </span>
+					</span>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="cell-gray">
+				<div class="s1">ツール·その他</div>
+			</td>
+			<td colspan="7" class="cell-white cell-left">
+				<div class="ut-div">
+					<span class="p10" th:each="tool,status:${devExperience.usedTechnicalSkillList}">
+						<span th:if="${tool.technicalSkill.category==6}" th:text="${tool.technicalSkill.name}">Eclipse</span><!-- 
+						--><span class="comma" th:if="${tool.technicalSkill.category==6}">, </span>
+					</span>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="8" class="cell-gray cell-left">
+				<div class="pl-3">プロジェクト詳細</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="8" class="cell-white cell-left">
+				<div class="pl-3" style="white-space:pre-wrap" th:text="${devExperience.projectDetails}">在庫管理システムの作成</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="8" class="cell-gray cell-left">
+				<div class="pl-3">担当業務</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="8" class="cell-white cell-left">
+				<div class="pl-3" style="white-space:pre-wrap" th:text="${devExperience.tasks}">約140万件の生データをテーブルに挿入</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="8" class="cell-gray cell-left">
+				<div class="pl-3">身に付いた事</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="8" class="cell-white cell-left">
+				<div class="pl-3" style="white-space:pre-wrap" th:text="${devExperience.acquired}">外部プラグインを用いた機能実装</div>
+			</td>
+		</tr>
+	</table>
+</div>
+
+</body>
+</html>

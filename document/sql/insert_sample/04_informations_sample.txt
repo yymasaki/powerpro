@@ -1,0 +1,17 @@
+-- informationsテーブル
+delete from informations_department_link;
+delete from informations;
+
+ALTER TABLE `informations_department_link` auto_increment = 1;
+ALTER TABLE `informations` auto_increment = 1;
+
+INSERT INTO informations (create_user_id,title,content,start_posted_on,
+end_posted_on,stage)
+VALUES (5,'全部署用サンプルタイトル','全部署用サンプル本文','2020-06-20','2022-10-30','0')
+,(5,'エンジニア、管理者用サンプルタイトル','エンジニア、管理者用サンプル本文','2020-06-20','2022-10-30','0')
+,(5,'営業、管理者用サンプルタイトル','営業、管理者用サンプル本文','2020-06-20','2022-10-30','0')
+,(5,'管理者用サンプルタイトル','管理者用サンプル本文','2020-06-20','2022-10-30','0');
+
+SELECT * FROM informations;
+
+

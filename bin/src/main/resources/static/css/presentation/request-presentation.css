@@ -1,0 +1,136 @@
+@charset "UTF-8";
+
+.apply-search-form{
+    width: 40%;
+    font-size: 13px;
+    border-radius: 10px;
+    border: #17a2b8 2px solid;
+    margin: 0 auto 1rem auto;
+}
+.btn {
+    width: 20%;
+    margin: 1rem auto 1rem auto;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+input:focus {
+	outline: none;
+}
+
+.contents label {
+	display: inline-block;
+	padding: 0.4rem;
+	width: 10rem;
+	text-align: right;
+	font-weight: bold;
+}
+
+.contents input[type="month"], .contents input[type="text"], .contents select,
+.engineer select{
+	padding: 0.4rem;
+	border: 1px solid #999999;
+	border-radius: 4px;
+}
+.engineer{
+    text-align: center;
+}
+
+#contents-for-e{
+   font-weight: bold; 
+    
+}
+.content{
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+}
+
+
+
+/*発表内容*/
+
+.presentation-info a{
+    color:black;
+    text-decoration: none;
+}
+.presentation-info:hover{
+    flex-shrink: 0;
+    object-fit: cover;
+    display: block;
+    opacity: .5;
+}
+.presentation-info{
+    padding: 1rem;
+    width: 60%;
+    font-size: 13px;
+    border-radius: 10px;
+    border: #17a2b8 4px solid;
+    margin: 2rem auto 2rem auto;
+    background: #f0ffff;
+    overflow: hidden;
+}
+.main-content,.department,.presenters{
+    padding: 1rem;
+    border-radius: 10px;
+    border: 1px #cccccc solid;
+    background:white;
+    box-shadow: 2px 2px 2px rgba(0,0,0,0.4);
+    float: left;
+    
+}
+.main-content{
+    width: 70%;
+}
+.department{
+    font-size: 12px;
+    text-align: center;
+    width: 29%;
+    margin-left:1%;
+    margin-bottom:1%;
+}
+.web-e{
+    color: rgba(255, 108, 0, 0.98);
+    border: rgba(255, 108, 0, 0.98) 2px solid;
+    background-color: rgba(255, 165, 0, 0.56);
+}
+.cl-e{
+    color: rgba(24, 116, 31, 0.98);
+    border: rgba(24, 116, 31, 0.98) 2px solid;
+    background-color: rgba(22, 224, 38, 0.37);
+}
+.ml-e{
+    color:#0e5aad;
+    border: #0e5aad 2px solid;
+    background-color: #CDE3FC;
+}
+.presenters{
+    width: 29%;
+    margin-left:1%;
+}
+.member-title{
+    text-align: center;
+    font-weight: bold;
+    color: #22A2C6;
+}
+
+.presentation-date{
+    border-radius: 0px;
+    border-bottom: #cccccc 1px solid;
+}
+.tittle{
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+@media only screen and (max-width:1020px){
+.apply-search-form {
+    padding: 3rem 0.3rem;
+    width: 100%;
+}
+.presentation-info{
+    width: 100%;
+}
+
+}

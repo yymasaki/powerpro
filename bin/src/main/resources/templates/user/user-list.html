@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org"	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>パワフルプロエンジニア</title>
+<link rel="shortcut icon" href="../static/favicon.ico" th:href="@{/favicon.ico}">
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+	integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+	crossorigin="anonymous">
+<link rel="stylesheet" href="../../static/css/user/user-list.css" th:href="@{/css/user/user-list.css}">
+<link rel="stylesheet" href="../static/css/header.css" th:href="@{/css/header.css}">
+<script type="text/javascript" src="../../static/js/lib/jquery-3.3.1.min.js" th:src="@{/js/lib/jquery-3.3.1.min.js}"></script>
+<script
+		src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+		integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+		crossorigin="anonymous"></script>
+<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+		integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+		crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript" src="../../static/js/user/user-list.js" th:src="@{/js/user/user-list.js}"></script>
+<!-- /////////////////// multiple-select //////////////////////////////////// -->
+<!-- 【reference】 http://loudev.com/ -->
+ <link rel="stylesheet" href="../../static/css/user/multi-select.css" th:href="@{/css/user/multi-select.css}">
+<script type="text/javascript" src="../../static/js/jquery.multi-select.js" th:src="@{/js/jquery.multi-select.js}"></script>
+<script>
+$(function(){
+	$('#skills').multiSelect({
+		  selectableHeader: "<div class='custom-header'>保有スキル選択</div>",
+		  selectionHeader: "<div class='custom-header'>選択済</div>",
+		});
+});
+<!-- ///////////////////////////////////////////////////////////////////////// -->
+$( function() {
+	  var availableTags = [ [(${session.autocompleteUsers})] ];
+	  
+		$( "#name" ).autocomplete({
+			source: function(request,response){
+				var results = $.ui.autocomplete.filter(availableTags, request.term);
+			    response(results.slice(0,20));
+			}
+	} );
+	} );
+</script>
+</head>
+<body>
+	<!-- header start -->
+	<nav th:replace="header::menu"></nav>
+	<!-- header end -->
+	<div class="alert alert-warning fade show text-center" role="alert" th:if="${deleteCompleted}" id="flash">
+		<span th:text="${deleteCompleted}" ></span>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<!-- //// search box //// -->
+	<div class="container m-auto" >
+		<div class="title">ユーザー一覧</div>
+			<div class="user-search-form">
+				<form action="user-list.html" method="GET" class="m-auto" th:action="@{/user}" th:object="${searchUserForm}">
+					<div class="contents">
+						<label class="ml-5" for="department">所属区分</label>
+						 <select class="ml-3" name="departmentId">
+							<option selected value="">所属区分を選択してください</option>
+							<option value="1" th:field="*{departmentId}">Web</option>
+							<option value="2" th:field="*{departmentId}">CL</option>
+							<option value="3" th:field="*{departmentId}">ML</option>
+							<option value="4" th:field="*{departmentId}">営業</option>
+							<option value="5" th:field="*{departmentId}">管理者</option>
+						</select>
+					</div>
+					<div class="contents">
+						<label for="name" class="ml-5">名前</label> 
+						<input class="ml-3" type="text" id="name" name="name" th:field="*{name}" placeholder="テスト　太郎">
+					</div>
+					<div class="contents">
+						<label class="ml-5" for="enter-date">入社年月</label> 
+						<input class="ml-3" type="month" id="enter-date" name="hiredOn" th:field="*{hiredOn}">
+					</div>
+					<div class="contents" id="multiple-select">
+						<select id="skills" multiple="multiple" name=skills>
+					        <option th:field="*{skills}" th:each="skill:${technicalSkills}" th:value="${skill.technicalSkillId}" th:text="${skill.name}">java</option>
+					    </select>
+					</div>
+						<button class="btn btn-outline-primary btn-block">絞り込み</button>
+				</form>
+			</div>
+		</div>
+	<!-- end -->
+	<div style="width:60%;margin:1rem auto" sec:authorize="hasRole('ROLE_ADMIN')">
+		<button class="btn btn-outline-secondary btn-block" th:onclick="'window.location.href = \'' + @{/user/register} + '\''">新規ユーザー追加</button>
+	</div>
+	<div class="table-responsive">
+	
+	<h5 th:if="${session.userCount}" th:text="${session.userCount}" style="text-align:center; margin:20px auto 0px auto"></h5>
+	
+	<!-- //// paging //// -->
+		<table style="width:100%">
+			<tr>
+				<td id="current-page">
+					<strong>現在のページ数：<span th:text="${session.page}">1</span><span th:text="${' /' + session.pagingNumbers.size()}"> /100</span></strong>
+				</td>
+			</tr>
+			<tr>
+				<td class="prev-page">
+				<form action="user-list.html" method="GET" th:action="@{/user}" name="prevForm">
+						<input type="hidden" name="page" th:value="${session.page -1}">
+						<input type="hidden" name="departmentId" th:value="${session.searchValue.departmentId}">
+						<input type="hidden" name="name" th:value="${session.searchValue.name}">
+						<input type="hidden" name="hiredOn" th:value="${session.searchValue.hiredOn}">
+						<div th:each="skill:${session.searchValue.skills}">
+							<input type="hidden" name="skills" th:value="${skill}">
+						</div>
+    					<a style="font-size:12px" th:unless="${session.page==1}"  href="javascript:prevForm.submit()">←prev</a>
+					</form>
+				</td>
+				<td class="next-page">
+				<form action="user-list.html" method="GET" th:action="@{/user}" name="nextForm">
+						<input type="hidden" name="page" th:value="${session.page +1}">
+						<input type="hidden" name="departmentId" th:value="${session.searchValue.departmentId}">
+						<input type="hidden" name="name" th:value="${session.searchValue.name}">
+						<input type="hidden" name="hiredOn" th:value="${session.searchValue.hiredOn}">
+						<div th:each="skill:${session.searchValue.skills}">
+							<input type="hidden" name="skills" th:value="${skill}">
+						</div>
+    					<a style="font-size:12px" th:unless="${session.page==session.pagingNumbers.size()}"  href="javascript:nextForm.submit()">next→</a>
+					</form>
+				</td>
+			</tr>
+		</table>
+	<!-- end -->
+	<div style="margin:0 auto; text-align:center">
+		<h1 th:if="${nonUsers}" th:text="${nonUsers}"></h1>
+	</div>
+	<!--  //// users list //// -->
+		<table class="table" th:unless="${nonUsers}">
+			<tr>
+				<th rowspan="2" class="division">所属区分</th>
+				<th rowspan="2"  class="join">入社年月</th>
+				<th rowspan="2"  class="name">名前</th>
+				<th rowspan="2"  class="mail">メール</th>
+				<th rowspan="2"  class="spec">スキルシート</th>
+				<th colspan="2" class="management" sec:authorize="hasRole('ROLE_ADMIN')">ユーザー管理</th>
+			</tr>
+			<tr>
+				<th class="edit" sec:authorize="hasRole('ROLE_ADMIN')">編集</th>
+				<th class="delete" sec:authorize="hasRole('ROLE_ADMIN')">削除</th>
+			</tr>
+			<tr th:each="user:${users}">
+				<td class="division" th:text="${user.department.name}">Web</td>
+				<td class="join" th:text="${#strings.substring(user.hiredOn,0,7)}">2020/07</td>
+				<td class="name" th:text="${user.name}">テスト太郎</td>
+				<td class="mail" th:text="${user.email}">test-taro@rakus-partners.co.jp</td>
+				<td class="spec">
+					<a th:href="@{'/skill/status?userId=' + ${user.userId}}" th:if="${user.departmentId <= 3}">確認</a>
+					<span th:if="${user.departmentId > 3}">-</span>
+				</td>
+				<td class="edit" sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{'/user/edit?userId=' + ${user.userId}}">編集</a></td>
+				<td class="delete" sec:authorize="hasRole('ROLE_ADMIN')">
+					<!-- Button trigger modal -->
+					<a data-toggle="modal" th:data-target="'#exampleModalCenter'+${user.userId}" id="modal-open" href="">
+ 					 削除
+					</a>
+					<!-- Modal -->
+						<div class="modal fade" th:id="'exampleModalCenter'+${user.userId}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+								<div class="modal-dialog modal-dialog-centered" role="document">
+  									<div class="modal-content">
+  										<div class="modal-header">
+       									<h5 class="modal-title" id="exampleModalCenterTitle">内容確認</h5>
+       									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+         										<span aria-hidden="true">&times;</span>
+       									</button>
+     									</div>
+     								<div class="modal-body" style="text-align:left">
+     									<div class="confirm">
+      								 		<h5>ユーザー名：<span th:text="${user.name}"></span></h5>
+        								</div>
+        							<br><br>
+        							<h5>本当に削除しますか？</h5>
+      							</div>
+      							<div class="modal-footer" style="text-align:right">
+        							<button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
+        							<form method="post" th:name="${'delete' + user.userId}" th:action="@{/user/delete}" style="display:inline">
+									    <input type="hidden" name="userId" th:value="${user.userId}">
+        								<button type="button" class="btn btn-primary" id="done" th:onclick=" 'javascript:delete' +${user.userId}+ '.submit()' ">削除する</button>
+									</form>
+      							</div>
+    						</div>
+  						</div>
+					</div>
+					<!-- Modal end -->				
+				</td>
+			</tr>
+		</table>
+	<!-- end -->
+	<!-- //// paging //// -->
+		<table style="width:100%">
+			<tr>
+				<td class="prev-page">
+				<form action="user-list.html" method="GET" th:action="@{/user}" name="prevForm2">
+						<input type="hidden" name="page" th:value="${session.page -1}">
+						<input type="hidden" name="departmentId" th:value="${session.searchValue.departmentId}">
+						<input type="hidden" name="name" th:value="${session.searchValue.name}">
+						<input type="hidden" name="hiredOn" th:value="${session.searchValue.hiredOn}">
+						<div th:each="skill:${session.searchValue.skills}">
+							<input type="hidden" name="skills" th:value="${skill}">
+						</div>
+    					<a style="font-size:12px" th:unless="${session.page==1}"  href="javascript:prevForm2.submit()">←prev</a>
+					</form>
+				</td>
+				<td class="next-page">
+				<form action="user-list.html" method="GET" th:action="@{/user}" name="nextForm2">
+						<input type="hidden" name="page" th:value="${session.page +1}">
+						<input type="hidden" name="departmentId" th:value="${session.searchValue.departmentId}">
+						<input type="hidden" name="name" th:value="${session.searchValue.name}">
+						<input type="hidden" name="hiredOn" th:value="${session.searchValue.hiredOn}">
+						<div th:each="skill:${session.searchValue.skills}">
+							<input type="hidden" name="skills" th:value="${skill}">
+						</div>
+    					<a style="font-size:12px" th:unless="${session.page==session.pagingNumbers.size()}"  href="javascript:nextForm2.submit()">next→</a>
+					</form>
+				</td>
+			</tr>
+		</table>
+	<!-- end -->
+	</div>
+	<br><br>
+</body>
+</html>

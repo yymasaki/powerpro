@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org"
+				xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<!-- class="validate[required]" meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>パワフルプロエンジニア</title>
+<link rel="shortcut icon" href="../static/favicon.ico" th:href="@{/favicon.ico}">
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+	integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+	crossorigin="anonymous">
+	
+<script type="text/javascript" src="../../static/js/lib/jquery-3.3.1.min.js" th:src="@{/js/lib/jquery-3.3.1.min.js}"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+<link rel="stylesheet" href="../../static/css/nbase.css" th:href="@{/css/nbase.css}">
+<link rel="stylesheet" href="../../static/css/nbase.css" th:href="@{/css/nregist.css}">
+<link rel="stylesheet" href="../../static/css/skill/skill-edit-technique.css" th:href="@{/css/skill/skill-edit-technique.css}">
+<link rel="stylesheet" href="../static/css/header.css" th:href="@{/css/header.css}">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+</head>
+<body>
+	<!-- header start -->
+	<nav th:replace="header::menu"></nav>
+	<!-- header end -->
+		 <div class="form-box2">
+			<h1 class="text-center">テクニカルスキル利用歴編集</h1>
+			<br>
+			<div class="col">
+			<div th:text="${error}" style="color:red;font-size:15px;"></div>
+				<form action="skill-technique-detail.html" th:action="@{/skill/technique/edit/do}" th:object="${editHadTechnicalSkillForm}" method="post">
+					<table id="hadTechnicalSKillList" class="table-hover table-bordered">
+						<tr>
+							<th colspan="2"><h5>動作環境(OS)</h5></th>
+						</tr>
+						<tr th:if="${#lists.isEmpty(osList)}">
+						<td colspan="6" class="text-center" style="color:red;">登録がありません。(スペックシートのスキル要約を登録頂くことで反映されます。)</td>
+						</tr>
+						<tr th:each="os,status:${osList}" th:id="'osList'+${status.index}">
+							<input type="hidden" th:name="'hadTechnicalSkillList['+${status.index}+'].hadTechnicalSkillId'" th:value="${os.hadTechnicalSkillId}">
+							<td class="osSkill"><input type="text" th:name="'hadTechnicalSkillList['+${status.index}+'].technicalSkill.name'" th:value="${os.technicalSkill.name}" class="os form-control-plaintext text-center ml-0" disabled></td>
+							<td class="text-center mr-5">利用歴<input type="number" th:name="'hadTechnicalSkillList['+${status.index}+'].usingPeriod'" id="osUsingPeriod" max="1400" placeholder="月数で入力" th:value="${os.usingPeriod}" min=1 class=" usingHistory">ヶ月</td>
+						</tr>
+						<tr>
+							<th colspan="2">
+							<h5>プログラム言語</h5></th>
+						</tr>
+					    <tr th:if="${#lists.isEmpty(languageList)}">
+						<td colspan="6" class="text-center" style="color:red;">登録がありません。(スペックシートのスキル要約を登録頂くことで反映されます。)</td>
+						</tr>
+						<tr th:each="language,status:${languageList}"
+							th:id="'languageList'+${status.index}">
+							<input type="hidden" th:name="'hadTechnicalSkillList['+${status.index+osListSize}+'].hadTechnicalSkillId'" th:value="${language.hadTechnicalSkillId}">
+							<td class="languageSkill"><input type="text" th:name="'hadTechnicalSkillList['+${status.index+osListSize}+'].technicalSkill.name'" id="language" th:value="${language.technicalSkill.name}" class="language form-control-plaintext text-center ml-0" disabled></td>
+							<td class="text-center mr-5">利用歴<input type="number" th:name="'hadTechnicalSkillList['+${status.index+osListSize}+'].usingPeriod'" id="languageUsingPeriod" max="1400" class=" usingHistory" th:value="${language.usingPeriod}" placeholder="月数で入力" min=1>ヶ月
+							</td>
+						</tr>
+						<tr>
+							<th colspan="2">
+								<h5>フレームワーク</h5></th>
+						</tr>
+						<tr th:if="${#lists.isEmpty(frameworkList)}">
+						<td colspan="6" class="text-center" style="color:red;">登録がありません。(スペックシートのスキル要約を登録頂くことで反映されます。)</td>
+						</tr>
+						<tr th:each="framework,status:${frameworkList}" th:id="'frameworkList'+${status.index}">
+							<input type="hidden" th:name="'hadTechnicalSkillList['+${status.index+osListSize+languageListSize}+'].hadTechnicalSkillId'" th:value="${framework.hadTechnicalSkillId}">
+							<td class="frameworkSkill"><input type="text" th:name="'hadTechnicalSkillList['+${status.index+osListSize+languageListSize}+'].technicalSkill.name'" id="frameWork"  th:value="${framework.technicalSkill.name}" class="framework form-control-plaintext text-center ml-0" disabled></td>
+							<td class="text-center mr-5">利用歴<input type="number" th:name="'hadTechnicalSkillList['+${status.index+osListSize+languageListSize}+'].usingPeriod'" id="frameworkUsingPeriod" th:value="${framework.usingPeriod}" class=" usingHistory" max="1400" placeholder="月数で入力" min=1>ヶ月
+							</td>
+						</tr>
+						<tr>
+							<th colspan="2">
+							<h5>ライブラリ</h5></th>
+						</tr>
+						<tr th:if="${#lists.isEmpty(libraryList)}">
+						<td colspan="6" class="text-center" style="color:red;">登録がありません。(スペックシートのスキル要約を登録頂くことで反映されます。)</td>
+						</tr>
+						<tr th:each="library,status:${libraryList}"
+							th:id="'libraryList'+${status.index+1}">
+							<input type="hidden" th:name="'hadTechnicalSkillList['+${status.index+osListSize+languageListSize+frameworkListSize}+'].hadTechnicalSkillId'" th:value="${library.hadTechnicalSkillId}">
+							<td class="librarySkill">
+							<input type="text" th:name="'hadTechnicalSkillList['+${status.index+osListSize+languageListSize+frameworkListSize}+'].technicalSkill.name'" id="library"  th:value="${library.technicalSkill.name}" class="library form-control-plaintext text-center ml-0" disabled></td>
+							<td class="text-center mr-5">利用歴 <input type="number" th:name="'hadTechnicalSkillList['+${status.index+osListSize+languageListSize+frameworkListSize}+'].usingPeriod'" id="libraryUsingPeriod" max="1400" placeholder="月数で入力" class=" usingHistory" th:value="${library.usingPeriod}" min=1>ヶ月
+							</td>
+						</tr>
+						<tr>
+							<th colspan="2">
+								<h5>ミドルウェア</h5></th>
+						</tr>
+						<tr th:if="${#lists.isEmpty(middlewareList)}">
+						<td colspan="6" class="text-center" style="color:red;">登録がありません。(スペックシートのスキル要約を登録頂くことで反映されます。)</td>
+						</tr>
+						<tr th:each="middleware,status:${middlewareList}"
+							th:id="'middlewareList'+${status.index+1}">
+							<input type="hidden" th:name="'hadTechnicalSkillList['+${status.index+osListSize+languageListSize+frameworkListSize+libraryListSize}+'].hadTechnicalSkillId'" th:value="${middleware.hadTechnicalSkillId}">
+							<td class="middlewareSkill"><input type="text" th:name="'hadTechnicalSkillList['+${status.index+osListSize+languageListSize+frameworkListSize+libraryListSize}+'].technicalSkill.name'" id="middleware"  th:value="${middleware.technicalSkill.name}" class="middleware form-control-plaintext text-center ml-0" disabled></td>
+							<td class="text-center mr-5">利用歴<input type="number" th:name="'hadTechnicalSkillList['+${status.index+osListSize+languageListSize+frameworkListSize+libraryListSize}+'].usingPeriod'" id="middlewareUsingPeriod"  th:value="${middleware.usingPeriod}" class="usingHistory" max="1400" placeholder="月数で入力" min=1>ヶ月
+							</td>
+						</tr>
+						<tr>
+							<th colspan="2">
+								<h5>ツール・その他</h5></th>
+						<tr th:if="${#lists.isEmpty(toolList)}">
+						<td colspan="6" class="text-center" style="color:red;">登録がありません。(スペックシートのスキル要約を登録頂くことで反映されます。)</td>
+						</tr>
+						<tr th:each="tool,status:${toolList}" th:id="'toolList'+${status.index+1}">
+							<input type="hidden" th:name="'hadTechnicalSkillList['+${status.index+osListSize+languageListSize+frameworkListSize+libraryListSize+middlewareListSize}+'].hadTechnicalSkillId'" th:value="${tool.hadTechnicalSkillId}">
+							<td class="toolSkill"><input type="text" th:name="'hadTechnicalSkillList['+${status.index+osListSize+languageListSize+frameworkListSize+libraryListSize+middlewareListSize}+'].technicalSkill.name'" id="other"  th:value="${tool.technicalSkill.name}" class="tool form-control-plaintext text-center ml-0" disabled></td>
+							<td class="text-center mr-5">利用歴<input type="number" th:name="'hadTechnicalSkillList['+${status.index+osListSize+languageListSize+frameworkListSize+libraryListSize+middlewareListSize}+'].usingPeriod'" id="toolOtherUsingPeriod"  max="1400" placeholder="月数で入力" class=" usingHistory" th:value="${tool.usingPeriod}" min=1>ヶ月
+							</td>
+						</tr>
+						<tr>
+							<th colspan="2">
+								<h5>担当工程</h5></th>
+						<tr th:if="${#lists.isEmpty(devProcessList)}">
+						<td colspan="6" class="text-center" style="color:red;">登録がありません。(スペックシートのスキル要約を登録頂くことで反映されます。)</td>
+						</tr>
+						<tr th:each="devProcess,status:${devProcessList}" th:id="'devProcessList'+${status.index+1}">
+							<input type="hidden" th:name="'hadTechnicalSkillList['+${status.index+osListSize+languageListSize+frameworkListSize+libraryListSize+middlewareListSize+toolListSize}+'].hadTechnicalSkillId'" th:value="${devProcess.hadTechnicalSkillId}">
+							<td class="devProcessSkill"><input type="text" th:name="'hadTechnicalSkillList['+${status.index+osListSize+languageListSize+frameworkListSize+libraryListSize+middlewareListSize+toolListSize}+'].technicalSkill.name'" id="devProcess"  th:value="${devProcess.technicalSkill.name}" class="devProcess form-control-plaintext text-center ml-0" disabled></td>
+							<td class="text-center mr-5">利用歴<input type="number" th:name="'hadTechnicalSkillList['+${status.index+osListSize+languageListSize+frameworkListSize+libraryListSize+middlewareListSize+toolListSize}+'].usingPeriod'" id="devProcessUsageHistory"  max="1400" placeholder="月数で入力" class=" usingHistory" min=1 th:value="${devProcess.usingPeriod}">ヶ月
+							</td>
+						</tr>
+					</table>
+					<br>
+						<div th:if="${totalSize!=0}"><button  class="btn btn-blue">保存</button></div>
+						<div th:if="${totalSize==0}"><button  class="btn btn-blue" disabled>保存</button></div>
+				</form>
+			</div>
+			</div>
+</body>
+</html>

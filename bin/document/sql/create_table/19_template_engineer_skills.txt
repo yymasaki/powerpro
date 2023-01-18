@@ -1,0 +1,23 @@
+DROP TABLE IF EXISTS `powerpro`.`template_engineer_skills` ;
+
+CREATE TABLE IF NOT EXISTS `powerpro`.`template_engineer_skills` (
+  `template_engineer_skill_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `template_id` INT UNSIGNED NOT NULL,
+  `engineer_skill_id` INT UNSIGNED NOT NULL,
+  `score` INT NULL,
+  PRIMARY KEY (`template_engineer_skill_id`),
+  CONSTRAINT `fk_template_engineer_skills_engineer_skills1`
+    FOREIGN KEY (`engineer_skill_id`)
+    REFERENCES `powerpro`.`engineer_skills` (`engineer_skill_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_template_engineer_skills_templates1`
+    FOREIGN KEY (`template_id`)
+    REFERENCES `powerpro`.`templates` (`template_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+CREATE INDEX `fk_template_engineer_skills_engineer_skills1_idx` ON `powerpro`.`template_engineer_skills` (`engineer_skill_id` ASC) VISIBLE;
+
+CREATE INDEX `fk_template_engineer_skills_templates1_idx` ON `powerpro`.`template_engineer_skills` (`template_id` ASC) VISIBLE;

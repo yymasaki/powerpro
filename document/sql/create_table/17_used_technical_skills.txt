@@ -1,0 +1,28 @@
+DROP TABLE IF EXISTS used_technical_skills ;
+
+CREATE TABLE IF NOT EXISTS used_technical_skills (
+  `used_technical_skill_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `dev_experience_id` INT UNSIGNED NOT NULL,
+  `technical_skill_id` INT UNSIGNED NOT NULL,
+  `stage` CHAR(1) NOT NULL,
+  PRIMARY KEY (`used_technical_skill_id`),
+  CONSTRAINT `fk_used_technical_skills_dev_experiences1`
+    FOREIGN KEY (`dev_experience_id`)
+    REFERENCES `powerpro`.`dev_experiences` (`dev_experience_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_used_technical_skills_technical_skills1`
+    FOREIGN KEY (`technical_skill_id`)
+    REFERENCES `powerpro`.`technical_skills` (`technical_skill_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+CREATE INDEX `fk_used_technical_skills_dev_experiences1_idx` ON `powerpro`.`used_technical_skills` (`dev_experience_id` ASC) VISIBLE;
+
+CREATE INDEX `fk_used_technical_skills_technical_skills1_idx` ON `powerpro`.`used_technical_skills` (`technical_skill_id` ASC) VISIBLE;
+
+-- 大規模データセットの際にインポートを高速化するためのもの、流す際はセット文と一緒に流すこと
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

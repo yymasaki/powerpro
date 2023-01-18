@@ -1,0 +1,45 @@
+@charset "UTF-8";
+
+.container{
+	max-width:100%;
+}
+
+h1{
+	margin-left:2.5%;
+}
+
+#inforTable{
+	margin-left:3.3%;
+	
+}
+
+.previous{
+	margin-left:3.3%;
+	
+}
+
+.pagination{
+	width:97.8%;
+}
+
+.w-break{
+ word-wrap: break-word;
+}
+
+#pageAndCreate{
+	margin-left:4.3%;
+	width:92%;
+}
+
+.btn {
+	font-size: 2rem;
+	font-weight: bold;
+	padding: 0.6rem 1.6rem;
+	border-radius: 8px;
+}
+
+.btn-blue {
+	color: #ffffff;
+	background: #1669CD;
+}
+

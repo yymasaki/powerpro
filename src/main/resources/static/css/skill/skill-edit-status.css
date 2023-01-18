@@ -1,0 +1,77 @@
+@charset "UTF-8";
+/**
+.container{margin-left:5%;}
+*/
+
+#reason{width:500px;}
+
+.container {
+	max-width: 100%;
+	margin: 1rem;
+	padding-right: 15px;
+	padding-left: 15px;
+}
+
+td {
+  white-space: pre-wrap;
+}
+
+.contents textarea{
+	width: 80%;
+	height: 10rem;
+}
+
+.error {
+	color: red;
+	font-size: 14px;
+	text-align: center;
+}
+
+.contents input[type="tel"]{
+	width: 3.5rem;
+}
+
+select{
+	padding: 0.6rem;
+	border: #17a2b8 2px solid;
+	border-radius: 4px;
+}
+
+.numerical-ability label {
+    font-size: 1rem;
+}
+
+/*追加部分*/
+@media (max-width: 767px){
+	h1{
+		font-size: 2rem;
+		font-weight: bold;
+	}
+	
+	h2{
+		font-size: 1.3rem;
+		font-weight: bold;
+	}
+	
+	.form-box select{
+		font-size: 100%;
+	}
+	
+	.rowbox{
+		float: none;	
+		width: 100%;
+	}
+	
+	.col{
+		margin: auto;
+	}
+	
+	.contents label{
+		text-align: center;
+		width: 45%;
+	}
+	
+	#specialAbility{
+		text-align: center;
+	}
+}

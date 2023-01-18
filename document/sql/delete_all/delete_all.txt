@@ -1,0 +1,66 @@
+-- 下記SQL文をコピペし実行すると、DB上の全データを削除する
+ 
+DELETE FROM template_basic_skills;
+ALTER TABLE template_basic_skills auto_increment = 1;
+
+DELETE FROM template_engineer_skills;
+ALTER TABLE template_engineer_skills auto_increment = 1;
+
+DELETE FROM templates;
+ALTER TABLE templates auto_increment = 1;
+
+DELETE FROM used_technical_skills;
+ALTER TABLE used_technical_skills auto_increment = 1;
+
+DELETE FROM dev_experiences;
+ALTER TABLE dev_experiences auto_increment = 1;
+
+DELETE FROM app_specsheets;
+ALTER TABLE app_specsheets auto_increment = 1;
+
+DELETE FROM had_technical_skills;
+ALTER TABLE had_technical_skills auto_increment = 1;
+
+DELETE FROM technical_skills;
+ALTER TABLE technical_skills auto_increment = 1;
+
+DELETE FROM had_personalities;
+ALTER TABLE had_personalities auto_increment = 1;
+
+DELETE FROM personalities;
+ALTER TABLE personalities auto_increment = 1;
+
+DELETE FROM had_basic_skills;
+ALTER TABLE had_basic_skills auto_increment = 1;
+
+DELETE FROM basic_skills;
+ALTER TABLE basic_skills auto_increment = 1;
+
+DELETE FROM had_engineer_skills;
+ALTER TABLE had_engineer_skills auto_increment = 1;
+
+DELETE FROM engineer_skills;
+ALTER TABLE engineer_skills auto_increment = 1;
+
+DELETE FROM statuses;
+ALTER TABLE statuses auto_increment = 1;
+
+DELETE FROM informations_department_link;
+ALTER TABLE informations_department_link auto_increment = 1;
+
+DELETE FROM informations;
+ALTER TABLE informations auto_increment = 1;
+
+DELETE FROM users;
+ALTER TABLE users auto_increment = 1;
+
+DELETE FROM departments;
+ALTER TABLE departments auto_increment = 1;
+
+
+
+
+
+
+
+

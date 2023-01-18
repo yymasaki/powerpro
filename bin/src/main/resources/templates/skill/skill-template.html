@@ -1,0 +1,188 @@
+<html lang="ja"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<title>パワフルプロエンジニア</title>
+<link rel="shortcut icon" href="../static/favicon.ico" th:href="@{/favicon.ico}">
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+	integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+	crossorigin="anonymous">
+
+<link rel="stylesheet" href="../../static/css/nbase.css" th:href="@{/css/nbase.css}">
+<link rel="stylesheet" href="../../static/css/nability.css" th:href="@{/css/nability.css}">
+<link rel="stylesheet" href="../../static/css/skill/skill-status.css" th:href="@{/css/skill/skill-status.css}">
+<link rel="stylesheet" href="../../static/css/skill/skill-templates.css" th:href="@{/css/skill/skill-templates.css}">
+<link rel="stylesheet" href="../static/css/header.css" th:href="@{/css/header.css}">
+<script src="../../static/js/lib/jquery-3.3.1.min.js" th:src="@{/js/lib/jquery-3.3.1.min.js}"></script>
+
+<script src="../../static/js/skill/skill-chart-template.js" th:src="@{/js/skill/skill-chart-template.js}"></script>
+<script src="../../static/js/skill/skill-template.js" th:src="@{/js/skill/skill-template.js}"></script>
+<script src="../../static/js/main.js" th:src="@{/js/main.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+<script src="../../static/js/skill/skill-delete-modal-template.js" th:src="@{/js/skill/skill-delete-modal-template.js}"></script>
+
+</head>
+	<!-- header start -->
+	<nav th:replace="header::menu"></nav>
+	<!-- header end -->
+	<!-- Modal -->
+	<div class="modal fade" id="deleteTemplateModalCenter" tabindex="-1" role="dialog" aria-labelledby="deleteTemplateModalCenterTitle" aria-hidden="true">
+ 		<div class="modal-dialog modal-dialog-centered" role="document">
+   			<div class="modal-content">
+   				<div class="modal-header">
+        			<h5 class="modal-title" id="deleteTemplateModalCenterTitle">内容確認</h5>
+        			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          				<span aria-hidden="true">&times;</span>
+        			</button>
+      			</div>
+      			<div class="modal-body">
+      				<div class="confirm">
+          				<h5>テンプレート名：<span id="template-name"></span></h5><br>
+        			</div><br>
+        				<h5>削除してもよろしいですか？</h5>
+      			</div>
+      			<div class="modal-footer">
+        			<button type="button" class="btn btn-secondary" data-dismiss="modal">戻る</button>
+        			<button type="button" class="btn btn-primary" id="done">削除する</button>
+      			</div>
+    		</div>
+  		</div>
+	</div>
+	<!-- Modal end -->	
+<body>
+  <!-- 登録完了時のアラート　ここから -->
+  <div class="alert alert-warning fade show text-center flash" role="alert" th:if="${additionCompleted}">
+  	<span th:text="${additionCompleted}"></span>
+  	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  		<span aria-hidden="true">&times;</span>
+  	</button>
+  </div>
+  <!-- 編集完了時のアラート　ここから -->
+  <div class="alert alert-warning fade show text-center flash" role="alert" th:if="${editingCompleted}">
+  	<span th:text="${editingCompleted}"></span>
+  	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  		<span aria-hidden="true">&times;</span>
+  	</button>
+  </div>
+  <!-- 削除完了時のアラート　ここから -->
+  <div class="alert alert-warning fade show text-center flash" role="alert" th:if="${deleteCompleted}">
+  	<span th:text="${deleteCompleted}"></span>
+  	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  		<span aria-hidden="true">&times;</span>
+  	</button>
+  </div>  
+  <!-- version不一致時に表示するアラート　ここから -->
+  <div class="alert alert-danger fade show text-center flash" role="alert" th:if="${versionErrorMessage}">
+  	<span th:text="${versionErrorMessage}"></span>
+  	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  		<span aria-hidden="true">&times;</span>
+  	</button>  	
+  </div>
+  <!-- 現在選択しているテンプレートを表示 -->
+  <span sec:authorize="hasAnyRole('ROLE_WEB','ROLE_CL','ROLE_ML')" th:unless="${noTemplateListMessage}"
+	style="padding-left: 40px; font-size: 20px">現在選択中のテンプレート :&nbsp;<span th:text="${selectedTemplateName}"></span></span>	
+　<h1 class="text-center" sec:authorize="hasAnyRole('ROLE_WEB','ROLE_CL','ROLE_ML')">ステータステンプレート選択</h1>
+　<h1 class="text-center" sec:authorize="hasRole('ROLE_ADMIN')">ステータステンプレート管理</h1>
+  
+  <div class="text-center" th:if="${noTemplateListMessage}" style="margin: auto;">
+  	<br sec:authorize="hasRole('ROLE_ADMIN')">
+  	<h3 th:text="${noTemplateListMessage}"></h3><br>
+  	<div sec:authorize="hasRole('ROLE_ADMIN')">
+  		<button id="registerTemplateButton" type="button" class="btn btn-outline-primary">
+			新規テンプレート登録
+		</button>
+  	</div>
+  </div>
+  
+	<div class="text-center" sec:authorize="hasAnyRole('ROLE_WEB','ROLE_CL','ROLE_ML')">
+		<a href="skill-detail.html" th:href="@{'/skill/status?userId=' + ${userId}}">スキルシートにもどる</a>&nbsp;
+	</div>
+	<br>
+	<!-- ajaxで使用 -->
+	<input id="template-id" type="hidden" name="templateId" th:value="${template.templateId}">
+	<div class="container" style="margin: auto;" th:unless="${noTemplateListMessage}">
+		<div class="main-contents">
+			<div class="box ability-box">
+			<div class="text-center">
+			<!-- テンプレート表示用フォーム -->
+			<form id="selectTemplateForm" th:action="@{/skill/template}" method="GET" th:object="${selectTemplateForm}">
+				<select id="templateSelect" name="templateId" th:field="*{templateId}">
+					<option th:each="template :${templateList}" th:value="${template.templateId}">[[${template.name}]]</option>
+				</select>&nbsp;&nbsp;&nbsp;
+			</form>
+			<!--管理者 -->
+			<span sec:authorize="hasRole('ROLE_ADMIN')">
+				<button id="registerTemplateButton" type="button" class="btn btn-outline-primary">
+					新規テンプレート登録
+				</button>&nbsp;&nbsp;&nbsp;
+				<button id="editTemplateButton" type="button" class="btn btn-outline-primary">
+					テンプレート編集
+				</button>&nbsp;&nbsp;&nbsp;
+				<button id="deleteTemplateButton" type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#deleteTemplateModalCenter">
+					テンプレート削除
+				</button>&nbsp;&nbsp;&nbsp;
+			</span>
+							<!--エンジニア  -->
+				<span class="contents" sec:authorize="hasAnyRole('ROLE_WEB','ROLE_CL','ROLE_ML')">
+					<button id="selectTemplateButton" type="button" class="btn btn-outline-primary">このテンプレートを選択する</button>
+				</span>
+			
+			<!-- 削除用フォーム -->
+			<form id="deleteTemplateForm" th:action="@{/skill/template/delete}" method="POST" th:object="${deleteTemplateForm}">
+				<input type="hidden" name="templateId" th:value="${template.templateId}">
+				<input type="hidden" name="version" th:value="${template.version}">
+				<input type="hidden" id="templateName" th:value="${template.name}">
+			</form>
+			
+			<!-- テンプレート選択情報保存用フォーム -->
+			<form id="selectTemplateFormForUpdate" th:action="@{/skill/template/select}" method="POST" th:object="${selectTemplateForm}">
+				<input type="hidden" name="templateId" th:value="${template.templateId}">
+			</form>
+			
+			</div>
+
+				<div class="point-skills" th:each="templateEngineerSkill : ${template.templateEngineerSkillList}">
+					<div class="point-skill">
+						<div class="skill-name" th:text="${templateEngineerSkill.engineerSkill.name}">プログラム</div>
+						<div class="skill-score score-s" th:if="${templateEngineerSkill.score >= 90 && templateEngineerSkill.score <= 100}">S</div>
+						<div class="skill-score score-a" th:if="${templateEngineerSkill.score >= 80 && templateEngineerSkill.score <= 89}">A</div>
+						<div class="skill-score score-b" th:if="${templateEngineerSkill.score >= 70 && templateEngineerSkill.score <= 79}">B</div>
+						<div class="skill-score score-c" th:if="${templateEngineerSkill.score >= 60 && templateEngineerSkill.score <= 69}">C</div>
+						<div class="skill-score score-d" th:if="${templateEngineerSkill.score >= 50 && templateEngineerSkill.score <= 59}">D</div>
+						<div class="skill-score score-e" th:if="${templateEngineerSkill.score >= 40 && templateEngineerSkill.score <= 49}">E</div>
+						<div class="skill-score score-f" th:if="${templateEngineerSkill.score >= 20 && templateEngineerSkill.score <= 39}">F</div>
+						<div class="skill-score score-g" th:if="${templateEngineerSkill.score >= 0 && templateEngineerSkill.score <= 19}">G</div>
+						<div class="skill-point" th:text="${templateEngineerSkill.score}">100</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="abilities col-5">
+						<div class="ability-chart">
+							<h2 class="mt-3 mb-3">基本スキル</h2>
+							<canvas id="templateChart" class="mt-5" style="position: relative; height:200; width:200"></canvas>
+						</div>
+					</div>
+					<div class="abilities col-6">
+						<h2 class="mt-3 mb-5">性格</h2>
+						<div class="inline-row" th:each="personality : ${personalityList}">
+						<!-- 性格をグレーに表示　ここから -->
+						<div class="special-ability template-ability" data-toggle="popover" 
+							data-trigger="hover" th:data-content="${personality.explanation}" data-placement="top"><strong th:text="${personality.name}"></strong></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		  </div>
+		</div>
+
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</body>
+</html>

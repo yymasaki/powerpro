@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org"
+				xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<title>パワフルプロエンジニア</title>
+<link rel="shortcut icon" href="../static/favicon.ico" th:href="@{/favicon.ico}">
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+	integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+	crossorigin="anonymous">
+<script type="text/javascript" src="../../static/js/lib/jquery-3.3.1.min.js" th:src="@{/js/lib/jquery-3.3.1.min.js}"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css">
+
+<link rel="stylesheet" href="../../static/css/nbase.css" th:href="@{/css/nbase.css}">
+<link rel="stylesheet" href="../../static/css/nability.css" th:href="@{/css/nability.css}">
+<link rel="stylesheet" href="../../static/css/skill/skill-technique-detail.css" th:href="@{/css/skill/skill-technique.css}">
+<link rel="stylesheet" href="../static/css/header.css" th:href="@{/css/header.css}">
+<script type="text/javascript" src="../static/js/delete-alert.js" th:src="@{/js/delete-alert.js}"></script>
+
+</head>
+<body>
+	<!-- header start -->
+	<nav th:replace="header::menu"></nav>
+	<!-- header end -->
+	<div class="alert alert-warning alert-dismissible fade show" role="alert" id="flash" th:if="${message!=null}">
+  		<div  class="text-center" th:text="${message}"></div> 
+  		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    		<span aria-hidden="true">&times;</span>
+  		</button>
+	</div>
+		<div class="main-contents">
+			<div class="tabs">
+				<a href="skill-status-detail.html" class="tab ability" th:href="@{'/skill/status?userId=' + ${user.userId}}" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_SALES')">ステータス</a> 
+				<a href="skill-technique-detail.html" class="tab technical tab-active" th:href="@{'/skill/technique?userId=' + ${user.userId}}" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_SALES')">テクニカルスキル</a>
+				<a href="skill-spec-detail.html" class="tab management" th:href="@{'/skill/spec?userId=' + ${user.userId}}" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_SALES')">スペックシート</a>
+				<a href="skill-status-detail.html" class="tab ability" th:href="@{/skill/status}" sec:authorize="hasAnyRole('ROLE_WEB','ROLE_CL','ROLE_ML')">ステータス</a> 
+				<a href="skill-technique-detail.html" class="tab technical tab-active" th:href="@{/skill/technique}" sec:authorize="hasAnyRole('ROLE_WEB','ROLE_CL','ROLE_ML')">テクニカルスキル</a>
+				<a href="skill-spec-detail.html" class="tab management" th:href="@{/skill/spec}" sec:authorize="hasAnyRole('ROLE_WEB','ROLE_CL','ROLE_ML')">スペックシート</a>
+			</div>
+				
+			  <div class="box technical-box">
+				<div class="profile">
+					<div class="row mx-auto">
+						<div class="col">
+							<div class="name row text-center mx-auto w-100" th:text="${user.name}">テスト太郎</div>
+							<div class="belong-to row mx-auto w-100">
+								<span>最終更新日　：　</span>
+								<span th:text="${latestUpdatedAt}?${#temporals.format(latestUpdatedAt,'yyyy年M月d日')}:'  —  '"></span>
+							</div>
+							<div class="title row mx-auto w-100" th:text="${user.department.name}">エンジニア</div>
+						</div>
+					</div>
+					<div class="row mx-auto">
+						<div class="style mx-auto text-center"><i class="fas fa-desktop"></i>&nbsp;
+							<span class="style-desktop dark-blue" th:if="${status}" th:text="${status.usingPc}">Mac</span>
+							<span class="style-desktop dark-blue" th:unless="${status}">:&emsp;—&emsp;</span>
+							<i class="fas fa-mobile-alt ml-3"></i>&nbsp;
+							<span class="style-mobile dark-red" th:if="${status}" th:text="${status.usingMobile}">Android</span>
+							<span class="style-mobile dark-red" th:unless="${status}">:&emsp;—&emsp;</span>
+						</div>
+					</div>
+				</div>
+					
+				<span class="edit-technical-skill ml-5 mt-3 mb-3">
+					<a class="btn btn-danger ml-3" onclick="location.href='skill-edit-technique.html'" th:href="@{/skill/technique/edit}" sec:authorize="hasAnyRole('ROLE_WEB','ROLE_CL','ROLE_ML')">テクニカルスキル利用歴編集</a>
+				</span>
+
+					<div class="text-left my-3" style="font-size:1.3rem;padding-top:2%;">スペックシートの<strong>「スキル要約欄」</strong>に登録した情報(申請中、一時保存中のデータ含む)が反映されます</div>
+				<div class="profile d-block my-3" th:if="${noHadTechnicalSkill}">
+					<div class="text-center my-3" th:text="${noHadTechnicalSkill}"></div>
+				</div>
+				<div class="technical-skill-data mt-5" th:unless="${noHadTechnicalSkill}">
+					<h2>動作環境(OS)</h2>
+					<div class="abilities" th:unless="${#lists.isEmpty(osList)}">
+						<div class="technical-ability blank" th:each="os:${osList}" th:text="${os.usingPeriod !=null}? ${os.technicalSkill.name+':'+os.usingPeriod+'ヶ月'} : ${os.technicalSkill.name}">Windows10 :3年</div>
+					</div>
+					<div class="abilities" th:if="${#lists.isEmpty(osList)}">
+						<div>登録がありません。</div>
+					</div>
+			
+					<h2>プログラミング言語</h2>
+					<div class="abilities" th:unless="${#lists.isEmpty(languageList)}">
+						<div class="technical-ability blank" th:each="language:${languageList}" th:text="${language.usingPeriod !=null}? ${language.technicalSkill.name+':'+language.usingPeriod+'ヶ月'} : ${language.technicalSkill.name}">Java8:4ヵ月</div>
+					</div>
+					<div class="abilities" th:if="${#lists.isEmpty(languageList)}">
+						<div>登録がありません。</div>
+					</div>
+			
+					<h2>フレームワーク</h2>
+					<div class="abilities" th:unless="${#lists.isEmpty(frameworkList)}">
+						<div class="technical-ability blank" th:each="framework:${frameworkList}" th:text="${framework.usingPeriod !=null}? ${framework.technicalSkill.name+':'+framework.usingPeriod+'ヶ月'} : ${framework.technicalSkill.name}">Springboot:3ヵ月</div>
+					</div>
+					<div class="abilities" th:if="${#lists.isEmpty(frameworkList)}">
+						<div>登録がありません。</div>
+					</div>
+					<h2>ライブラリ</h2>
+					<div class="abilities" th:unless="${#lists.isEmpty(libraryList)}">
+						<div class="technical-ability blank" th:each="library:${libraryList}" th:text="${library.usingPeriod !=null}? ${library.technicalSkill.name+':'+library.usingPeriod+'ヶ月'} : ${library.technicalSkill.name}">jQuery:2ヵ月</div>
+					</div>
+					<div class="abilities" th:if="${#lists.isEmpty(libraryList)}">
+						<div>登録がありません。</div>
+					</div>
+					<h2>ミドルウェア</h2>
+					<div class="abilities" th:unless="${#lists.isEmpty(middlewareList)}">
+						<div class="technical-ability blank" th:each="middleware:${middlewareList}" th:text="${middleware.usingPeriod !=null}? ${middleware.technicalSkill.name+':'+middleware.usingPeriod+'ヶ月'} : ${middleware.technicalSkill.name}">Tomcat8:3ヵ月</div>
+					</div>
+					<div class="abilities" th:if="${#lists.isEmpty(middlewareList)}">
+						<div>登録がありません。</div>
+					</div>
+					<h2>ツール・その他</h2>
+					<div class="abilities" th:unless="${#lists.isEmpty(toolList)}">
+						<div class="technical-ability blank" th:each="tool:${toolList}" th:text="${tool.usingPeriod !=null}? ${tool.technicalSkill.name+':'+tool.usingPeriod+'ヶ月'} : ${tool.technicalSkill.name}">Git:1年11ヵ月</div>
+					</div>
+					<div class="abilities" th:if="${#lists.isEmpty(toolList)}">
+						<div>登録がありません。</div>
+					</div>
+					<h2>担当開発工程</h2>
+					<div class="abilities" th:unless="${#lists.isEmpty(devProcessList)}">
+						<div class="technical-ability blank" th:each="devProcess:${devProcessList}" th:text="${devProcess.usingPeriod !=null}? ${devProcess.technicalSkill.name+':'+devProcess.usingPeriod+'ヶ月'} : ${devProcess.technicalSkill.name}">詳細設計:2ヵ月</div>
+					</div>
+					<div class="abilities" th:if="${#lists.isEmpty(devProcessList)}">
+						<div>登録がありません。</div>
+					</div>
+				</div>
+			</div>
+		</div>
+</body>
+</html>

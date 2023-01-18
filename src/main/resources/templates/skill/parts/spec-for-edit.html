@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>パワフルプロエンジニア</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/cupertino/jquery-ui.css">
+	<link rel="stylesheet" href="../../static/css/tag-it.css" th:href="@{/css/tag-it.css}">
+	<link rel="stylesheet" href="../../static/css/nbase.css" th:href="@{/css/nbase.css}">
+	<link rel="stylesheet" href="../../static/css/nregist.css" th:href="@{/css/nregist.css}">
+	<link rel="stylesheet" href="../../static/css/skill/skill-spec.css" th:href="@{/css/skill/skill-spec.css}">
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+	<script type="text/javascript" src="../../static/js/tag-it.js" th:src="@{/js/tag-it.js}"></script>
+	<script type="text/javascript" src="../../static/js/skill/skill-edit-spec.js"
+		th:src="@{/js/skill/skill-edit-spec.js}"></script>
+	<script type="text/javascript" src="../../static/js/skill/skill-edit-spec-dev.js"
+		th:src="@{/js/skill/skill-edit-spec-dev.js}" defer></script>
+</head>
+
+<body>
+
+	<div id="summaryTable">
+		<table class="initial-table mx-auto">
+			<tbody>
+				<tr>
+					<td colspan="10" class="cell-gray table-border-bold">
+						<span class="spec-title">スペックシート(開発技術者)</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="cell-gray w-10">
+						<div class="">スタッフID</div>
+					</td>
+					<td class="cell-white w-16">
+						<label style="color:red" th:errors="*{employeeId}"></label>
+						<span th:text="|${specsheet.user.department.staffId}-|">AP-202-</span>
+						<input type="number" class="s1" name="employeeId" placeholder="1234"
+							th:value="*{userId} ? *{employeeId} : ${specsheet.employeeId}">
+					</td>
+					<td class="cell-gray w-5">
+						<div class="s1">年齢</div>
+					</td>
+					<td class="cell-white w-13">
+						<label style="color:red" th:errors="*{generation}"></label>
+						<input type="text" id="generation" class="s1" name="generation" placeholder="〇〇代前半"
+							th:value="*{userId} ? *{generation} : ${specsheet.generation}">
+					</td>
+					<td class="cell-gray w-5">
+						<div class="s1">性別</div>
+					</td>
+					<td class="cell-white w-14">
+						<div>
+							<div class="form-check form-check-inline mx-1">
+								<label for="genderM" class="form-check-label">
+									<input type="radio" id="genderM" class="form-check-input gender" name="gender"
+										value="M">男性
+								</label>
+							</div>
+							<div class="form-check form-check-inline mx-1">
+								<label for="genderF" class="form-check-label">
+									<input type="radio" id="genderF" class="form-check-input gender" name="gender"
+										value="F">女性
+								</label>
+							</div>
+							<div class="form-check form-check-inline mx-1">
+								<label for="genderO" class="form-check-label">
+									<input type="radio" id="genderO" class="form-check-input gender" name="gender"
+										value="O">その他
+								</label>
+							</div>
+						</div>
+					</td>
+					<td class="cell-gray w-5">
+						<div class="s1">最寄駅</div>
+					</td>
+					<td class="cell-white w-13">
+						<label style="color:red" th:errors="*{nearestStation}"></label>
+						<input type="text" id="nearestStation" name="nearestStation" placeholder="〇〇駅"
+							th:value="*{userId} ? *{nearestStation} : ${specsheet.nearestStation}">
+					</td>
+					<td class="cell-gray w-6">
+						<div class="s1">稼働開始日</div>
+					</td>
+					<td class="cell-white w-13">
+						<label style="color:red" th:errors="*{startBusinessDate}"></label>
+						<input type="text" id="startBusinessDate" name="startBusinessDate" placeholder="応相談"
+							th:value="*{userId} ? *{startBusinessDate} : ${specsheet.startBusinessDate}">
+					</td>
+				</tr>
+				<tr>
+					<td rowspan="2" class="cell-gray">
+						<div class="s1">エンジニア歴</div>
+					</td>
+					<td rowspan="2" class="cell-white">
+						<label style="color:red" th:errors="*{engineerPeriod}"></label>
+						<input type="number" id="engineerPeriod" class="s2" name="engineerPeriod" placeholder="20"
+							min="3" th:value="*{userId} ? *{engineerPeriod} : ${specsheet.engineerPeriod}">ヶ月
+					</td>
+					<td rowspan="2" class="cell-gray">
+						<div class="s1">内訳</div>
+					</td>
+					<td colspan="2" class="cell-gray">
+						<div class="s1">SE経験</div>
+					</td>
+					<td colspan="2" class="cell-white">
+						<label style="color:red" th:errors="*{sePeriod}"></label>
+						<input type="number" id="sePeriod" class="s2" name="sePeriod" placeholder="15" min="0"
+							th:value="*{userId} ? *{sePeriod} : ${specsheet.sePeriod}">ヶ月
+					</td>
+					<td rowspan="2" class="cell-gray">
+						<div class="s2">IT全体経験</div>
+					</td>
+					<td rowspan="2" colspan="2" class="cell-white">
+						<label style="color:red" th:errors="*{itPeriod}"></label>
+						<input type="number" id="itPeriod" class="s2" name="itPeriod" placeholder="30" min="3"
+							th:value="*{userId} ? *{itPeriod} : ${specsheet.itPeriod}">ヶ月
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" class="cell-gray">
+						<div class="s1">PG・作業員経験</div>
+					</td>
+					<td colspan="2" class="cell-white">
+						<label style="color:red" th:errors="*{pgPeriod}"></label>
+						<input type="number" id="pgPeriod" class="s2" name="pgPeriod" placeholder="15" min="0"
+							th:value="*{userId} ? *{pgPeriod} : ${specsheet.pgPeriod}">ヶ月
+					</td>
+				</tr>
+				<tr>
+					<td colspan="10" class="cell-gray">
+						<div class="s1">スキル要約</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="cell-gray">
+						<div class="s1">動作環境(OS)&ensp;
+							<span tabindex="0" data-html="true" data-toggle="popover" data-trigger="hover"
+								data-placement="top" data-container="body"
+								data-content="ディストリビューションや<br>バージョンまで入力してください">
+								<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-exclamation-circle"
+									fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+									<path fill-rule="evenodd"
+										d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+									<path
+										d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z" />
+								</svg>
+							</span>
+						</div>
+					</td>
+					<td colspan="9" class="cell-white cell-left">
+						<div>
+							<input type="hidden" id="OS" class="OS" name="hadTechnicalSkillList[0]"
+								th:value="${htOSSB}">
+
+							<script th:inline="javascript">
+								$(function () {
+									let allOS = /*[[${OSSB}]]*/"OSSB";
+									let allOSJSON = JSON.parse("[" + allOS + "]");
+									$(".OS").tagit({
+										availableTags: allOSJSON,
+										placeholderText: 'Windows10 + [Enter]',
+										showAutocompleteOnFocus: true,
+										removeConfirmation: true,
+										singleField: true
+									});
+								});
+							</script>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="cell-gray">
+						<div class="s1">言語</div>
+					</td>
+					<td colspan="9" class="cell-white cell-left">
+						<div>
+							<input type="hidden" id="language" class="language" name="hadTechnicalSkillList[1]"
+								th:value="${htLanguageSB}">
+							<script th:inline="javascript">
+								$(function () {
+									let allLanguage = /*[[${languageSB}]]*/"languageSB";
+									let allLanguageJSON = JSON.parse("[" + allLanguage + "]");
+									$(".language").tagit({
+										availableTags: allLanguageJSON,
+										placeholderText: 'Java8 + [Enter]',
+										showAutocompleteOnFocus: true,
+										removeConfirmation: true,
+										singleField: true
+									});
+								});
+							</script>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="cell-gray">
+						<div class="s1">フレームワーク</div>
+					</td>
+					<td colspan="9" class="cell-white cell-left">
+						<div>
+							<input type="hidden" id="framework" class="framework" name="hadTechnicalSkillList[2]"
+								th:value="${htFrameworkSB}">
+							<script th:inline="javascript">
+								$(function () {
+									let allFramework = /*[[${frameworkSB}]]*/"frameworkSB";
+									let allFrameworkJSON = JSON.parse("[" + allFramework + "]");
+									$(".framework").tagit({
+										availableTags: allFrameworkJSON,
+										placeholderText: 'SpringBoot2.3 + [Enter]',
+										showAutocompleteOnFocus: true,
+										removeConfirmation: true,
+										singleField: true
+									});
+								});
+							</script>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="cell-gray">
+						<div class="s1">ライブラリ</div>
+					</td>
+					<td colspan="9" class="cell-white cell-left">
+						<div>
+							<input type="hidden" id="library" class="library" name="hadTechnicalSkillList[3]"
+								th:value="${htLibrarySB}">
+							<script th:inline="javascript">
+								$(function () {
+									let allLibrary = /*[[${librarySB}]]*/"librarySB";
+									let allLibraryJSON = JSON.parse("[" + allLibrary + "]");
+									$(".library").tagit({
+										availableTags: allLibraryJSON,
+										placeholderText: 'jQuery3.5 + [Enter]',
+										showAutocompleteOnFocus: true,
+										removeConfirmation: true,
+										singleField: true
+									});
+								});
+							</script>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="cell-gray">
+						<div class="s1">ミドルウェア</div>
+					</td>
+					<td colspan="9" class="cell-white cell-left">
+						<div>
+							<input type="hidden" id="middleware" class="middleware" name="hadTechnicalSkillList[4]"
+								th:value="${htMiddlewareSB}">
+							<script th:inline="javascript">
+								$(function () {
+									let allMiddleware = /*[[${middlewareSB}]]*/"middlewareSB";
+									let allMiddlewareJSON = JSON.parse("[" + allMiddleware + "]");
+									$(".middleware").tagit({
+										availableTags: allMiddlewareJSON,
+										placeholderText: 'MySQL8 + [Enter]',
+										showAutocompleteOnFocus: true,
+										removeConfirmation: true,
+										singleField: true
+									});
+								});
+							</script>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="cell-gray">
+						<div class="s1">ツール·その他</div>
+					</td>
+					<td colspan="9" class="cell-white cell-left">
+						<div>
+							<input type="hidden" id="tool" class="tool" name="hadTechnicalSkillList[5]"
+								th:value="${htToolSB}">
+							<script th:inline="javascript">
+								$(function () {
+									let allTool = /*[[${toolSB}]]*/"toolSB";
+									let allToolJSON = JSON.parse("[" + allTool + "]");
+									$(".tool").tagit({
+										availableTags: allToolJSON,
+										placeholderText: 'GitHub + [Enter]',
+										showAutocompleteOnFocus: true,
+										removeConfirmation: true,
+										singleField: true
+									});
+								});
+							</script>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="cell-gray">
+						<div class="s1">担当工程</div>
+					</td>
+					<td colspan="9" class="cell-white cell-left">
+						<div>
+							<input type="hidden" id="process" class="process" name="hadTechnicalSkillList[6]"
+								th:value="${htProcessSB}">
+							<script th:inline="javascript">
+								$(function () {
+									let allProcess = /*[[${processSB}]]*/"processSB";
+									let allProcessJSON = JSON.parse("[" + allProcess + "]");
+									$(".process").tagit({
+										availableTags: allProcessJSON,
+										placeholderText: '開発 + [Enter]',
+										showAutocompleteOnFocus: true,
+										removeConfirmation: true,
+										singleField: true
+									});
+								});
+							</script>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="10" class="cell-gray cell-left">
+						<div class="pl-3">アピールポイント・前職経験</div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="10" class="cell-white cell-left">
+						<div>
+							<label style="color:red" th:errors="*{appeal}"></label>
+							<textarea id="appeal" name="appeal" rows="5"
+								th:text="*{userId} ? *{appeal} : ${specsheet.appeal}"
+								placeholder="粘り強く、わからないことはわかるまで調べるようにしていました。"></textarea>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="10" class="cell-gray cell-left">
+						<div class="pl-3">業務外に取り組んでいること</div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="10" class="cell-white cell-left">
+						<div>
+							<label style="color:red" th:errors="*{effort}"></label>
+							<textarea id="effort" name="effort" rows="5"
+								th:text="*{userId} ? *{effort} : ${specsheet.effort}"
+								placeholder="・自宅で開発環境を整え、学んだことの復習をしています。"></textarea>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="10" class="cell-gray cell-left">
+						<div class="pl-3">資格(取得日の降順で表記)</div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="10" class="cell-white cell-left">
+						<div>
+							<label style="color:red" th:errors="*{certification}"></label>
+							<textarea id="certification" name="certification" rows="5"
+								th:text="*{userId} ? *{certification} : ${specsheet.certification}"
+								placeholder="ITパスポート(19/8)"></textarea>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="10" class="cell-gray cell-left">
+						<div class="pl-3">前職(業界、職種、PC関係の経験を表記)</div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="10" class="cell-white cell-left">
+						<div>
+							<label style="color:red" th:errors="*{preJob}"></label>
+							<textarea id="preJob" name="preJob" rows="5"
+								th:text="*{userId} ? *{preJob} : ${specsheet.preJob}"
+								placeholder="自動車エンジン部品の営業(Microsoft Word, Excel, Adobe Illustrator)"></textarea>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<script th:inline="javascript">
+			$(function () {
+				let formGender = /*[[${ editSpecsheetForm.gender }]]*/"Fgender";
+				let specGender = /*[[${ specsheet.gender }]]*/"Sgender";
+				if (formGender != null) {
+					$(".gender").each(function () {
+						if ($(this).val() == formGender) {
+							$(this).prop("checked", true);
+						}
+					});
+				} else if (specGender != null) {
+					$(".gender").each(function () {
+						if ($(this).val() == specGender) {
+							$(this).prop("checked", true);
+						}
+					});
+				} else {
+					$("#genderM").prop("checked", true);
+				}
+			});
+		</script>
+	</div>
+
+</body>
+
+</html>

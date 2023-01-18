@@ -1,0 +1,100 @@
+@charset "UTF-8";
+
+.contents p{
+	font-size: 14px;
+}
+
+.register-mail-form, .reset-pass-mail-form {
+	font-size: 13px;
+	border-radius: 10px;
+	padding: 3rem 1.4rem;
+	border: #17a2b8 2px solid;
+	margin: 10% auto 0 auto;
+}
+
+.title{
+	text-align: center;
+	font-size: 2rem;
+	margin-bottom: 1rem;
+}
+
+
+#input-email input[type="text"],#input-email select{
+	border: 1px solid #999999;
+	border-radius: 4px;
+	margin : 0 auto;
+	height: 3rem;
+}
+
+#input-email input[type="text"]{
+	padding: 0.6rem;
+}
+
+#input-email{
+	text-align: center;
+	margin-bottom: 1rem;
+}
+
+@media only screen and (min-width: 480px) {
+	.register-mail-form, .reset-pass-mail-form {
+	width: 50%;
+	}
+	#input-email input[type="text"]{
+		width: 30%;
+	}
+	#domain {
+		width:40%;
+		display:inline;
+	}
+}
+
+@media only screen and (max-width: 479px) {
+	.register-mail-form, .reset-pass-mail-form {
+		padding: 0.8rem;
+		width: 98%	
+	}
+	#input-email input[type="text"]{
+		width: 40%;
+		display:inline;
+	}
+	#domain {
+		width: 50%;
+		display:inline;
+	}
+}
+
+.btn {
+    font-size: 0.8rem;
+    font-weight: bold;
+    padding: 0.5em 1.6rem;
+    border-radius: 8px;
+}
+.loading {
+	width: 100%;
+	height: 100%;
+	background: rgba(255,255,255,0.5);
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 20000;
+}
+
+.loading img {
+	width: 4rem;
+	height: 4rem;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -20px;
+	margin-left: -20px;
+}
+.loading p{
+	width: 4rem;
+	height: 4rem;
+	position: absolute;
+	top: 62%;
+	left:50%;
+	margin-top: -20px;
+	margin-left: -15px;
+}
+

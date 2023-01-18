@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>パワフルプロエンジニア</title>
+<link rel="shortcut icon" href="../static/favicon.ico" th:href="@{/favicon.ico}">
+<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"	rel="stylesheet">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="../../static/css/user/user-edit.css" th:href="@{/css/user/user-edit.css}">
+<link rel="stylesheet" href="../static/css/header.css" th:href="@{/css/header.css}">
+<script type="text/javascript" src="../../static/js/lib/jquery-3.3.1.min.js" th:src="@{/js/lib/jquery-3.3.1.min.js}"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+		integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+		crossorigin="anonymous"></script>
+<script type="text/javascript" src="../../static/js/user/user-register.js" th:src="@{/js/user/user-edit.js}"></script>
+</head>
+<body>
+	<!-- header start -->
+	<nav th:replace="header::menu"></nav>
+	<!-- header end -->
+	<div class="alert alert-warning alert-dismissible fade show text-center" role="alert" th:if="${editCompleted}" id="flash1">
+		<span th:text="${editCompleted}" ></span>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+　	<div class="alert alert-danger alert-dismissible fade show text-center" role="alert" th:if="${editFailure}" id="flash2">
+		<span th:text="${editFailure}" ></span>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="container m-auto">
+		<div class="row">
+			<div class="user-edit-form-box">
+				<a th:href="@{/user?pageBack=true}" style="margin-left:20px">&lt;&lt;&nbsp;戻る</a>
+				<form th:action="@{/user/edit/do}" method="post" class="m-auto" th:object="${editUserForm}" id="editUserForm">
+					<h1 class=text-center>ユーザー情報変更</h1>
+					<div class="contents">
+						<div class="text-center" style="color: red" th:errors="*{departmentId}"></div>
+						<div class="text-center" style="color: red" id="department-error"></div>
+						<label class="ml-5" for="department">所属区分</label>
+						 <select class="ml-3" name="departmentId" th:field="*{departmentId}">
+							<option value="1">Web</option>
+							<option value="2">CL</option>
+							<option value="3">ML</option>
+							<option value="4">営業</option>
+							<option value="5">管理者</option>
+						</select>
+					</div>
+					<div class="contents">
+						<div class="text-center" style="color: red" th:errors="*{lastName}"></div>
+						<div class="text-center" style="color: red" id="last-name-error"></div>
+						<label for="lastName" class="ml-5">姓</label> 
+						<input class="ml-3" type="text" id="lastName" name="lastName"  th:field="*{lastName}">
+					</div>
+					<div class="contents">
+						<div class="text-center" style="color: red" th:errors="*{firstName}"></div>
+						<div class="text-center" style="color: red" id="first-name-error"></div>
+						<label for="firstName" class="ml-5">名</label> 
+						<input class="ml-3" type="text" id="firstName" name="firstName"  th:field="*{firstName}">
+					</div>
+					<div class="contents">
+						<div class="text-center" style="color: red" th:errors="*{hiredOn}"></div>
+						<div class="text-center" style="color: red" id="hired-error"></div>
+						<label class="ml-5" for="hiredOn">入社年月</label>
+						<input class="ml-3" type="month" id="hiredOn" name="hiredOn" th:field="*{hiredOn}">
+					</div>
+					<div class="contents">
+						<div class="text-center" style="color: red" th:errors="*{email}"></div>
+						<div class="text-center" style="color: red" id="email-error"></div>
+						<label for="mail" class="ml-5">メールアドレス</label>
+						 <input class="ml-3" type="text" id="mail" name="mail" value="test" th:field="*{email}">
+						<label for="mail" class="ml-5" style="color:white">メールアドレス</label>
+					</div>
+					<input type="hidden" th:field="*{userId}" name="userId">
+					<input type="hidden" th:field="*{version}" name="version">
+					<div class="contents text-center">
+						<div class="text-center" style="color: red;font-weight: 900;" id="check-datas-error"></div>
+						<!-- Button trigger modal -->
+						<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#exampleModalCenter" id="modal-open">
+ 							 登録
+						</button>
+					</div>
+					<!-- Modal -->
+						<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+								<div class="modal-dialog modal-dialog-centered" role="document">
+  									<div class="modal-content">
+  										<div class="modal-header">
+       									<h5 class="modal-title" id="exampleModalCenterTitle">内容確認</h5>
+       									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+         										<span aria-hidden="true">&times;</span>
+       									</button>
+     									</div>
+     								<div class="modal-body">
+     									<div class="confirm">
+      								 		<h5>ユーザー名：<span id="confirm-name"></span></h5>
+          									<h5>入社年月：<span id="confirm-hired"></span></h5>
+          									<h5>所属：<span id="confirm-department"></span></h5>
+          									<h5>メールアドレス：<span id="confirm-email"></span></h5>
+        								</div>
+        							<br><br>
+        							<h5>この内容で確定しますか？</h5>
+      							</div>
+      							<div class="modal-footer" style="text-align:right">
+        							<button type="button" class="btn btn-secondary" data-dismiss="modal">戻る</button>
+        							<button type="button" class="btn btn-primary" id="done">登録を確定する</button>
+      							</div>
+    						</div>
+  						</div>
+					</div>
+					<!-- Modal end -->					
+				</form>
+			</div>
+		</div>
+	</div>
+	<br><br>
+	<input type="hidden" th:value="${session.lastName}" id="origin_last_name">
+	<input type="hidden" th:value="${session.firstName}" id="origin_first_name">
+	<input type="hidden" th:value="${session.hiredOn}" id="origin_hired_on">
+	<input type="hidden" th:value="${session.email}" id="origin_email">
+	<input type="hidden" th:value="${session.departmentId}" id="origin_department_id">
+</body>
+</html>

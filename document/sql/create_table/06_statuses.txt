@@ -1,0 +1,24 @@
+DROP TABLE IF EXISTS statuses ;
+
+CREATE TABLE IF NOT EXISTS statuses (
+  `status_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` INT UNSIGNED NOT NULL,
+  `using_pc` VARCHAR(255) NULL,
+  `using_mobile` VARCHAR(255) NULL,
+  `user_comment` TEXT NULL,
+  `admin_comment` TEXT NULL,
+  `stage` CHAR(1) NOT NULL,
+  `creator` VARCHAR(255) NOT NULL,
+  `created_at` DATETIME NOT NULL,
+  `updater` VARCHAR(255) NOT NULL,
+  `updated_at` DATETIME NOT NULL,
+  `version` INT NOT NULL,
+  PRIMARY KEY (`status_id`),
+  CONSTRAINT `fk_statuses_users1`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `powerpro`.`users` (`user_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+CREATE INDEX `fk_statuses_users1_idx` ON `powerpro`.`statuses` (`user_id` ASC) VISIBLE;

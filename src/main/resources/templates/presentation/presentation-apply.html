@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>パワフルプロエンジニア</title>
+	<link rel="shortcut icon" href="../static/favicon.ico" th:href="@{/favicon.ico}">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/cupertino/jquery-ui.css">
+
+	<link rel="stylesheet" href="../../static/css/presentation/presentation-apply.css"
+		th:href="@{/css/presentation/presentation-apply.css}">
+	<link rel="stylesheet" href="../../static/css/nbase.css" th:href="@{/css/nbase.css}">
+	<link rel="stylesheet" href="../static/css/header.css" th:href="@{/css/header.css}">
+	<link rel="stylesheet" href="../../static/css/presentation/editRequestComment.css"
+		th:href="@{/css/presentation/editRequestComment.css}">
+
+	<script type="text/javascript" src="../../static/js/lib/jquery-3.3.1.min.js"
+		th:src="@{/js/lib/jquery-3.3.1.min.js}"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+	<!-- <script type="text/javascript" src="../../static/js/info/info-modal.js" th:src="@{/js/info/info-modal.js}"></script>
+<script type="text/javascript" src="../../static/js/info/info-create.js" th:src="@{/js/info/info-create.js}"></script> -->
+</head>
+
+<body>
+	<!-- header start -->
+	<nav th:replace="header::menu"></nav>
+
+
+	<div id="flash" class="alert alert-danger alert-dismissible fade show flash" th:if="${message}" role="alert">
+		<div class="text-center" th:text="${message}" style="white-space: pre-wrap"></div>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+
+
+	<!-- header end -->
+	<div style="text-align: center">
+		<h1>発表会応募フォーム</h1>
+		<div><a href="presentation.html" th:href="@{/presentation}" style="font-size: 12px;">トップにもどる</a></div>
+	</div>
+	<div th:if="${reApply}==1">
+		<input id="acd-check1" class="acd-check" type="checkbox">
+		<label class="acd-label" for="acd-check1">
+			<!-- <div th:unless="${presentation.stage}==3"> -->
+			<h4 class="text-center stage-unless">▼　修正依頼コメントを見る　▼</h4>
+			<!-- </div> -->
+		</label>
+		<div class="acd-content w-75 mx-auto edit-comment-box first-comment">
+			<div th:each="editRequestComment, commentStat:${editRequestCommentList}">
+				<div th:if="${commentStat.first}">
+					<div class="first-comment">
+						<div>
+							名前：<span th:text="${editRequestComment.editRequestCommentCreatorName}">管理者○○</span>
+						</div>
+						<div>
+							日時：<span
+								th:text="${#temporals.format(editRequestComment.editRequestCommentCreatedAt, 'yyyy/MM/dd HH:mm:ss')}">日時</span>
+						</div>
+						<div>コメント：<span class="edit-comment" th:text="${editRequestComment.editRequestComment}">
+								修正依頼コメント（1件目）</span>
+						</div>
+					</div>
+					<!-- <a th:href="@{/presentation/toApply}">
+						<span th:if="${presentation.stage}==3">
+							<input type="hidden" th:value="${presentation.editRequestCommentList}">
+							<button class="btn btn-outline-primary">修正してもう一度応募する</button>
+						</span>
+					</a> -->
+				</div>
+				<div th:if="${commentStat.count}==2">
+					<input type="button" class="btn btn-link" value="▼過去の修正依頼コメントを見る" id="editRequestCommentBtn">
+				</div>
+				<div th:unless="${commentStat.first}">
+					<div class="editRequestCommentMore" style="display: none;">
+						<div class="edit-comment-user">
+							名前：<span th:text="${editRequestComment.editRequestCommentCreatorName}">管理者○○</span>
+						</div>
+						<div>
+							日時：<span
+								th:text="${#temporals.format(editRequestComment.editRequestCommentCreatedAt, 'yyyy/MM/dd HH:mm:ss')}">日時</span>
+						</div>
+						コメント：<span class="edit-comment" th:text="${editRequestComment.editRequestComment}">
+							修正依頼コメント（1件目）</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="container">
+		<div class="form-box">
+			<div th:if="${reApply != 1}">
+				<form th:action="@{/presentation/editSaveData}" class="save-button">
+					<button class="btn btn-outline-primary createButton p-2 save-button"
+						sec:authorize="hasAnyRole('ROLE_WEB','ROLE_CL','ROLE_ML')">一時保存データを編集</button>
+				</form>
+			</div>
+
+			<form action="presentation-apply.html" method="post" th:action="@{/presentation/apply}"
+				th:object="${presentationForm}" id="form" enctype="multipart/form-data" class="form">
+				<div>
+					<div class="contents">
+						<div style="color: red" th:errors="*{title}"></div>
+						<h5><label for="title">発表タイトル</label></h5>
+						<input type="text" id="title" name="title" th:field="*{title}" maxlength="255">
+					</div>
+					<div class="contents">
+						<div style="color: red" th:errors="*{content}"></div>
+						<h5><label for="content">概要</label></h5>
+						<textarea id="content" name="content" class="infor" th:field="*{content}"
+							maxlength="6000"></textarea>
+					</div>
+				</div>
+				<div class="contents">
+					<h5><label for="title">発表者</label></h5>
+					<div style="color: red" th:errors="*{userId1}"></div>
+					<input type="text" id="search-name" placeholder="発表者名検索">
+					<button type="button" id="search-button" class="btn btn-outline-primary createButton p-2"
+						data-toggle="modal" data-target="#searchModal" style="font-size: 1.2rem;">検索</button>
+
+					<!-- モーダル -->
+					<div class="modal fade" id="searchModal" tabindex="-1" role="dialog"
+						aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<div class="modal-search-title">検索結果</div>
+								</div>
+								<div class="modal-body">
+									<div class="modal-search-content">
+										<div id="userNameList"></div>
+										<div id="no-data-message">検索結果がありません。</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- modal end -->
+
+					<div class="names">
+						<table class="names-table">
+							<tr>
+								<td th:name="name1" id="name1" th:field="*{name1}" th:text="*{name1}"></td>
+								<input type="hidden" id="apply1" name="userId1" th:field="*{userId1}">
+								<td><input type="button" id="delete-button1" value="削除" class="button"></td>
+							</tr>
+							<tr>
+								<td th:name="name2" id="name2" th:field="*{name2}" th:text="*{name2}"></td>
+								<input type="hidden" id="apply2" name="userId2" th:field="*{userId2}">
+								<td><input type="button" id="delete-button2" value="削除" class="button"></td>
+							</tr>
+							<tr>
+								<td th:name="name3" id="name3" th:field="*{name3}" th:text="*{name3}"></td>
+								<input type="hidden" id="apply3" name="userId3" th:field="*{userId3}">
+								<td><input type="button" id="delete-button3" value="削除" class="button"></td>
+							</tr>
+							<tr>
+								<td th:name="name4" id="name4" th:field="*{name4}" th:text="*{name4}"></td>
+								<input type="hidden" id="apply4" name="userId4" th:field="*{userId4}">
+								<td><input type="button" id="delete-button4" value="削除" class="button"></td>
+							</tr>
+							<tr>
+								<td th:name="name5" id="name5" th:field="*{name5}" th:text="*{name5}"></td>
+								<input type="hidden" id="apply5" name="userId5" th:field="*{userId5}">
+								<td><input type="button" id="delete-button5" value="削除" class="button"></td>
+							</tr>
+							<tr id="presenter-message">
+								<td colspan="2">※発表者の登録は5名までです。</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div class="contents document under-contents">
+					<h5><label for="document">資料</label></h5>
+					<!--  <input type="file" id="document" name="document" class="document" th:field="*{document}"
+					maxlength="255">-->
+					<div th:if="*{savedPresentation} != null">
+		              <span>提出済みの資料</span><br>
+		              <span th:text="${fileName1}" id="fileName1"></span ><span th:if="${fileName1}"><button type="button" id="fileDeleteButton1">削除</button></span><br>
+		              <span th:text="${fileName2}"  id="fileName2"></span><span th:if="${fileName2}"><button type="button" id="fileDeleteButton2">削除</button></span><br>
+		              <span th:text="${fileName3}"  id="fileName3"></span><span th:if="${fileName3}"><button type="button" id="fileDeleteButton3">削除</button></span><br>
+		            </div>			
+
+					<input type="file" name="file1" id="file1" th:field="*{file1}"><br>
+					<input type="button" value="＋" class="file-btn" id="add-document1"><br>
+					<input type="file" name="file2" id="file2" th:field="*{file2}"><br>
+					<input type="button" value="＋" class="file-btn" id="add-document2"><br>
+					<input type="file" name="file3" id="file3" th:field="*{file3}"><br>
+					<!-- fileがあるかのフラグ -->
+					<input type="hidden" name="fileFlag1" id="fileFlag1" th:field="*{fileFlag1}">
+					<input type="hidden" name="fileFlag2" id="fileFlag2" th:field="*{fileFlag2}">
+					<input type="hidden" name="fileFlag3" id="fileFlag3" th:field="*{fileFlag3}">
+				</div>
+				<div>
+					<div class="contents edit-schedule under-contents">
+						<h5><label for="title">発表希望スケジュール</label></h5>
+						<div style="color: red" th:errors="*{preferredMonth}"></div>
+						<div style="color: red" th:errors="*{preferredTerm}"></div>
+						<input type="number" id="schedule" name="schedule" class="schedule" th:field="*{preferredMonth}"
+							min=1 max=12> 月
+						<select name="preferredTerm" id="preferredTerm">
+							<option>--</option>
+							<option th:each="list : ${termList}" th:value="${list}" th:text="${list}"></option>
+						</select>
+					</div>
+
+					<div class="under-buttons text-center d-inline-block">
+						<input type="hidden" name="version" th:value="${version}" th:field="*{version}">
+						<input type="hidden" th:field="*{savedPresentation}" name="savedPresentation"
+							id="savedPresentation">
+						<input type="hidden" th:field="*{presentationId}" name="presentationId"
+							id="presentationIdDocument">
+						<button type="button" class="contents btn btn-outline-primary createButton p-2 btn-box"
+							data-toggle="modal" data-target="#exampleModalCenter" id="modal-open">
+							<span th:if="${reApply == 1}">再応募</span> <span th:if="${reApply != 1}">応募</span>
+						</button>
+						<span th:if="${reApply != 1}">
+							<button type="submit" class="contents btn btn-outline-primary createButton p-2 btn-box"
+								data-target="#exampleModalCenter" id="save-btn">
+								一時保存
+							</button>
+						</span>
+						<input type="hidden" id="apply-stage" name="stage">
+					</div>
+				</div>
+				<!-- Modal -->
+				<div class="modal fade bd-example-modal-xl" id="exampleModalCenter" tabindex="-1" role="dialog"
+					aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalCenterTitle">内容確認</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body" style="text-align: left;">
+								<div class="confirm">
+									<h5>
+										応募者ID：<span id="apply1-name"></span>&nbsp;&nbsp;<span
+											id="apply2-name"></span>&nbsp;&nbsp;<span
+											id="apply3-name"></span>&nbsp;&nbsp;
+										<span id="apply4-name"></span>&nbsp;&nbsp;<span id="apply5-name"></span>
+									</h5>
+									<br>
+									<h5>
+										タイトル：<span id="title-name"></span>
+									</h5>
+									<br>
+									<h5>
+										概要：<br> <span id="content-name"></span>
+									</h5>
+									<br>
+									<h5>
+										資料：<br><span id="document-name1"></span>&nbsp;&nbsp;<span id="document-name2"></span>&nbsp;&nbsp;
+										<span id="document-name3"></span>&nbsp;&nbsp;<span id="document-name4"></span>&nbsp;&nbsp;
+										<span id="document-name5"></span>&nbsp;&nbsp;<span id="document-name6"></span>&nbsp;&nbsp;
+									</h5>
+									<br>
+									<h5>
+										発表希望スケジュール：<span id="preferred-month-name"></span>月<span
+											id="preferred-term-name"></span>
+									</h5>
+									<br>
+								</div>
+								<h5>この内容で応募しますか？</h5>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">戻る</button>
+								<a href="presentation.html">
+									<button type="submit" class="btn btn-primary"
+										id="apply-set-stage-button">応募を確定する</button>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Modal end -->
+			</form>
+		</div>
+	</div>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
+	<script th:src="@{../js/presentation/presentation-apply.js}" th:inline="javascript"></script>
+	<script th:src="@{../js/presentation/presentation-search.js}" th:inline="javascript"></script>
+	<script type="text/javascript">
+		$(function () {
+			$(".datepicker").datepicker({
+				minDate: 0
+			});
+		});
+	</script>
+
+</body>
+
+</html>

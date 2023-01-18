@@ -1,0 +1,94 @@
+div .col{
+	text-align:center;
+}
+
+.container{
+	max-width: 100%;
+}
+
+input[type="text"]{
+	padding: 0.4rem;
+	width: 15rem;
+	border: #17a2b8 2px solid;
+	border-radius: 4px;
+}
+
+.form-box select,.form-box-item select {
+	cursor: pointer;
+	font-size: 1.4rem;
+	padding: 0.1rem;
+	border: #17a2b8 2px solid;
+	border-radius: 4px;
+}
+
+
+.form-box {
+	position: relative;
+	margin:5% 25%;
+	border: #17a2b8 2px solid;
+}
+
+.contents {
+	margin: 1rem;
+}
+
+.contents  label {
+	display: inline-block;
+	padding: 0.4rem;
+	width: 160px;
+	text-align: left;
+	font-weight:bold;
+}
+
+.btn {
+	font-size: 1.3rem;
+	font-weight: bold;
+	padding: 0.6rem 1.6rem;
+	margin: 0.6rem;
+	border-radius: 8px;
+}
+
+/*request-edit-item*/
+table {
+	margin-left: auto;
+	margin-right: auto;
+	width: 80%
+}
+
+.form-box-item {
+	position: relative;
+	margin: 2% 15% 2% 15%;
+	padding: 0.2rem 1.4rem;
+	border: #17a2b8 2px solid;
+}
+
+/*スマホ画面用  */
+@media screen and (max-width: 480px) {
+.form-box{
+	margin:5% 10%;
+}
+#page-tittle{
+	font-size:1.3rem;
+	font-weight:bold;
+}
+input[type="text"]{
+	width: 13rem;
+}
+
+.form-box select,.form-box-item select {
+	width: 13rem;
+	height:2.5rem;
+	font-size:1.1rem;
+}
+table {
+	width:100%
+}
+.form-box-item {
+	position: relative;
+	margin: 2% 5%;
+	padding: 0.2rem 1.4rem;
+	border: #17a2b8 2px solid;
+}
+}
+	
+

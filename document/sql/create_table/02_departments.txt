@@ -1,0 +1,17 @@
+DROP TABLE IF EXISTS departments CASCADE ;
+
+CREATE TABLE IF NOT EXISTS departments (
+  `department_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `staff_id` VARCHAR(255) NULL,
+  `stage` CHAR(1) NOT NULL,
+  `creator` VARCHAR(255) NOT NULL,
+  `created_at` DATETIME NOT NULL,
+  `updater` VARCHAR(255) NOT NULL,
+  `updated_at` DATETIME NOT NULL,
+  `version` INT NOT NULL,
+  PRIMARY KEY (`department_id`))
+ENGINE = InnoDB;
+
+CREATE UNIQUE INDEX `name_UNIQUE` ON `powerpro`.`departments` (`name` ASC) VISIBLE;
+

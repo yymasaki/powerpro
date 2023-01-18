@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.mapper.HadPersonalityMapper" >
+  <resultMap id="BaseResultMap" type="com.example.domain.HadPersonality" >
+    <id column="had_personality_id" property="hadPersonalityId" jdbcType="INTEGER" />
+    <result column="status_id" property="statusId" jdbcType="INTEGER" />
+    <result column="personality_id" property="personalityId" jdbcType="INTEGER" />
+    <result column="stage" property="stage" jdbcType="CHAR" />
+  </resultMap>
+  
+  <resultMap id="ConnectPersonalitiesResultMap" type="com.example.domain.HadPersonality" >
+    <id column="hp_had_personality_id" property="hadPersonalityId" jdbcType="INTEGER" />
+    <result column="hp_status_id" property="statusId" jdbcType="INTEGER" />
+    <result column="hp_personality_id" property="personalityId" jdbcType="INTEGER" />
+    <result column="hp_stage" property="stage" jdbcType="CHAR" />
+    <association property="personality" javaType="com.example.domain.Personality" >
+   		<result column="p_personality_id" jdbcType="INTEGER" property="personalityId" />
+   		<result column="p_name" jdbcType="VARCHAR" property="name" />
+   		<result column="p_type" jdbcType="CHAR" property="type" />
+   		<result column="p_explanation" property="explanation" jdbcType="VARCHAR" />
+   		<result column="p_stage" property="stage" jdbcType="CHAR" />
+	    <result column="p_creator" property="creator" jdbcType="VARCHAR" />
+	    <result column="p_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+	    <result column="p_updater" property="updater" jdbcType="VARCHAR" />
+	    <result column="p_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+	    <result column="p_version" property="version" jdbcType="INTEGER" />
+   	</association>
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    had_personality_id, status_id, personality_id, stage
+  </sql>
+  <sql id="Had_Personalities_Column_List">
+  	hp.had_personality_id as hp_had_personality_id, hp.status_id as hp_status_id, hp.personality_id as hp_personality_id, hp.stage as hp_stage
+  </sql>
+  <sql id="Personalities_Column_List">
+  	,p.personality_id as p_personality_id, p.name as p_name, p.type as p_type, p.explanation as p_explanation, p.stage as p_stage,
+  	p.creator as p_creator, p.created_at p_created_at, p.updater as p_updater, p.updated_at as p_updated_at, p.version as p_version
+  </sql>
+  <sql id="Had_Personalities_Table">
+  	had_personalities hp
+  </sql>
+  <sql id="Personalities_Table">
+  	inner join personalities p on hp.personality_id = p.personality_id
+  </sql>
+  <!-- テーブル結合(HadPersonalities, Personalities)したselect文 -->
+  <select id="selectHadPersonalityAndPersonality" resultMap="ConnectPersonalitiesResultMap" parameterType="com.example.domain.HadPersonality">
+  	select
+    <include refid="Had_Personalities_Column_List" />
+    <include refid="Personalities_Column_List" />
+    from
+    <include refid="Had_Personalities_Table" />
+    <include refid="Personalities_Table" />
+    where hp.status_id = #{statusId,jdbcType=INTEGER} and hp.stage = '0'
+    order by hp.personality_id;
+  </select>
+  <!-- statusIdから検索 -->
+  <select id="selectByStatusId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  	select
+    <include refid="Base_Column_List" />
+    from had_personalities
+    where status_id = #{statusId,jdbcType=INTEGER}
+    order by personality_id;
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from had_personalities
+    where had_personality_id = #{hadPersonalityId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByExample" parameterType="com.example.example.HadPersonalityExample" >
+    delete from had_personalities
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <!-- listのinsertを行う -->
+  <insert id ="insertSelectiveList" parameterType= "java.util.List" >
+  	insert into had_personalities ( 
+          had_personality_id
+        , status_id
+        , personality_id
+        , stage
+   )
+   values
+   <foreach collection ="hadPersonalityList" item="hp" separator= ",">
+     (
+        #{hp.hadPersonalityId, jdbcType=INTEGER},
+        #{hp.statusId, jdbcType=INTEGER},
+        #{hp.personalityId, jdbcType=INTEGER},
+        #{hp.stage, jdbcType=CHAR}
+     )
+   </foreach>
+  </insert >
+</mapper>

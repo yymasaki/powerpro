@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.mapper.HadTechnicalSkillMapper" >
+  <resultMap id="SingleResultMap" type="com.example.domain.HadTechnicalSkill" >
+ 
+ 
+    <id column="had_technical_skill_id" property="hadTechnicalSkillId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="technical_skill_id" property="technicalSkillId" jdbcType="INTEGER" />
+    <result column="using_period" property="usingPeriod" jdbcType="INTEGER" />
+    <result column="stage" property="stage" jdbcType="CHAR" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updater" property="updater" jdbcType="VARCHAR" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="BaseResultMap" type="com.example.domain.HadTechnicalSkill" >
+ 
+ 
+    <id column="ht_had_technical_skill_id" property="hadTechnicalSkillId" jdbcType="INTEGER" />
+    <result column="ht_user_id" property="userId" jdbcType="INTEGER" />
+    <result column="ht_technical_skill_id" property="technicalSkillId" jdbcType="INTEGER" />
+    <result column="ht_using_period" property="usingPeriod" jdbcType="INTEGER" />
+    <result column="ht_stage" property="stage" jdbcType="CHAR" />
+    <result column="ht_creator" property="creator" jdbcType="VARCHAR" />
+    <result column="ht_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="ht_updater" property="updater" jdbcType="VARCHAR" />
+    <result column="ht_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <resultMap id="ContainTechnicalSkillResultMap" type="com.example.domain.HadTechnicalSkill" >
+    <id column="ht_had_technical_skill_id" property="hadTechnicalSkillId" jdbcType="INTEGER" />
+    <result column="ht_user_id" property="userId" jdbcType="INTEGER" />
+    <result column="ht_technical_skill_id" property="technicalSkillId" jdbcType="INTEGER" />
+    <result column="ht_using_period" property="usingPeriod" jdbcType="INTEGER" />
+    <result column="ht_stage" property="stage" jdbcType="CHAR" />
+    <result column="ht_creator" property="creator" jdbcType="VARCHAR" />
+    <result column="ht_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="ht_updater" property="updater" jdbcType="VARCHAR" />
+    <result column="ht_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+    <association property="technicalSkill" javaType="com.example.domain.TechnicalSkill">
+    <result column="t_technical_skill_id" property="technicalSkillId" jdbcType="INTEGER" />
+    <result column="t_name" property="name" jdbcType="VARCHAR" />
+    <result column="t_category" property="category" jdbcType="INTEGER" />
+    <result column="t_request_user_id" property="requestUserId" jdbcType="INTEGER" />
+    <result column="t_stage" property="stage" jdbcType="CHAR" />
+    <result column="t_creator" property="creator" jdbcType="VARCHAR" />
+    <result column="t_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="t_updater" property="updater" jdbcType="VARCHAR" />
+    <result column="t_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+    <result column="t_version" property="version" jdbcType="INTEGER" />
+    </association>
+  </resultMap>
+  
+  <resultMap id="ConnectUserResultMap" type="com.example.domain.HadTechnicalSkill">
+  	<id column="ht_had_technical_skill_id" property="hadTechnicalSkillId" jdbcType="INTEGER" />
+ 	<result column="ht_user_id" property="userId" jdbcType="INTEGER" />
+ 	<result column="ht_technical_skill_id " property="technicalSkillId" jdbcType="INTEGER" />
+ 	<result column="ht_using_period" property="usingPeriod" jdbcType="INTEGER" />
+ 	<result column="ht_stage" property="stage" jdbcType="INTEGER" />
+ 	<result column="ht_creator" property="creator" jdbcType="VARCHAR" />
+ 	<result column="ht_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+ 	<result column="ht_updater" property="updater" jdbcType="VARCHAR" />
+ 	<result column="ht_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+   	<association property="user" javaType="com.example.domain.User">
+     <id column="u_user_id" property="userId" jdbcType="INTEGER" />
+     <result column="u_name" property="name" jdbcType="VARCHAR" />
+     <result column="u_hired_on" property="hiredOn" jdbcType="DATE" />
+     <result column="u_department_id" property="departmentId" jdbcType="INTEGER" />
+     <result column="u_email" property="email" jdbcType="VARCHAR" />
+     <result column="u_password" property="password" jdbcType="CHAR" />
+     <result column="u_stage" property="stage" jdbcType="CHAR" />
+     <result column="u_updated_password_at" property="updatedPasswordAt" jdbcType="DATE" />
+     <result column="u_creator" property="creator" jdbcType="VARCHAR" />
+     <result column="u_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+     <result column="u_updater" property="updater" jdbcType="VARCHAR" />
+     <result column="u_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+     <result column="u_version" property="version" jdbcType="INTEGER" />
+     	<association property="department" javaType="com.example.domain.Department">
+    	<id column="d_department_id" property="departmentId" jdbcType="INTEGER" />
+   		<result column="d_name" property="name" jdbcType="VARCHAR" />
+    	<result column="d_staff_id" property="staffId" jdbcType="VARCHAR" />
+    	<result column="d_stage" property="stage" jdbcType="CHAR" />
+    	<result column="d_creator" property="creator" jdbcType="VARCHAR" />
+     	<result column="d_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    	<result column="d_updater" property="updater" jdbcType="VARCHAR" />
+    	<result column="d_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+    	<result column="d_version" property="version" jdbcType="INTEGER" />
+    	</association>
+  	</association> 	
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Single_Column_List" >
+    had_technical_skill_id, user_id, technical_skill_id, using_period, stage, creator, created_at, updater, updated_at
+  </sql>
+  <sql id="Base_Column_List" >
+    ht.had_technical_skill_id AS ht_had_technical_skill_id, ht.user_id AS ht_user_id, ht.technical_skill_id AS ht_technical_skill_id, 
+    ht.using_period AS ht_using_period, ht.stage AS ht_stage, ht.creator AS ht_creator, ht.created_at AS ht_created_at, 
+    ht.updater AS ht_updater, ht.updated_at AS ht_updated_at
+  </sql>
+  <sql id="TechnicalSkill_Column_List" >
+  ,t.technical_skill_id t_technical_skill_id,t.name t_name,t.category t_category,t.request_user_id t_request_user_id,t.stage t_stage,t.creator t_creator, t.created_at t_created_at, t.updater t_updater,t.updated_at t_updated_at,t.version t_version
+  </sql>
+  <sql id="Users_Column_List">
+  	,u.user_id as u_user_id, u.name as u_name, u.hired_on as u_hired_on, u.department_id as u_department_id,
+  	u.email as u_email,u.password as u_password,u.stage as u_stage,u.creator as u_creator, u.created_at u_created_at, u.updater as u_updater, u.updated_at as u_updated_at, u.version as u_version
+  </sql>
+  <sql id="Departments_Column_List">
+  	,d.department_id as d_department_id, d.name as d_name, d.staff_id as d_staff_id ,d.stage as d_stage,d.creator as d_creator, d.created_at d_created_at, d.updater as d_updater, d.updated_at as d_updated_at, d.version as d_version
+  </sql>
+  <sql id="Had_Technical_Skills_Table">
+  	from had_technical_skills ht
+  </sql>
+  <sql id="Technical_Skills_Table">
+  	inner join technical_skills t on ht.technical_skill_id=t.technical_skill_id
+  </sql>
+  <sql id="Users_Table">
+  	inner join users u on ht.user_id = u.user_id
+  </sql>
+  <sql id="Departments_Table">
+  	inner join departments d on u.department_id = d.department_id
+  </sql>
+
+  <select id="selectByUserId" resultMap="ContainTechnicalSkillResultMap" >
+    select
+  	<include refid="Base_Column_List" />
+  	<include refid="TechnicalSkill_Column_List" />
+  	<include refid="Had_Technical_Skills_Table" />
+  	<include refid="Technical_Skills_Table" />
+    where user_id=#{userId,jdbcType=INTEGER}
+  </select>
+  
+<!--   <select id="selectByUserId" resultMap="SingleResultMap" parameterType="java.lang.Integer" > -->
+<!--     select -->
+<!--   	<include refid="Single_Column_List" /> -->
+<!--   	from had_technical_skills -->
+<!--     where user_id=#{userId,jdbcType=INTEGER} -->
+<!--     and `stage` ='0'  -->
+<!--     order by had_technical_skill_id desc -->
+<!--     limit 1 offset 0 -->
+<!--   </select> -->
+  
+  <!-- ユーザーidと作成日で所有テクニカルリストを取得-->
+<!--   <select id="selectByUserIdAndCreatedAt" resultMap="ContainTechnicalSkillResultMap" parameterType="com.example.example.HadTechnicalSkillExample" > -->
+
+<!--     select -->
+<!--     <if test="distinct" > -->
+<!--       distinct -->
+<!--     </if> -->
+<!--   	<include refid="Base_Column_List" /> -->
+<!--   	<include refid="TechnicalSkill_Column_List" /> -->
+<!--   	<include refid="Had_Technical_Skills_Table" /> -->
+<!--   	<include refid="Technical_Skills_Table" /> -->
+<!--     <if test="_parameter != null" > -->
+<!--       <include refid="Example_Where_Clause" /> -->
+<!--     </if> -->
+<!--     <if test="orderByClause != null" > -->
+<!--       order by ${orderByClause} -->
+<!--     </if> -->
+<!--   </select> -->
+  
+  <!--stage=0を取得 テクニカルスキル編集画面の初期表示に利用-->
+  <select id="selectByUserIdAndStage0or1or2" resultMap="ContainTechnicalSkillResultMap" parameterType="java.lang.Integer" >
+ select 
+ <include refid="Base_Column_List" />
+ <include refid="TechnicalSkill_Column_List" />
+ <include refid="Had_Technical_Skills_Table" />
+ <include refid="Technical_Skills_Table" />
+ WHERE ht.user_id = #{userId,jdbcType=INTEGER} and (ht.stage ='0' or ht.stage ='1' or ht.stage ='2');
+  </select>
+  
+
+  <select id="selectByPrimaryKey" resultMap="SingleResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Single_Column_List" />
+    from had_technical_skills
+    where had_technical_skill_id = #{hadTechnicalSkillId,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from had_technical_skills
+    where had_technical_skill_id = #{hadTechnicalSkillId,jdbcType=INTEGER}
+  </delete>
+  
+  <delete id="deleteListByPrimaryKey">
+    delete from had_technical_skills
+    where had_technical_skill_id in (
+      <foreach item="ht" collection="hadTechnicalSkillList" separator=",">
+        #{ht.hadTechnicalSkillId,jdbcType=INTEGER}
+      </foreach>)
+  </delete>
+ 
+  <delete id="deleteByExample" parameterType="com.example.example.HadTechnicalSkillExample" >
+    delete from had_technical_skills
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+ 
+ <!--所有テクニカルスキル編集画面及び、申請編集画面より所有テクニカルスキルをinsertする-->
+  <insert id="insertList" useGeneratedKeys="true" keyProperty="hadTechnicalSkillId">
+    insert into had_technical_skills (user_id, technical_skill_id, 
+      using_period,stage, creator, 
+      created_at, updater, updated_at)
+      values
+      <foreach collection="hadTechnicalSkill" item="ht" separator=",">
+     (#{ht.userId,jdbcType=INTEGER}, #{ht.technicalSkillId,jdbcType=INTEGER},
+      #{ht.usingPeriod,jdbcType=INTEGER},#{ht.stage,jdbcType=CHAR}, #{ht.creator,jdbcType=VARCHAR}, 
+      #{ht.createdAt,jdbcType=TIMESTAMP},  #{ht.updater,jdbcType=VARCHAR}, #{ht.updatedAt,jdbcType=TIMESTAMP})
+      </foreach> 
+   </insert>
+  <insert id="insertSelective" parameterType="com.example.domain.HadTechnicalSkill" >
+ 
+    insert into had_technical_skills
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="technicalSkillId != null" >
+        technical_skill_id,
+      </if>
+      <if test="usingPeriod != null" >
+        using_period,
+      </if>
+      <if test="stage != null" >
+        stage,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="createdAt != null" >
+        created_at,
+      </if>
+      <if test="updater != null" >
+        updater,
+      </if>
+      <if test="updatedAt != null" >
+        updated_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="hadTechnicalSkillId != null" >
+        #{hadTechnicalSkillId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="technicalSkillId != null" >
+       #{technicalSkillId,jdbcType=INTEGER}
+      </if>
+      <if test="usingPeriod != null" >
+        #{usingPeriod,jdbcType=INTEGER},
+      </if>
+      <if test="stage != null" >
+        #{stage,jdbcType=CHAR},
+      </if>
+      <if test="creator != null" >
+         #{creator,jdbcType=VARCHAR}
+      </if>
+      <if test="createdAt != null" >
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updater != null" >
+        <!-- #{updater,jdbcType=VARCHAR}, -->
+        (select name from users where user_id=#{userId,jdbcType=INTEGER}),
+      </if>
+      <if test="updatedAt != null" >
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.example.example.HadTechnicalSkillExample" resultType="java.lang.Integer" >
+    select count(*) from had_technical_skills
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    and had_technical_skill_id IN (SELECT MAX(had_technical_skill_id) 
+	FROM had_technical_skills WHERE stage IN(2,3) GROUP BY created_at )
+  </select>
+  
+  
+  <update id="updateByExampleSelective" parameterType="map" >
+
+    update had_technical_skills
+    <set >
+      <if test="record.hadTechnicalSkillId != null" >
+        had_technical_skill_id = #{record.hadTechnicalSkillId,jdbcType=INTEGER},
+      </if>
+      <if test="record.userId != null" >
+        user_id = #{record.userId,jdbcType=INTEGER},
+      </if>
+      <if test="record.technicalSkillId != null" >
+        technical_skill_id = #{record.technicalSkillId,jdbcType=INTEGER},
+      </if>
+      <if test="record.usingPeriod != null" >
+        using_period = #{record.usingPeriod,jdbcType=INTEGER},
+      </if>
+      <if test="record.stage != null" >
+        stage = #{record.stage,jdbcType=CHAR},
+      </if>
+      <if test="record.creator != null" >
+        creator = #{record.creator,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createdAt != null" >
+        created_at = #{record.createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updater != null" >
+        updater = #{record.updater,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updatedAt != null" >
+        updated_at = #{record.updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  
+ 
+  <update id="updateStageByExample" parameterType="map" >
+    update had_technical_skills
+    set 
+      stage = #{record.stage,jdbcType=CHAR},
+      updater = #{record.updater,jdbcType=VARCHAR},
+      updated_at = #{record.updatedAt,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>  
+  
+  <update id="updateUsingPeriodByHadTechnicalSkillList">
+        update had_technical_skills
+            set using_period = elt(field(had_technical_skill_id,
+            <foreach collection="hadTechnicalSkillList" item="ht" separator=",">
+                #{ht.hadTechnicalSkillId}
+            </foreach>
+            ),
+            <foreach collection="hadTechnicalSkillList" item="ht" separator=",">
+                #{ht.usingPeriod}
+            </foreach>
+             ),updated_at = elt(field(had_technical_skill_id,
+            <foreach collection="hadTechnicalSkillList" item="ht" separator=",">
+                #{ht.hadTechnicalSkillId}
+            </foreach>
+            ),
+            <foreach collection="hadTechnicalSkillList" item="ht" separator=",">
+                #{ht.updatedAt}
+            </foreach>
+             ),updater = elt(field(had_technical_skill_id,
+            <foreach collection="hadTechnicalSkillList" item="ht" separator=",">
+                #{ht.hadTechnicalSkillId}
+            </foreach>
+            ),
+            <foreach collection="hadTechnicalSkillList" item="ht" separator=",">
+                #{ht.updater}
+            </foreach>
+             )
+            where had_technical_skill_id in (
+            <foreach collection="hadTechnicalSkillList" item="ht" separator=",">
+                #{ht.hadTechnicalSkillId}
+            </foreach>
+            )
+        and
+        user_id = #{userId,jdbcType=INTEGER}
+        and (stage=0 or stage=1 or stage=2)
+  </update>
+  
+  <update id="updateStageByHadTechnicalSkillList">
+        update had_technical_skills
+            set stage = #{stage}
+              ,updater = #{updater}
+              ,updated_at = #{updatedAt}
+            where had_technical_skill_id in (
+            <foreach collection="hadTechnicalSkillList" item="ht" separator=",">
+                #{ht.hadTechnicalSkillId}
+            </foreach>
+            )
+  </update>
+ 
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.domain.HadTechnicalSkill" >
+
+    update had_technical_skills
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="technicalSkillId != null" >
+        technical_skill_id = #{technicalSkillId,jdbcType=INTEGER},
+      </if>
+      <if test="usingPeriod != null" >
+        using_period = #{usingPeriod,jdbcType=INTEGER},
+      </if>
+      <if test="stage != null" >
+        stage = #{stage,jdbcType=CHAR},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null" >
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updater != null" >
+        updater = #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedAt != null" >
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null" >
+        version = #{version,jdbcType=INTEGER},
+      </if>
+    </set>
+    where had_technical_skill_id = #{hadTechnicalSkillId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.domain.HadTechnicalSkill" >
+    update had_technical_skills
+    set user_id = #{userId,jdbcType=INTEGER},
+      technical_skill_id = #{technicalSkillId,jdbcType=INTEGER},
+      using_period = #{usingPeriod,jdbcType=INTEGER},
+      stage = #{stage,jdbcType=CHAR},
+      creator = #{creator,jdbcType=VARCHAR},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updater = #{updater,jdbcType=VARCHAR},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      version = #{version,jdbcType=INTEGER}
+    where had_technical_skill_id = #{hadTechnicalSkillId,jdbcType=INTEGER}
+  </update>
+</mapper>

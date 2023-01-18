@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>パワフルプロエンジニア</title>
+<link rel="shortcut icon" href="../static/favicon.ico" th:href="@{/favicon.ico}">
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+	integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+	crossorigin="anonymous">
+
+<link rel="stylesheet" href="../../static/css/nbase.css"	th:href="@{/css/nbase.css}">
+<link rel="stylesheet" href="../../static/css/nregist.css" th:href="@{/css/nregist.css}">
+<link rel="stylesheet" href="../../static/css/skill/skill-register-item.css" th:href="@{/css/skill/skill-register-item.css}">
+<link rel="stylesheet" href="../../static/css/request/request.css" th:href="@{/css/request/request.css}">
+<link rel="stylesheet" href="../static/css/header.css" th:href="@{/css/header.css}">
+
+<script type="text/javascript" src="../../static/js/lib/jquery-3.3.1.min.js"	th:src="@{/js/lib/jquery-3.3.1.min.js}"></script>
+<script	src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+	integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script type="text/javascript" src="../../static/js/request/request-edit-item.js" th:src="@{/js/request/request-edit-item.js}"></script>
+
+<!-- 	入力値チェック用のソース  -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jQuery-Validation-Engine/2.6.4/validationEngine.jquery.min.css" type="text/css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-Validation-Engine/2.6.4/languages/jquery.validationEngine-ja.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-Validation-Engine/2.6.4/jquery.validationEngine.min.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+	<!-- header start -->
+	<nav th:replace="header::menu"></nav>
+	<!-- header end -->
+	<form action="request.html" th:action="@{/request/item/edit/do}" method="post" th:object="${editRequestTechnicalSkillForm}" id="requestItemForm">
+		<div class="container">
+			<div class="form-box-item">
+				<h1 class="text-center" id="page-tittle">テクニカルスキル申請内容修正</h1>
+				<div class="text-center">
+					<span th:if="${session.searchRequestForm}">
+						<span th:if="${session.searchRequestForm.content == 3}">
+							<a href="request.html" th:href="@{/request?pageBack=true}">申請トップにもどる</a>
+						</span>
+					<!-- 新規テクニカルスキル申請以外の検索条件がsessionに残っている場合、pageBack=trueは使用しない -->
+						<span th:if="${session.searchRequestForm.content != 3}">
+							<a href="request.html" th:href="@{/request}">申請トップにもどる</a>
+						</span>
+					</span>
+					<!-- 申請一覧画面を経由せずにこの画面に遷移してきた場合、pageBack=trueは使用しない -->
+					<span th:unless="${session.searchRequestForm}"><a href="request.html" th:href="@{/request}">申請トップにもどる</a></span>
+				</div>
+				<br>
+				<div class="col">
+					<div class="table-wide">
+						<div sec:authorize="hasRole('ROLE_ADMIN')">
+							<table>
+								<tbody class="text-center">
+									<tr>
+										<th class="text-center">申請日</th>
+										<th class="text-center">申請者名</th>
+										<th class="text-center">所属</th>
+										<th class="text-center">申請状況</th>
+									</tr>
+									<tr>
+										<td
+											th:text="${#temporals.format(technicalSkill.updatedAt,'yyyy年MM月dd日')}">2020年5月5日</td>
+										<td th:text="${technicalSkill.creator}">太郎</td>
+										<td th:text="${technicalSkill.user.department.name}">WEBアプリケーション開発</td>
+										<td>
+											<span th:text="${technicalSkill.stageString}"></span>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>				
+					<br>
+					<div class="text-center">
+						<label class="text-center" for="label-category">カテゴリ名</label> <br>
+						<select	name="category" class="category-value check"  id="label-category">
+							<option th:each="skill:${skillMap}" th:value="${skill.key}" th:text="${skill.value}"
+								th:selected="${technicalSkill.category == skill.key}"></option>
+						</select><br> <br>
+						<label class="text-center" for="label-name">スキル名</label><br>
+ 						<div style="color: red" th:errors="*{name}">スキル名を入力してください</div>
+						<div id="checkMessage" style="color:red"></div>
+						 <input type="text" class="skill-value check validate[required]" name="name" maxlength="30" th:value="${technicalSkill.name}" placeholder="スキル名" id="label-name"><br><br>
+					</div>
+					<br>
+					<div class="text-center" style="color: red;font-weight: 900;" id="check-datas-error"></div>
+					<div class="text-center">
+						<button type="button" class="btn btn-outline-primary modal-open" data-toggle="modal" data-target="#exampleModal">修正して承認</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--Modal  -->
+		<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+			aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="text-right modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">内容確認</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body" style="text-align:left">
+						<div class="form-group confirm">
+							<h5>カテゴリ名： <span id="category-name"></span></h5>
+							<h5>スキル名： <span id="skill-name"></span> </h5>
+								<input type="hidden" name="technicalSkillId" th:value="${technicalSkill.technicalSkillId}"> 
+								<input type="hidden" name="version" th:value="${technicalSkill.version}"> 
+						</div><br>
+						<h5>この内容で確定しますか？</h5>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">戻る</button>
+						<button type="button" class="btn btn-primary" id="done">
+							修正して承認を確定する
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Modal-end -->
+	</form>
+</body>
+</html>

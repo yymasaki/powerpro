@@ -1,0 +1,117 @@
+@charset "UTF-8";
+
+body {
+	font-size: 12px;
+}
+
+.title {
+	text-align: center;
+	margin: 4% 0 1rem 0;
+}
+
+div {
+	border-radius: 10px;
+}
+
+label{
+	font-size: 14px;
+}
+
+p{
+	font-size: 12px;
+}
+
+.login-form {
+	border: #17a2b8 2px solid;
+	margin: 0 auto 1rem auto;
+}
+
+.contents label {
+	font-weight: bold;
+	color: gray
+}
+
+.contents input[type="password"], .contents input[type="text"] {
+	font-size: 0.8rem;
+    border: 1px solid #999999;
+    border-radius: 4px;
+}
+
+@media only screen and (min-width: 480px) {
+	.login-form {
+		padding: 0.5rem 0.8rem;
+		width: 45%
+	}
+	.contents label {
+		padding: 0.4rem;
+		width: 10rem;
+		display: inline-block;
+		text-align: right;
+	}
+	.contents input[type="password"], .contents input[type="text"] {
+		padding: 0.4rem;
+    	width: 50%;
+	}
+	#email-domain{
+		display: inline;
+	}
+}
+
+@media only screen and (max-width: 479px) {
+	.title img{
+		height: 150px
+	}
+	.login-form {
+		padding: 0 0.8rem;
+		width: 80%	
+	}
+	.contents label {
+		display: block;
+	}
+	.contents input[type="password"], .contents input[type="text"] {
+		padding: 0.4rem;
+    	width: 90%;
+	}
+	#email-domain{
+		margin: 0 0 0.5rem 1rem;
+	}
+}
+
+
+.btn {
+    font-size: 0.8rem;
+    font-weight: bold;
+    padding: 0.5rem 1.6rem;
+    border-radius: 8px;
+}
+
+.loading {
+	width: 100%;
+	height: 100%;
+	background: rgba(255,255,255,0.5);
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 20000;
+}
+
+.loading img {
+	width: 4rem;
+	height: 4rem;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -20px;
+	margin-left: -20px;
+}
+.loading p{
+	width: 4rem;
+	height: 4rem;
+	position: absolute;
+	font-size:0.9rem;
+	top: 62%;
+	left:50%;
+	margin-top: -20px;
+	margin-left: -15px;
+}
+

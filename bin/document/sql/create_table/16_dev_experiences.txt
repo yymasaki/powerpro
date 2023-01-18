@@ -1,0 +1,24 @@
+DROP TABLE IF EXISTS dev_experiences ;
+
+CREATE TABLE IF NOT EXISTS dev_experiences (
+  `dev_experience_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `specsheet_id` INT UNSIGNED NOT NULL,
+  `project_name` VARCHAR(255) NULL,
+  `started_on` DATE NULL,
+  `finished_on` DATE NULL,
+  `team_members` INT NULL,
+  `project_members` INT NULL,
+  `role` VARCHAR(255) NULL,
+  `project_details` TEXT NULL,
+  `tasks` TEXT NULL,
+  `acquired` TEXT NULL,
+  `stage` CHAR(1) NOT NULL,
+  PRIMARY KEY (`dev_experience_id`),
+  CONSTRAINT `fk_dev_experiences_app_specsheets1`
+    FOREIGN KEY (`specsheet_id`)
+    REFERENCES `powerpro`.`app_specsheets` (`specsheet_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+CREATE INDEX `fk_dev_experiences_app_specsheets1_idx` ON `powerpro`.`dev_experiences` (`specsheet_id` ASC) VISIBLE;

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>パワフルプロエンジニア</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/cupertino/jquery-ui.css">
+<link rel="stylesheet" href="../../static/css/lib/solid.min.css" th:href="@{/css/lib/solid.min.css}">
+<link rel="stylesheet" href="../../static/css/lib/brands.min.css" th:href="@{/css/lib/brands.min.css}">
+<link rel="stylesheet" href="../../static/css/lib/fontawesome.min.css" th:href="@{/css/lib/fontawesome.min.css}">
+<link rel="stylesheet" href="../../static/css/user/multi-select.css" th:href="@{/css/user/multi-select.css}">
+
+<link rel="stylesheet" href="../../static/css/nbase.css" th:href="@{/css/nbase.css}">
+<link rel="stylesheet" href="../../static/css/nability.css" th:href="@{/css/nability.css}">
+<link rel="stylesheet" href="../../static/css/skill/skill-spec.css" th:href="@{/css/skill/skill-spec.css}">
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+<script src="../../static/js/main.js" th:src="@{/js/main.js}"></script>
+<script src="../../static/js/jquery.multi-select.js" th:src="@{/js/jquery.multi-select.js}"></script>
+<script src="../../static/js/skill/skill-spec.js" th:src="@{/js/skill/skill-spec.js}"></script>
+</head>
+<body>
+
+<div id="summaryTable" th:fragment="spec">
+	<table class="initial-table mx-auto">
+		<tr>
+			<td colspan="10" class="cell-gray table-border-bold">
+				<div class="spec-title">スペックシート(開発技術者)</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="cell-gray w-10">
+				<div class="">スタッフID</div>
+			</td>
+			<td class="cell-white w-13">
+				<div th:if="${specsheet.employeeId}" th:text="${specsheet.staffIdForSpec}">AP-202-0000</div>
+			</td>
+			<td class="cell-gray w-8">
+				<div class="s1">年齢</div>
+			</td>
+			<td class="cell-white w-12">
+				<div class="p5" th:text="${specsheet.generation}">20代前半</div>
+			</td>
+			<td class="cell-gray w-8">
+				<div class="s1">性別</div>
+			</td>
+			<td class="cell-white w-12">
+				<div class="p5" th:text="${specsheet.genderName}"></div>
+			</td>
+			<td class="cell-gray w-8">
+				<div class="s1">最寄駅</div>
+			</td>
+			<td class="cell-white w-13">
+				<div class="p5" th:text="${specsheet.nearestStation}">東京駅</div>
+			</td>
+			<td class="cell-gray w-8">
+				<div class="s1">稼働開始日</div>
+			</td>
+			<td class="cell-white w-8">
+				<div class="p5" th:text="${specsheet.startBusinessDate}">応相談</div>
+			</td>
+		</tr>
+		<tr>
+			<td rowspan="2" class="cell-gray">
+				<div class="s1">エンジニア歴</div>
+			</td>
+			<td rowspan="2" class="cell-white">
+				<div class="p5" th:if="${specsheet.engineerPeriod}!=null"
+					th:text="${specsheet.getPeriod(__specsheet.engineerPeriod__)}">1年1ヶ月</div>
+			</td>
+			<td rowspan="2" class="cell-gray">
+				<div class="s1">内訳</div>
+			</td>
+			<td colspan="2" class="cell-gray">
+				<div class="s1">SE経験</div>
+			</td>
+			<td colspan="2" class="cell-white">
+				<div class="p5" th:if="${specsheet.sePeriod}!=null" 
+					th:text="${specsheet.getPeriod(__specsheet.sePeriod__)}">1年1ヶ月</div>
+			</td>
+			<td rowspan="2" class="cell-gray">
+				<div class="s2">IT全体経験</div>
+			</td>
+			<td rowspan="2" colspan="2" class="cell-white">
+				<div class="p5" th:if="${specsheet.itPeriod}!=null" 
+					th:text="${specsheet.getPeriod(__specsheet.itPeriod__)}">1年1ヶ月</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="cell-gray">
+				<div class="s1">PG・作業員経験</div>
+			</td>
+			<td colspan="2" class="cell-white">
+				<div class="p5" th:if="${specsheet.pgPeriod}!=null" 
+					th:text="${specsheet.getPeriod(__specsheet.pgPeriod__)}">1年1ヶ月</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="10" class="cell-gray">
+				<div class="s1">スキル要約</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="cell-gray">
+				<div class="s1">動作環境(OS)</div>
+			</td>
+			<td colspan="9" class="cell-white cell-left">
+				<div>
+					<span th:each="OS,status:${OSList}">
+						<span th:text="${OS.technicalSkill.name}">Windows10</span><span th:unless="${status.last}">, </span>
+					</span>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="cell-gray">
+				<div class="s1">言語</div>
+			</td>
+			<td colspan="9" class="cell-white cell-left">
+				<div>
+					<span th:each="language,status:${languageList}">
+						<span th:text="${language.technicalSkill.name}">Java8</span><span th:unless="${status.last}">, </span>
+					</span>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="cell-gray">
+				<div class="s1">フレームワーク</div>
+			</td>
+			<td colspan="9" class="cell-white cell-left">
+				<div>
+					<span th:each="framework,status:${frameworkList}">
+						<span th:text="${framework.technicalSkill.name}">SpringBoot</span><span th:unless="${status.last}">, </span>
+					</span>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="cell-gray">
+				<div class="s1">ライブラリ</div>
+			</td>
+			<td colspan="9" class="cell-white cell-left">
+				<div>
+					<span th:each="library,status:${libraryList}">
+						<span th:text="${library.technicalSkill.name}">jQuery</span><span th:unless="${status.last}">, </span>
+					</span>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="cell-gray">
+				<div class="s1">ミドルウェア</div>
+			</td>
+			<td colspan="9" class="cell-white cell-left">
+				<div>
+					<span th:each="middleware,status:${middlewareList}">
+						<span th:text="${middleware.technicalSkill.name}">Tomcat8.0</span><span th:unless="${status.last}">, </span>
+					</span>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="cell-gray">
+				<div class="s1">ツール·その他</div>
+			</td>
+			<td colspan="9" class="cell-white cell-left">
+				<div>
+					<span th:each="tool,status:${toolList}">
+						<span th:text="${tool.technicalSkill.name}">Eclipse</span><span th:unless="${status.last}">, </span>
+					</span>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="cell-gray">
+				<div class="s1">担当工程</div>
+			</td>
+			<td colspan="9" class="cell-white cell-left">
+				<div>
+					<span th:each="process,status:${processList}">
+						<span th:text="${process.technicalSkill.name}">実装</span><span th:unless="${status.last}">、</span>
+					</span>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="10" class="cell-gray cell-left">
+				<div class="px-3">アピールポイント・前職経験</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="10" class="cell-white cell-left">
+				<div class="px-3" style="white-space:pre-wrap" th:text="${specsheet.appeal}">テスト</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="10" class="cell-gray cell-left">
+				<div class="px-3">業務外に取り組んでいること</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="10" class="cell-white cell-left">
+				<div class="px-3" style="white-space:pre-wrap" th:text="${specsheet.effort}">テスト</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="10" class="cell-gray cell-left">
+				<div class="px-3">資格(取得日の降順で表記)</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="10" class="cell-white cell-left">
+				<div class="px-3" style="white-space:pre-wrap" th:text="${specsheet.certification}">ITパスポート,TOEIC</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="10" class="cell-gray cell-left">
+				<div class="px-3">前職(業界、職種、PC関係の経験を表記)</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="10" class="cell-white cell-left">
+				<div class="px-3" style="white-space:pre-wrap" th:text="${specsheet.preJob}">営業</div>
+			</td>
+		</tr>
+	</table>
+</div>
+<div th:fragment="empty"></div>
+
+</body>
+</html>

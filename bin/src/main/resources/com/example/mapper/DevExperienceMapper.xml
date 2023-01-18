@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.mapper.DevExperienceMapper" >
+
+<!-- 単一テーブル用のResultMap -->
+<!--   <resultMap id="BaseResultMap" type="DevExperience" > -->
+<!--     <result column="specsheet_id" property="specsheetId" jdbcType="INTEGER" /> -->
+<!--     <result column="project_name" property="projectName" jdbcType="VARCHAR" /> -->
+<!--     <result column="started_on" property="startedOn" jdbcType="DATE" /> -->
+<!--     <result column="finished_on" property="finishedOn" jdbcType="DATE" /> -->
+<!--     <result column="team_members" property="teamMembers" jdbcType="INTEGER" /> -->
+<!--     <result column="project_members" property="projectMembers" jdbcType="INTEGER" /> -->
+<!--     <result column="role" property="role" jdbcType="VARCHAR" /> -->
+<!--     <result column="project_details" property="projectDetails" jdbcType="LONGVARCHAR" /> -->
+<!--     <result column="tasks" property="tasks" jdbcType="LONGVARCHAR" /> -->
+<!--     <result column="acquired" property="acquired" jdbcType="LONGVARCHAR" /> -->
+<!--     <result column="stage" property="stage" jdbcType="CHAR" /> -->
+<!--   </resultMap> -->
+
+<!-- テーブル結合用のResultMap -->
+  <resultMap id="DevResultMap" type="DevExperience">
+    <id column="de_dev_experience_id" property="devExperienceId" jdbcType="INTEGER" />
+    <result column="de_specsheet_id" property="specsheetId" jdbcType="INTEGER" />
+    <result column="de_project_name" property="projectName" jdbcType="VARCHAR" />
+    <result column="de_started_on" property="startedOn" jdbcType="DATE" />
+    <result column="de_finished_on" property="finishedOn" jdbcType="DATE" />
+    <result column="de_team_members" property="teamMembers" jdbcType="INTEGER" />
+    <result column="de_project_members" property="projectMembers" jdbcType="INTEGER" />
+    <result column="de_role" property="role" jdbcType="VARCHAR" />
+    <result column="de_project_details" property="projectDetails" jdbcType="LONGVARCHAR" />
+    <result column="de_tasks" property="tasks" jdbcType="LONGVARCHAR" />
+    <result column="de_acquired" property="acquired" jdbcType="LONGVARCHAR" />
+    <result column="de_stage" property="stage" jdbcType="CHAR" />
+    <collection property="usedTechnicalSkillList" ofType="UsedTechnicalSkill">
+      <id column="ut_used_technical_skill_id" property="usedTechnicalSkillId" jdbcType="INTEGER" />
+      <result column="ut_dev_experience_id" property="devExperienceId" jdbcType="INTEGER" />
+      <result column="ut_technical_skill_id" property="technicalSkillId" jdbcType="INTEGER" />
+      <result column="ut_stage" property="stage" jdbcType="CHAR" />
+    </collection>
+  </resultMap>
+  
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+<!--   <sql id="Update_By_Example_Where_Clause" > -->
+<!--     <where > -->
+<!--       <foreach collection="example.oredCriteria" item="criteria" separator="or" > -->
+<!--         <if test="criteria.valid" > -->
+<!--           <trim prefix="(" suffix=")" prefixOverrides="and" > -->
+<!--             <foreach collection="criteria.criteria" item="criterion" > -->
+<!--               <choose > -->
+<!--                 <when test="criterion.noValue" > -->
+<!--                   and ${criterion.condition} -->
+<!--                 </when> -->
+<!--                 <when test="criterion.singleValue" > -->
+<!--                   and ${criterion.condition} #{criterion.value} -->
+<!--                 </when> -->
+<!--                 <when test="criterion.betweenValue" > -->
+<!--                   and ${criterion.condition} #{criterion.value} and #{criterion.secondValue} -->
+<!--                 </when> -->
+<!--                 <when test="criterion.listValue" > -->
+<!--                   and ${criterion.condition} -->
+<!--                   <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," > -->
+<!--                     #{listItem} -->
+<!--                   </foreach> -->
+<!--                 </when> -->
+<!--               </choose> -->
+<!--             </foreach> -->
+<!--           </trim> -->
+<!--         </if> -->
+<!--       </foreach> -->
+<!--     </where> -->
+<!--   </sql> -->
+<!--   <sql id="Base_Column_List" > -->
+<!--     dev_experience_id, specsheet_id, project_name, started_on, finished_on, team_members, project_members,  -->
+<!--     role, project_details, tasks, acquired, stage -->
+<!--   </sql> -->
+
+  <sql id="DevExperience_Column_List" >
+    de.dev_experience_id de_dev_experience_id, de.specsheet_id de_specsheet_id, de.project_name de_project_name, 
+    de.started_on de_started_on, de.finished_on de_finished_on, de.team_members de_team_members, 
+    de.project_members de_project_members, de.role de_role, de.project_details de_project_details, 
+    de.tasks de_tasks, de.acquired de_acquired, de.stage de_stage
+  </sql>
+  <sql id="UsedTechnicalSkill_Column_List" >
+    ut.used_technical_skill_id ut_used_technical_skill_id, ut.dev_experience_id ut_dev_experience_id, 
+    ut.technical_skill_id ut_technical_skill_id, ut.stage ut_stage
+  </sql>
+  
+<!--   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.example.example.DevExperienceExample" > -->
+<!--     select -->
+<!--     <if test="distinct" > -->
+<!--       distinct -->
+<!--     </if> -->
+<!--     <include refid="Base_Column_List" /> -->
+<!--     from dev_experiences -->
+<!--     <if test="_parameter != null" > -->
+<!--       <include refid="Example_Where_Clause" /> -->
+<!--     </if> -->
+<!--     <if test="orderByClause != null" > -->
+<!--       order by ${orderByClause} -->
+<!--     </if> -->
+<!--   </select> -->
+  
+  <select id="selectBySpecsheetId" resultMap="DevResultMap">
+    select 
+    <include refid="DevExperience_Column_List" />
+    , 
+    <include refid="UsedTechnicalSkill_Column_List" />
+    from dev_experiences de 
+    left join used_technical_skills ut on de.dev_experience_id = ut.dev_experience_id 
+    where de.specsheet_id = #{specsheetId,jdbcType=INTEGER} 
+    order by de.finished_on desc, de.started_on desc, ut.used_technical_skill_id
+  </select>
+  
+<!--   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" > -->
+<!--     delete from dev_experiences -->
+<!--     where dev_experience_id = #{devExperienceId,jdbcType=INTEGER} -->
+<!--   </delete> -->
+  
+  <delete id="deleteListByPrimaryKey">
+    delete from dev_experiences
+    where dev_experience_id in (
+      <foreach item="de" collection="devExperienceList" separator=",">
+        #{de.devExperienceId}
+      </foreach>)
+  </delete>
+  
+  <delete id="deleteByExample" parameterType="com.example.example.DevExperienceExample" >
+    delete from dev_experiences
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  
+  <insert id="insertList" useGeneratedKeys="true" keyProperty="devExperienceId">
+    insert into dev_experiences (specsheet_id, project_name, 
+      started_on, finished_on, team_members, 
+      project_members, role, project_details, 
+      tasks, acquired, stage)
+    values 
+    <foreach item="de" collection="devExperienceList" separator=",">
+       (#{de.specsheetId,jdbcType=INTEGER}, #{de.projectName,jdbcType=VARCHAR}, 
+        #{de.startedOn,jdbcType=DATE}, #{de.finishedOn,jdbcType=DATE}, #{de.teamMembers,jdbcType=INTEGER}, 
+        #{de.projectMembers,jdbcType=INTEGER}, #{de.role,jdbcType=VARCHAR}, #{de.projectDetails,jdbcType=LONGVARCHAR}, 
+        #{de.tasks,jdbcType=LONGVARCHAR}, #{de.acquired,jdbcType=LONGVARCHAR}, '0')
+    </foreach>
+  </insert>
+  
+<!--   <insert id="insert" parameterType="com.example.domain.DevExperience" > -->
+<!--     insert into dev_experiences (dev_experience_id, specsheet_id, project_name,  -->
+<!--       started_on, finished_on, team_members,  -->
+<!--       project_members, role, project_details,  -->
+<!--       tasks, acquired) -->
+<!--     values (#{devExperienceId,jdbcType=INTEGER}, #{specsheetId,jdbcType=INTEGER}, #{projectName,jdbcType=VARCHAR},  -->
+<!--       #{startedOn,jdbcType=DATE}, #{finishedOn,jdbcType=DATE}, #{teamMembers,jdbcType=INTEGER},  -->
+<!--       #{projectMembers,jdbcType=INTEGER}, #{role,jdbcType=VARCHAR}, #{projectDetails,jdbcType=LONGVARCHAR},  -->
+<!--       #{tasks,jdbcType=LONGVARCHAR}, #{acquired,jdbcType=LONGVARCHAR}) -->
+<!--   </insert> -->
+  
+<!--   <insert id="insertSelective" parameterType="com.example.domain.DevExperience" > -->
+<!--     insert into dev_experiences -->
+<!--     <trim prefix="(" suffix=")" suffixOverrides="," > -->
+<!--       <if test="devExperienceId != null" > -->
+<!--         dev_experience_id, -->
+<!--       </if> -->
+<!--       <if test="specsheetId != null" > -->
+<!--         specsheet_id, -->
+<!--       </if> -->
+<!--       <if test="projectName != null" > -->
+<!--         project_name, -->
+<!--       </if> -->
+<!--       <if test="startedOn != null" > -->
+<!--         started_on, -->
+<!--       </if> -->
+<!--       <if test="finishedOn != null" > -->
+<!--         finished_on, -->
+<!--       </if> -->
+<!--       <if test="teamMembers != null" > -->
+<!--         team_members, -->
+<!--       </if> -->
+<!--       <if test="projectMembers != null" > -->
+<!--         project_members, -->
+<!--       </if> -->
+<!--       <if test="role != null" > -->
+<!--         role, -->
+<!--       </if> -->
+<!--       <if test="projectDetails != null" > -->
+<!--         project_details, -->
+<!--       </if> -->
+<!--       <if test="tasks != null" > -->
+<!--         tasks, -->
+<!--       </if> -->
+<!--       <if test="acquired != null" > -->
+<!--         acquired, -->
+<!--       </if> -->
+<!--     </trim> -->
+<!--     <trim prefix="values (" suffix=")" suffixOverrides="," > -->
+<!--       <if test="devExperienceId != null" > -->
+<!--         #{devExperienceId,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="specsheetId != null" > -->
+<!--         #{specsheetId,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="projectName != null" > -->
+<!--         #{projectName,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="startedOn != null" > -->
+<!--         #{startedOn,jdbcType=DATE}, -->
+<!--       </if> -->
+<!--       <if test="finishedOn != null" > -->
+<!--         #{finishedOn,jdbcType=DATE}, -->
+<!--       </if> -->
+<!--       <if test="teamMembers != null" > -->
+<!--         #{teamMembers,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="projectMembers != null" > -->
+<!--         #{projectMembers,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="role != null" > -->
+<!--         #{role,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="projectDetails != null" > -->
+<!--         #{projectDetails,jdbcType=LONGVARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="tasks != null" > -->
+<!--         #{tasks,jdbcType=LONGVARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="acquired != null" > -->
+<!--         #{acquired,jdbcType=LONGVARCHAR}, -->
+<!--       </if> -->
+<!--     </trim> -->
+<!--   </insert> -->
+  
+<!--   <select id="countByExample" parameterType="com.example.example.DevExperienceExample" resultType="java.lang.Integer" > -->
+<!--     select count(*) from dev_experiences -->
+<!--     <if test="_parameter != null" > -->
+<!--       <include refid="Example_Where_Clause" /> -->
+<!--     </if> -->
+<!--   </select> -->
+  
+<!--   <update id="updateByExampleSelective" parameterType="map" > -->
+<!--     update dev_experiences -->
+<!--     <set > -->
+<!--       <if test="record.devExperienceId != null" > -->
+<!--         dev_experience_id = #{record.devExperienceId,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="record.specsheetId != null" > -->
+<!--         specsheet_id = #{record.specsheetId,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="record.projectName != null" > -->
+<!--         project_name = #{record.projectName,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="record.startedOn != null" > -->
+<!--         started_on = #{record.startedOn,jdbcType=DATE}, -->
+<!--       </if> -->
+<!--       <if test="record.finishedOn != null" > -->
+<!--         finished_on = #{record.finishedOn,jdbcType=DATE}, -->
+<!--       </if> -->
+<!--       <if test="record.teamMembers != null" > -->
+<!--         team_members = #{record.teamMembers,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="record.projectMembers != null" > -->
+<!--         project_members = #{record.projectMembers,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="record.role != null" > -->
+<!--         role = #{record.role,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="record.projectDetails != null" > -->
+<!--         project_details = #{record.projectDetails,jdbcType=LONGVARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="record.tasks != null" > -->
+<!--         tasks = #{record.tasks,jdbcType=LONGVARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="record.acquired != null" > -->
+<!--         acquired = #{record.acquired,jdbcType=LONGVARCHAR}, -->
+<!--       </if> -->
+<!--     </set> -->
+<!--     <if test="_parameter != null" > -->
+<!--       <include refid="Update_By_Example_Where_Clause" /> -->
+<!--     </if> -->
+<!--   </update> -->
+  
+<!--   <update id="updateByExample" parameterType="map" > -->
+<!--     update dev_experiences -->
+<!--     set dev_experience_id = #{record.devExperienceId,jdbcType=INTEGER}, -->
+<!--       specsheet_id = #{record.specsheetId,jdbcType=INTEGER}, -->
+<!--       project_name = #{record.projectName,jdbcType=VARCHAR}, -->
+<!--       started_on = #{record.startedOn,jdbcType=DATE}, -->
+<!--       finished_on = #{record.finishedOn,jdbcType=DATE}, -->
+<!--       team_members = #{record.teamMembers,jdbcType=INTEGER}, -->
+<!--       project_members = #{record.projectMembers,jdbcType=INTEGER}, -->
+<!--       role = #{record.role,jdbcType=VARCHAR}, -->
+<!--       project_details = #{record.projectDetails,jdbcType=LONGVARCHAR}, -->
+<!--       tasks = #{record.tasks,jdbcType=LONGVARCHAR}, -->
+<!--       acquired = #{record.acquired,jdbcType=LONGVARCHAR} -->
+<!--     <if test="_parameter != null" > -->
+<!--       <include refid="Update_By_Example_Where_Clause" /> -->
+<!--     </if> -->
+<!--   </update> -->
+  
+<!--   <update id="updateByPrimaryKeySelective" parameterType="com.example.domain.DevExperience" > -->
+<!--     update dev_experiences -->
+<!--     <set > -->
+<!--       <if test="specsheetId != null" > -->
+<!--         specsheet_id = #{specsheetId,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="projectName != null" > -->
+<!--         project_name = #{projectName,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="startedOn != null" > -->
+<!--         started_on = #{startedOn,jdbcType=DATE}, -->
+<!--       </if> -->
+<!--       <if test="finishedOn != null" > -->
+<!--         finished_on = #{finishedOn,jdbcType=DATE}, -->
+<!--       </if> -->
+<!--       <if test="teamMembers != null" > -->
+<!--         team_members = #{teamMembers,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="projectMembers != null" > -->
+<!--         project_members = #{projectMembers,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="role != null" > -->
+<!--         role = #{role,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="projectDetails != null" > -->
+<!--         project_details = #{projectDetails,jdbcType=LONGVARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="tasks != null" > -->
+<!--         tasks = #{tasks,jdbcType=LONGVARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="acquired != null" > -->
+<!--         acquired = #{acquired,jdbcType=LONGVARCHAR}, -->
+<!--       </if> -->
+<!--     </set> -->
+<!--     where dev_experience_id = #{devExperienceId,jdbcType=INTEGER} -->
+<!--   </update> -->
+  
+  <update id="updateListByPrimaryKey">
+    update dev_experiences
+    set 
+      specsheet_id = elt(field(dev_experience_id, 
+        <foreach item="de" collection="devExperienceList" separator=",">
+          #{de.devExperienceId,jdbcType=INTEGER}
+        </foreach>
+        ),<foreach item="de" collection="devExperienceList" separator=",">
+            #{de.specsheetId,jdbcType=INTEGER}
+          </foreach>),
+      project_name = elt(field(dev_experience_id, 
+        <foreach item="de" collection="devExperienceList" separator=",">
+          #{de.devExperienceId,jdbcType=INTEGER}
+        </foreach>
+        ),<foreach item="de" collection="devExperienceList" separator=",">
+            #{de.projectName,jdbcType=VARCHAR}
+          </foreach>),
+      started_on = elt(field(dev_experience_id, 
+        <foreach item="de" collection="devExperienceList" separator=",">
+          #{de.devExperienceId,jdbcType=INTEGER}
+        </foreach>
+        ),<foreach item="de" collection="devExperienceList" separator=",">
+            #{de.startedOn,jdbcType=DATE}
+          </foreach>),
+      finished_on = elt(field(dev_experience_id, 
+        <foreach item="de" collection="devExperienceList" separator=",">
+          #{de.devExperienceId,jdbcType=INTEGER}
+        </foreach>
+        ),<foreach item="de" collection="devExperienceList" separator=",">
+            #{de.finishedOn,jdbcType=DATE}
+          </foreach>),
+      team_members = elt(field(dev_experience_id, 
+        <foreach item="de" collection="devExperienceList" separator=",">
+          #{de.devExperienceId,jdbcType=INTEGER}
+        </foreach>
+        ),<foreach item="de" collection="devExperienceList" separator=",">
+            #{de.teamMembers,jdbcType=INTEGER}
+          </foreach>),
+      project_members = elt(field(dev_experience_id, 
+        <foreach item="de" collection="devExperienceList" separator=",">
+          #{de.devExperienceId,jdbcType=INTEGER}
+        </foreach>
+        ),<foreach item="de" collection="devExperienceList" separator=",">
+            #{de.projectMembers,jdbcType=INTEGER}
+          </foreach>),
+      role = elt(field(dev_experience_id, 
+        <foreach item="de" collection="devExperienceList" separator=",">
+          #{de.devExperienceId,jdbcType=INTEGER}
+        </foreach>
+        ),<foreach item="de" collection="devExperienceList" separator=",">
+            #{de.role,jdbcType=VARCHAR}
+          </foreach>),
+      project_details = elt(field(dev_experience_id, 
+        <foreach item="de" collection="devExperienceList" separator=",">
+          #{de.devExperienceId,jdbcType=INTEGER}
+        </foreach>
+        ),<foreach item="de" collection="devExperienceList" separator=",">
+            #{de.projectDetails,jdbcType=LONGVARCHAR}
+          </foreach>),
+      tasks = elt(field(dev_experience_id, 
+        <foreach item="de" collection="devExperienceList" separator=",">
+          #{de.devExperienceId,jdbcType=INTEGER}
+        </foreach>
+        ),<foreach item="de" collection="devExperienceList" separator=",">
+            #{de.tasks,jdbcType=LONGVARCHAR}
+          </foreach>),
+      acquired = elt(field(dev_experience_id, 
+        <foreach item="de" collection="devExperienceList" separator=",">
+          #{de.devExperienceId,jdbcType=INTEGER}
+        </foreach>
+        ),<foreach item="de" collection="devExperienceList" separator=",">
+            #{de.acquired,jdbcType=LONGVARCHAR}
+          </foreach>),
+      stage = elt(field(dev_experience_id, 
+        <foreach item="de" collection="devExperienceList" separator=",">
+          #{de.devExperienceId,jdbcType=INTEGER}
+        </foreach>
+        ),<foreach item="de" collection="devExperienceList" separator=",">
+            #{de.stage,jdbcType=CHAR}
+          </foreach>)
+    where dev_experience_id in (<foreach item="de" collection="devExperienceList" separator=",">
+                                  #{de.devExperienceId,jdbcType=INTEGER}
+                                </foreach>)
+  </update>
+</mapper>

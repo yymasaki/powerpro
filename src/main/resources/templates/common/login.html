@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>パワフルプロエンジニア</title>
+<link rel="shortcut icon" href="../static/favicon.ico" th:href="@{/favicon.ico}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="../../static/css/common/login.css" th:href="@{/css/common/login.css}">
+
+<script type="text/javascript"	src="../../static/js/lib/jquery-3.3.1.min.js" th:src="@{/js/lib/jquery-3.3.1.min.js}"></script>
+<script type="text/javascript" src="../../static/js/common/edit-pass.js" th:src="@{/js/common/login.js}"></script>
+</head>
+<body>
+	<div class="alert alert-warning fade show text-center" role="alert" th:if="${processCompleted}" id="flash">
+		<span th:text="${processCompleted}" ></span>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+			<div class="title">
+				<a th:href="@{/}">
+					<img src="../static/img/loginLogo.png" th:src="@{/img/loginLogo.png}" height="200">
+				</a>
+			</div>
+			<div class="login-form">
+				<div class="title mb-5">
+					<strong th:if="${errorMessage}" th:text="${errorMessage}" class="text-center" style="color:red"></strong>
+				</div>
+				<form action="top.html" method="post" th:action="@{/login-do}">
+					<div class="contents">
+						<label for="email" class="ml-3">メールアドレス</label>
+						<input type="text" id="email" name="email" placeholder="power.taro@rakus-partners.co.jp" class="ml-3">
+					</div>
+					<div class="contents">
+						<label for="password" class="ml-3">パスワード</label>
+						<input type="password" id="password" name="password" class="ml-3">
+					</div>
+					<div class="contents text-center">
+						<button class="btn btn-outline-primary w-75 mr-3 mt-3 mb-3" id="done">ログイン</button>
+					</div>
+				</form>
+				<div class="contents text-center">
+					<p>	まだ登録されていない方は<a th:href="@{/register/mail}">新規登録</a>をしてください</p>
+				</div>
+				<div class="contents text-center">
+					<p>パスワードを忘れてしまった方は<a th:href="@{/pass/mail}">こちら</a></p>
+				</div>
+			</div>
+			<div th:replace="loader::loader"></div>
+</body>
+</html>

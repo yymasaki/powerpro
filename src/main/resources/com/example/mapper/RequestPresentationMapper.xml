@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.RequestPresentationMapper">
+	<!-- マッピング定義(presentation) -->
+	<resultMap id="BaseResultMap" type="com.example.domain.Presentation">
+		<id column="presentation_id" property="presentationId" jdbcType="INTEGER" />
+		<result column="title" property="title" jdbcType="VARCHAR" />
+		<result column="content" property="content" jdbcType="VARCHAR" />
+		<result column="preferred_date" property="preferredDate" jdbcType="VARCHAR" />
+		<result column="presentation_date" property="presentationDate" jdbcType="DATE" />
+		<result column="stage" property="stage" jdbcType="CHAR" />
+		<result column="creator_user_id" property="creatorUserId" jdbcType="INTEGER" />
+		<result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+		<result column="updater_user_id" property="updaterUserId" jdbcType="INTEGER" />
+		<result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+		<result column="version" property="version" jdbcType="INTEGER" />
+	</resultMap>
+
+	<!-- 発表会申請詳細画面取得用のマッピング -->
+	<resultMap id="ContainUserAndDocumentResultMap" type="com.example.domain.Presentation">
+		<id column="p_presentation_id" property="presentationId" jdbcType="INTEGER" />
+		<result column="p_title" property="title" jdbcType="VARCHAR" />
+		<result column="p_content" property="content" jdbcType="VARCHAR" />
+		<result column="p_preferred_date" property="preferredDate" jdbcType="VARCHAR" />
+		<result column="p_presentation_date" property="presentationDate" jdbcType="DATE" />
+		<result column="p_stage" property="stage" jdbcType="CHAR" />
+		<result column="p_creator_user_id" property="creatorUserId" jdbcType="INTEGER" />
+		<result column="p_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+		<result column="p_updater_user_id" property="updaterUserId" jdbcType="INTEGER" />
+		<result column="p_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+		<result column="p_version" property="version" jdbcType="INTEGER" />
+		<!-- <association property="user" resultMap="UserResultMap"/> -->
+		<collection property="presentationDocumentList" resultMap="DocumentResultMap" />
+		<collection property="presenterList" resultMap="UserResultMap" />
+		<collection property="presentationCommentList" resultMap="presentationCommentResultMap" />
+	</resultMap>
+
+	<!-- マッピング定義(presentation_documents)-->
+	<resultMap id="DocumentResultMap" type="com.example.domain.PresentationDocument">
+		<id column="pd_presentation_document_id" property="presentationDocumentId" jdbcType="INTEGER" />
+		<result column="pd_document_path" property="documentPath" jdbcType="VARCHAR" />
+		<result column="pd_presentation_id" property="DocumentTablePresentationId" jdbcType="INTEGER" />
+	</resultMap>
+
+	<!-- マッピング定義(users)-->
+	<resultMap id="UserResultMap" type="com.example.domain.User">
+		<id column="u_user_id" property="userId" jdbcType="INTEGER" />
+		<result column="u_name" property="name" jdbcType="VARCHAR" />
+		<result column="u_hired_on" property="hiredOn" jdbcType="DATE" />
+		<result column="u_department_id" property="departmentId" jdbcType="INTEGER" />
+		<result column="u_email" property="email" jdbcType="VARCHAR" />
+		<result column="u_password" property="password" jdbcType="VARCHAR" />
+		<result column="u_stage" property="stage" jdbcType="CHAR" />
+		<result column="u_updated_password_at" property="updatedPasswordAt" jdbcType="DATE" />
+		<result column="u_creator" property="creator" jdbcType="VARCHAR" />
+		<result column="u_created_at" property="createdAt" jdbcType="TIMESTAMP" />
+		<result column="u_updater" property="updater" jdbcType="VARCHAR" />
+		<result column="u_updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+		<result column="u_version" property="version" jdbcType="INTEGER" />
+	</resultMap>
+
+	<!-- マッピング定義(PresentationComments) -->
+	<resultMap id="presentationCommentResultMap" type="com.example.domain.PresentationComment">
+		<id column="presentation_comment_id"
+			property="presentationCommentId" jdbcType="INTEGER" />
+		<result column="presentation_comment"
+			property="presentationComment" jdbcType="VARCHAR" />
+		<result column="presentation_comment_creator_id"
+			property="presentationCommentCreatorId" jdbcType="INTEGER" />
+		<result column="presentation_comment_creator_name"
+			property="presentationCommentCreatorName" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 共通部分 -->
+	<sql id="Where_Get_Request_Presentation">
+		<where>
+			p.presentation_id = #{presentationId}
+		</where>
+	</sql>
+
+	<sql id="Base_Column_List">
+		presentation_id, title, content, preferred_date, presentation_date, stage, creator_user_id, created_at, updater_user_id, updated_at, version
+	</sql>
+
+	<sql id="Presentations_Column_List_With_Initial">
+		p.presentation_id AS p_presentation_id, p.title AS p_title, p.content AS p_content, p.preferred_date AS p_preferred_date
+		, p.presentation_date AS p_presentation_date, p.stage AS p_stage, p.creator_user_id AS p_creator_user_id
+		, p.created_at AS p_creator_user_id, p.updater_user_id AS p_updater_user_id, p.updated_at AS p_updated_at, p.version AS p_version
+	</sql>
+
+	<sql id="PresentationDocuments_Column_List_With_Initial">
+		, pd.presentation_document_id AS pd_presentation_document_id, pd.document_path AS pd_document_path, pd.presentation_id AS pd_presentation_id
+	</sql>
+
+	<sql id="PresentationUsersLink_Column_List_With_Initial">
+		, pul.presentation_users_link_id AS pul_presentation_users_link_id, pul.presentation_id AS pul_presentation_id, pul.user_id AS pul_user_id
+	</sql>
+
+	<sql id="Users_Column_List_With_Initial">
+		, u.user_id AS u_user_id, u.name AS u_name, u.hired_on AS u_hired_on, u.department_id AS u_department_id
+		, u.email AS u_email, u.password AS u_password, u.selected_template_id AS u_selected_template_id, u.stage AS u_stage, u.updated_password_at AS u_updated_password_at
+		, u.creator AS u_creater, u.created_at AS u_created_at, u.updater AS u_updater, u.updated_at AS u_updated_at, u.version AS u_version
+	</sql>
+
+	<sql id="PresentationComments_Column_List_With_Initial">
+		, presentation_comment_id, presentation_comment, presentation_comment_creator_id, 
+		presentation_comment_creator_name , presentation_comment_stage
+	</sql>
+
+	<sql id="Presentations_Table">
+		FROM presentations p
+	</sql>
+
+	<sql id="PresentationDocuments_Table">
+		LEFT JOIN presentation_documents pd ON p.presentation_id = pd.presentation_id
+	</sql>
+
+	<sql id="PresentationUsersLink_Table">
+		INNER JOIN presentation_users_link pul ON p.presentation_id = pul.presentation_id
+	</sql>
+
+	<sql id="Users_Table">
+		INNER JOIN users u ON pul.user_id = u.user_id
+	</sql>
+	<!-- ここまで共通部分 -->
+
+	<!-- 申請中の発表会の詳細情報を抽出 -->
+	<select id="selectRequestPresentation" resultMap="ContainUserAndDocumentResultMap">
+		SELECT
+		<include refid="Presentations_Column_List_With_Initial"></include>
+		<include refid="PresentationDocuments_Column_List_With_Initial"></include>
+		<include refid="PresentationUsersLink_Column_List_With_Initial"></include>
+		<include refid="Users_Column_List_With_Initial"></include>
+		<include refid="PresentationComments_Column_List_With_Initial"></include>
+		FROM presentations p
+		<include refid="PresentationDocuments_Table"></include>
+		<include refid="PresentationUsersLink_Table"></include>
+		<include refid="Users_Table"></include>
+		LEFT JOIN 
+				(SELECT p.presentation_comment_id, p.comment as presentation_comment, p.creator_user_id as presentation_comment_creator_id
+				, p.stage as presentation_comment_stage, p.presentation_id, u.name as presentation_comment_creator_name 
+				FROM presentation_comments as p 
+				LEFT JOIN users as u 
+				ON u.user_id = p.creator_user_id 
+				WHERE p.stage=0) as pc 
+   			ON pc.presentation_id = p.presentation_id
+		<include refid="Where_Get_Request_Presentation"></include>
+	</select>
+
+	<!-- 発表の応募一覧を表示 -->
+	<select id="requestPresentations" resultMap="ContainUserAndDocumentResultMap">
+		SELECT
+		<include refid="Presentations_Column_List_With_Initial"></include>
+		<include refid="PresentationUsersLink_Column_List_With_Initial"></include>
+		<include refid="Users_Column_List_With_Initial"></include>
+		FROM presentations p
+		<include refid="PresentationUsersLink_Table"></include>
+		<include refid="Users_Table"></include>
+		WHERE (p.stage = 0 OR p.stage = 2 OR p.stage = 3 OR p.stage = 4 OR p.stage = 5) 
+			ORDER BY p.presentation_id DESC;
+	</select>
+
+	<!-- 発表会一覧を条件をもとに検索 -->
+	<select id="searchRequestPresentations" resultMap="ContainUserAndDocumentResultMap">
+		SELECT
+		<include refid="Presentations_Column_List_With_Initial"></include>
+		<include refid="PresentationUsersLink_Column_List_With_Initial"></include>
+		<include refid="Users_Column_List_With_Initial"></include>
+		FROM presentations p
+		<include refid="PresentationUsersLink_Table"></include>
+		<include refid="Users_Table"></include>
+		WHERE
+			p.presentation_id IN 
+			(SELECT DISTINCT p.presentation_id AS p_presentation_id
+			FROM presentations AS p
+		<include refid="PresentationUsersLink_Table"></include>
+		<include refid="Users_Table"></include>
+		<where>
+			<if test="stage != null">
+					p.stage = ${stage}
+				</if>
+			<if test="user.departmentId != null">
+					AND u.department_id = ${user.departmentId}
+				</if>
+			<if test="user.name != null">
+					AND u.name LIKE '%${user.name}%'
+				</if>
+			<if test="presentationDate != null">
+					AND presentation_date = #{presentationDate}
+				</if>
+		</where>
+		)
+			ORDER BY p.presentation_id DESC;
+	</select>
+
+	<select id="searchRequestPresentationsByPresentationIds" resultMap="ContainUserAndDocumentResultMap">
+		SELECT
+		<include refid="Presentations_Column_List_With_Initial"></include>
+		<include refid="PresentationUsersLink_Column_List_With_Initial"></include>
+		<include refid="Users_Column_List_With_Initial"></include>
+		FROM presentations p
+		<include refid="PresentationUsersLink_Table"></include>
+		<include refid="Users_Table"></include>
+		WHERE
+			p.presentation_id IN
+		<foreach item="presentationIds" collection="presentationIds" open="(" separator="," close=")">#{presentationIds}</foreach>
+	</select>
+
+	<!-- 発表会のstageを更新 -->
+	<update id="updatePresentation">
+		UPDATE presentations
+		<set>
+			<if test="presentationId != null">
+				presentation_id = #{presentationId},
+			</if>
+			<if test="title != null">
+				title = #{title},
+			</if>
+			<if test="content != null">
+				content = #{content},
+			</if>
+			<if test="preferredDate != null">
+				preferred_date = #{preferredDate},
+			</if>
+			<if test="presentationDate != null">
+				presentation_date = #{presentationDate},
+			</if>
+			<if test="stage != null">
+				stage = #{stage},
+			</if>
+			<if test="creatorUserId != null">
+				creator_user_id = #{creatorUserId},
+			</if>
+			<if test="createdAt != null">
+				created_at = #{createdAt},
+			</if>
+			<if test="updaterUserId != null">
+				updater_user_id = #{updaterUserId},
+			</if>
+			<if test="updatedAt != null">
+				updated_at = #{updatedAt},
+			</if>
+			version = version + 1
+		</set>
+		WHERE presentation_id = #{presentationId}
+	</update>
+
+	<!-- 
+	SELECT
+	    p.presentation_id AS p_presentation_id
+	    , p.title AS p_title
+	    , p.content AS p_content
+	    , p.preferred_date AS p_preferred_date
+	    , p.presentation_date AS p_presentation_date
+	    , p.stage AS p_stage
+	    , p.creator_user_id AS p_creator_user_id
+	    , p.created_at AS p_created_at
+	    , p.updater_user_id AS p_updater_user_id
+	    , p.updated_at AS p_updated_at
+	    , p.version AS p_version
+	    , pd.presentation_document_id AS pd_presentation_document_id
+	    , pd.document_path AS pd_document_path
+	    , pd.presentation_id AS pd_presentation_id
+	    , u.user_id AS u_user_id,U.name AS u_name
+	    , u.hired_on AS u_hired_on
+	    , u.department_id AS u_department_id
+	    , u.email AS u_email
+	    , u.password AS u_password
+	    , u.selected_template_id AS u_selected_template_id 
+	    , u.stage AS u_stage
+	    , u.updated_password_at AS u_updated_password_at
+	    , u.creator AS u_creater
+	    , u.created_at AS u_created_at
+	    , u.updater AS u_updater
+	    , u.updated_at AS u_updated_at
+	    , u.version AS u_version
+	    , pul.presentation_users_link_id AS pul_presentation_users_link_id
+	    , pul.presentation_id AS pul_presentation_id
+	    , pul.user_id AS pul_user_id
+	FROM presentations p
+	INNER JOIN presentation_documents pd ON p.presentation_id = pd.presentation_id
+	INNER JOIN presentation_users_link pul ON p.presentation_id = pul.presentation_id
+	INNER JOIN users u ON pul.user_id = u.user_id
+	WHERE p.presentation_id = 2
+	-->
+
+</mapper>

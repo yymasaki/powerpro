@@ -1,0 +1,21 @@
+DROP TABLE IF EXISTS `powerpro`.`templates` ;
+
+CREATE TABLE IF NOT EXISTS `powerpro`.`templates` (
+  `template_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `department_id` INT UNSIGNED NOT NULL,
+  `stage` CHAR(1) NOT NULL,
+  `creator` VARCHAR(255) NOT NULL,
+  `created_at` DATETIME NOT NULL,
+  `updater` VARCHAR(255) NOT NULL,
+  `updated_at` DATETIME NOT NULL,
+  `version` INT NOT NULL,
+  PRIMARY KEY (`template_id`),
+  CONSTRAINT `fk_templates_departments1`
+    FOREIGN KEY (`department_id`)
+    REFERENCES `powerpro`.`departments` (`department_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+CREATE INDEX `fk_templates_departments1_idx` ON `powerpro`.`templates` (`department_id` ASC) VISIBLE;

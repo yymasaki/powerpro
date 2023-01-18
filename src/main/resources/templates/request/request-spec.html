@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<title>パワフルプロエンジニア</title>
+<link rel="shortcut icon" href="../static/favicon.ico" th:href="@{/favicon.ico}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css">
+<link rel="stylesheet" href="../../static/css/nbase.css" th:href="@{/css/nbase.css}">
+<link rel="stylesheet" href="../../static/css/nability.css" th:href="@{/css/nability.css}">
+<link rel="stylesheet" href="../../static/css/nregist.css" th:href="@{/css/nregist.css}">
+<link rel="stylesheet" href="../../static/css/skill/skill-spec.css" th:href="@{/css/skill/skill-spec.css}">
+<link rel="stylesheet" href="../static/css/header.css" th:href="@{/css/header.css}">
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+<script src="../../static/js/request/request-spec.js" th:src="@{/js/request/request-spec.js}"></script>
+<body>
+	<!-- header start -->
+	<nav th:replace="header::menu"></nav>
+	<!-- header end -->
+	<div class="container">
+		<div id="flash" class="alert alert-warning alert-dismissible fade show flash" th:if="${success}" role="alert">
+			<div class="text-center" th:text="${success}"></div>
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		<div id="flash" class="alert alert-danger alert-dismissible fade show flash" th:if="${message}" role="alert">
+			<div class="text-center" th:text="${message}" style="white-space:pre-wrap"></div>
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		
+<!-- main content -->
+		<div class="form-box-spec">	
+			<h1 class="text-center">スペックシート申請詳細</h1>
+			<div class="text-center">
+				<span th:if="${session.searchRequestForm}">
+					<span th:if="${session.searchRequestForm.content == 2}">
+						<a href="request.html" th:href="@{/request?pageBack=true}">申請トップにもどる</a>
+					</span>
+					<!-- スペックシート以外の検索条件がsessionに残っている場合、pageBack=trueは使用しない -->
+					<span th:if="${session.searchRequestForm.content != 2}">
+						<a href="request.html" th:href="@{/request}">申請トップにもどる</a>
+					</span>
+				</span>
+				<!-- 申請一覧画面を経由せずにこの画面に遷移してきた場合、pageBack=trueは使用しない -->
+				<span th:unless="${session.searchRequestForm}"><a href="request.html" th:href="@{/request}">申請トップにもどる</a></span>
+			</div>
+<!-- 申請情報 -->
+			<div class="col">
+				<div class="request-table-wide">
+					<table class="mx-auto request-table" style="font-size:12px;">
+						<tbody class="text-center">
+							<tr>
+								<th class="text-center">申請日</th>
+								<th class="text-center" sec:authorize="hasRole('ADMIN')">申請者名</th>
+								<th class="text-center" sec:authorize="hasRole('ADMIN')">所属</th>
+								<th class="text-center">申請状況</th>
+								<th class="text-center" sec:authorize="hasAnyRole('WEB','CL','ML')">管理者コメント</th>
+							</tr>
+							<tr> 
+								<td th:text="${#temporals.format(specsheet.updatedAt,'yyyy年M月d日')}" class="request-content">2020年5月5日</td>
+								<td th:text="${specsheet.user.name}" sec:authorize="hasRole('ADMIN')" class="request-content">太郎</td>
+								<td th:text="${specsheet.user.department.name}" sec:authorize="hasRole('ADMIN')" class="request-content">WEBアプリケーション開発</td>
+								<td th:text="${specsheet.stageString}" class="request-content">未承認</td>
+								<td th:text="${specsheet.adminComment}" class="request-content" style="white-space:pre-wrap"
+									 sec:authorize="hasAnyRole('WEB','CL','ML')"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>	
+			</div>
+			
+<!-- specsheet content -->
+			<div id="summaryTable" th:replace="skill/parts/spec-for-reading::spec"></div>
+			
+<!-- devExperience -->
+			<div id="developmentTable" th:replace="~{skill/parts/dev-for-reading::#developmentTable}"></div>
+			
+<!-- btn -->
+			<div class="table-wide2 m-5">
+				<button type="button" id="approval" class="btn btn-outline-primary mr-3" data-toggle="modal" data-show="true"
+					data-target="#process-spec" th:if="${specsheet.stage}=='2'" sec:authorize="hasRole('ADMIN')">承認</button>
+				<button type="button" id="disapproval" class="btn btn-outline-primary mr-3" data-toggle="modal" data-show="true"
+					data-target="#process-spec" th:if="${specsheet.stage}=='2'" sec:authorize="hasRole('ADMIN')">否承認</button>
+				<a class="btn btn-outline-primary mr-3" href="request-edit-spec"
+					th:href="@{/request/spec/edit(specsheetId=${specsheet.specsheetId},userId=${specsheet.userId},
+					stage=${specsheet.stage},version=${specsheet.version})}">修正</a>
+				<button type="button" class="btn btn-outline-primary" data-toggle="modal" data-show="true"
+					data-target="#cancel-spec" sec:authorize="hasAnyRole('WEB','CL','ML')">取消</button>
+			</div>
+		</div>
+	</div>
+
+<!-- process modal -->
+	<div class="modal fade" id="process-spec" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<form id="process-form" action="request.html" th:action="@{/request/spec/process}" 
+					th:object="${processSpecsheetForm}" method="post">
+					<div class="modal-header">
+						<h5 class="modal-title">スペックシート<span class="process-name"></span></h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="container-fluid">
+							<p>このスペックシートを<span class="process-name"></span>します。</p>
+							<div class="form-group row">
+								<label id="reason-label" class="col-sm-4 col-form-label" for="commment" style="font-size:80%">
+									<span class="process-name"></span>理由
+								</label>
+								<label id="error-comment" class="col-form-label" style="color:red" th:errors="*{adminComment}"></label>
+								<div class="col-sm-8">
+									<textarea id="comment" class="form-control" name="adminComment"
+										th:value="${processSpecsheetForm.adminComment}?:null"></textarea>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer text-right">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">戻る</button>
+						<button type="submit" id="process-btn" class="btn btn-primary">確定</button>
+					</div>
+					<input type="hidden" name="specsheetId" th:value="${specsheet.specsheetId}">
+					<input type="hidden" name="userId" th:value="${specsheet.userId}">
+					<input type="hidden" id="hidden-stage" name="stage">
+					<input type="hidden" name="version" th:value="${specsheet.version}">
+				</form>
+			</div>
+		</div>
+	</div>
+
+<!-- cancel modal -->
+	<div class="modal fade" id="cancel-spec" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<form id="cancel-form" action="request.html" th:action="@{/request/spec/cancel}" th:object="${processSpecsheetForm}" method="post">
+					<div class="modal-header">
+						<h5 class="modal-title">スペックシート申請取消</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">この申請を取り消してもよろしいですか？</div>
+					<div class="modal-footer text-right">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">戻る</button>
+						<button type="submit" id="submit-btn" class="btn btn-primary">確定</button>
+					</div>
+					<input type="hidden" name="specsheetId" th:value="${specsheet.specsheetId}">
+					<input type="hidden" name="userId" th:value="${specsheet.userId}">
+					<input type="hidden" name="stage" value="9">
+					<input type="hidden" name="version" th:value="${specsheet.version}">
+				</form>
+			</div>
+		</div>
+	</div>
+	<div th:replace="loader::loader"></div>
+</body>
+</html>	

@@ -1,0 +1,23 @@
+DROP TABLE IF EXISTS had_personalities ;
+
+CREATE TABLE IF NOT EXISTS had_personalities (
+  `had_personality_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `status_id` INT UNSIGNED NOT NULL,
+  `personality_id` INT UNSIGNED NOT NULL,
+  `stage` CHAR(1) NOT NULL,
+  PRIMARY KEY (`had_personality_id`),
+  CONSTRAINT `fk_had_personalities_statuses1`
+    FOREIGN KEY (`status_id`)
+    REFERENCES `powerpro`.`statuses` (`status_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_had_personalities_personalities1`
+    FOREIGN KEY (`personality_id`)
+    REFERENCES `powerpro`.`personalities` (`personality_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+CREATE INDEX `fk_had_personalities_statuses1_idx` ON `powerpro`.`had_personalities` (`status_id` ASC) VISIBLE;
+
+CREATE INDEX `fk_had_personalities_personalities1_idx` ON `powerpro`.`had_personalities` (`personality_id` ASC) VISIBLE;

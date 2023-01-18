@@ -1,0 +1,19 @@
+-- presentationsとpresentation_commentsの作成日・更新日・削除日をDB側で自動で設定するように設定
+ALTER TABLE presentations DROP COLUMN updated_at;
+ALTER TABLE presentations ADD updated_at timestamp default current_timestamp on UPDATE current_timestamp AFTER updater_user_id;
+ALTER TABLE presentations DROP COLUMN created_at;
+ALTER TABLE presentations ADD created_at timestamp default current_timestamp AFTER creator_user_id;
+ALTER TABLE presentation_comments DROP COLUMN created_at;
+ALTER TABLE presentation_comments ADD created_at timestamp default current_timestamp AFTER creator_user_id;
+ALTER TABLE presentation_comments DROP COLUMN deleted_at;
+ALTER TABLE presentation_comments ADD deleted_at timestamp default current_timestamp on UPDATE current_timestamp AFTER stage;
+ALTER TABLE edit_request_comments DROP COLUMN created_at;
+ALTER TABLE edit_request_comments ADD created_at timestamp default current_timestamp AFTER creator_user_id;
+
+-- presentationsの外部キーにON DELETE CASCADEを追加
+ALTER TABLE presentations DROP FOREIGN KEY `fk_presentations_users1`;
+ALTER TABLE presentations ADD FOREIGN KEY `fk_presentations_users1`(`creator_user_id`) REFERENCES `powerpro`.`users`(`user_id`) 
+ON UPDATE CASCADE ON DELETE CASCADE ;
+ALTER TABLE presentations DROP FOREIGN KEY `fk_presentations_updater1`;
+ALTER TABLE presentations ADD FOREIGN KEY `fk_presentations_updater1`(`updater_user_id`) REFERENCES `powerpro`.`users`(`user_id`) 
+ON UPDATE CASCADE ON DELETE CASCADE ;
