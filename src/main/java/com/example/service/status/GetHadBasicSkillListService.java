@@ -1,5 +1,6 @@
 package com.example.service.status;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class GetHadBasicSkillListService {
 	public List<HadBasicSkill> getHadBasicSkillList(Integer statusId){
 		List<HadBasicSkill> hadBasicSkillList = mapper.selectHadBasicSkillAndBasicSkillByStatusId(statusId);
 		if (CollectionUtils.isEmpty(hadBasicSkillList)) {
-			return null;
+			return new ArrayList<HadBasicSkill>();
 		}
 		return hadBasicSkillList;
 	}
