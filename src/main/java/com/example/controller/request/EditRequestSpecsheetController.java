@@ -71,6 +71,12 @@ public class EditRequestSpecsheetController {
 	@RequestMapping("/edit")
 	public String showEditRequestSpecsheet(Integer specsheetId, Integer userId, Integer stage, Integer version,
 			Model model, RedirectAttributes redirectAttributes, @AuthenticationPrincipal LoginUser loginUser) {
+
+		Objects.requireNonNull(specsheetId, "specsheetIdがnullです");
+		Objects.requireNonNull(userId, "userIdがnullです");
+		Objects.requireNonNull(stage, "stageがnullです");
+		Objects.requireNonNull(version, "versionがnullです");
+
 		String role = loginUser.getAuthorities().toString();
 		Integer loginUserId = loginUser.getUser().getUserId();
 		// 正当なリクエストかチェック
