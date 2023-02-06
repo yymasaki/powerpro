@@ -165,15 +165,9 @@ public class SearchRequestController {
 	public StringBuilder getUserListForAutocomplete() {
 		StringBuilder userListForAutocomplete = new StringBuilder();
 		List<User> userList = getAllUsersService.getAllUsers();
-		for (int i = 0; i < userList.size(); i++) {
-			if (i != 0) {
-				userListForAutocomplete.append(",");
-			}
-			User user = userList.get(i);
-			userListForAutocomplete.append("\"");
-			userListForAutocomplete.append(user.getName());
-			userListForAutocomplete.append("\"");
-		}
+		userList.forEach(user -> {
+			userListForAutocomplete.append("\"" + user.getName() + "\"" + ",");
+		});
 		return userListForAutocomplete;
 	}
 }
