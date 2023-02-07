@@ -1,6 +1,7 @@
 package com.example.mapper;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -25,7 +26,7 @@ public interface RequestPresentationMapper {
 	List<Presentation> searchRequestPresentations(Presentation searchPresentation);
 
 	/** 申請中(stage = 2)の発表会を取得 */
-	Presentation selectRequestPresentation(@Param("presentationId") Integer presentationId);
+	Optional<Presentation> selectRequestPresentation(@Param("presentationId") Integer presentationId);
 
 	/** 該当発表会のstage、もしくは発表日を更新 */
 	int updatePresentation(Presentation presentation);

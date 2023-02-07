@@ -2,6 +2,7 @@ package com.example.service.presentation;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
@@ -79,10 +80,10 @@ public class RequestPresentationService {
 
 	/** 申請中の発表会を取得し返す */
 	public Presentation showRequestPresentation(Integer presentationId) {
-		Presentation requestedPresentation = requestPresentationMapper.selectRequestPresentation(presentationId);
-		// いいね数の取得
+		Optional<Presentation> optionalRequestedPresentation = requestPresentationMapper
+				.selectRequestPresentation(presentationId);
+		Presentation requestedPresentation = optionalRequestedPresentation.orElseGet(Presentation::new);
 		requestedPresentation.setFavoriteCount(presentationMapper.countPresentationFavorite(presentationId));
-		// 申請状況のセット
 		requestedPresentation.putCurrentStage();
 		return requestedPresentation;
 	}
